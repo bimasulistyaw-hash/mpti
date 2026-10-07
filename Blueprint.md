@@ -123,6 +123,12 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
      - Penerbitan Surat Keputusan Tim Pengelola Aplikasi OPD (Form **F.R02 / F.R03**).
      - Pemeriksaan Checklist Kesiapan Rilis Produksi (Form **F.R04**), verifikasi DNS/SSL, dan integrasi SSO JSS.
      - Aplikasi aktif beroperasi di lingkungan produksi dan didaftarkan ke sistem pemantauan berkala (Monev SLA 3 Bulan Form **F.E01**).
+  8. **Fase 8: Audit Internal & Pengawasan Kepatuhan SPBE (Inspektorat Kota Yogyakarta / Tim Auditor Kepatuhan):**
+     Fase audit dan pengawasan independen yang memantau kepatuhan tata kelola SPBE secara berkelanjutan di seluruh tahapan siklus hidup aplikasi. Tim Auditor Inspektorat difasilitasi dengan **Dashboard Auditor Internal** khusus untuk melakukan:
+     - **Monitoring Kepatuhan Tahap Pengembangan:** Memeriksa keselarasan progres fisik riil vs target KAK F.P01, validitas penugasan squad, jam kerja efektif (*timesheet log*) pengembang, keterkaitan commit hash Git terhadap work packages tiket, serta pencegahan jalan pintas (*bypass development*).
+     - **Rekapitulasi Matriks 10 Artefak Mandatori SPBE:** Memeriksa kelengkapan berkas legalitas dan dokumen teknis per aplikasi di setiap fase (F.A01, Berita Acara Rapat Klarifikasi, F.A02 Resmi Disahkan Kabid, Rekomendasi SDI Walidata, KAK F.P01 TTD 2 Pihak, Dokumentasi Rancang Bangun FI.01/FI.02, Laporan Pentest CSIRT F.U06, Berita Acara UAT F.UO5, BAST F.SR01 klausul 3 bulan).
+     - **Pemeriksaan Integritas Bukti & Tamper-Proof Audit Trail:** Memverifikasi keabsahan checksum SHA-256 berantai (*blockchain-like log chaining*) untuk memastikan tidak terjadi manipulasi riwayat persetujuan atau bypass status tiket.
+     - **Penerbitan Lembar Hasil Audit Kepatuhan SPBE (Form F.AUD01):** Auditor mencatat temuan ketidakpatuhan (*Compliance Findings*), menerbitkan rekomendasi perbaikan resmi, dan memantau status tindak lanjut temuan audit (*Audit Follow-Up Action*).
 
   **Diagram Alur Kerja Target (To-Be) per Fase:**
 
@@ -393,6 +399,34 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
       OutFase7 --> PostRelease["📈 SIKLUS PASCA-RILIS (OPERASIONAL & MONEV)<br/>• Pemeliharaan & Change Request (F.P01, F.P02, F.P03)<br/>• Monitoring Kepatuhan Transaksi 3 Bulan (F.E01)<br/>• Katalog Replikasi Aplikasi SPBE (F.RA01 & F.RA02)"]
   ```
 
+  **8. Fase 8: Audit Internal & Pengawasan Kepatuhan SPBE (Dashboard Auditor)**
+  ```mermaid
+  flowchart TD
+      Auditor["🕵️‍♂️ Auditor Internal SPBE<br/>(Inspektorat Kota Yogyakarta / Tim Audit SPBE)"]
+      
+      Auditor --> DashAuditor["📊 DASHBOARD AUDITOR INTERNAL SPBE<br/>• Monitoring Tahap Pengembangan & Progres Fisik Riil<br/>• Rekapitulasi Matriks 10 Artefak Mandatori SPBE<br/>• Verifikasi Integritas Audit Trail SHA-256 Chaining"]
+      
+      DashAuditor --> CheckDev["🔍 1. Audit Tahap Development Ala OpenProject<br/>• Validasi KAK F.P01 Sah 2 Pihak Sebelum Dev Dimulai<br/>• Verifikasi Kurva S Realisasi vs Rencana Milestone<br/>• Audit Log Jam Kerja Staf (Timesheet vs Estimasi Jam)<br/>• Pelacakan Commit Hash Git ke Nomor Work Package<br/>• Penegakan Ketiadaan Bypass Development"]
+      
+      DashAuditor --> CheckArtifacts["🗂️ 2. Rekapitulasi Matriks 10 Artefak Mandatori<br/>• Fase 1: Form F.A01, eOffice & 4 Lampiran MinIO<br/>• Fase 2: BA Rapat Klarifikasi & Form F.A02 Sah Kabid<br/>• Fase 3: Rekomendasi SDI Walidata Daerah Clear<br/>• Fase 4: Form F.A03 & KAK F.P01 TTD 2 Pihak Sah<br/>• Fase 5: Form Rancang Bangun FI.01 & Hosting FI.02<br/>• Fase 6: 5 Pilar QA (Fungsional, Pentest CSIRT, UAT, k6)<br/>• Fase 7: BAST F.SR01 Klausul 3 Bulan & Rilis F.R04"]
+      
+      DashAuditor --> CheckAuditTrail["🛡️ 3. Audit Trail Inspector & Hash Integrity<br/>• Verifikasi Hash SHA-256 Berantai per Event Log<br/>• Deteksi Manipulasi Status / Bypass Quality Gates"]
+      
+      CheckDev --> FormAudit
+      CheckArtifacts --> FormAudit
+      CheckAuditTrail --> FormAudit
+      
+      subgraph FormAudit ["📝 LEMBAR TEMUAN & REKOMENDASI AUDIT (Form F.AUD01)"]
+          direction TB
+          FA1["1. Registrasi Temuan Kepatuhan (Minor / Major / Critical)"]
+          FA2["2. Rekomendasi Tindak Lanjut & Batas Waktu Perbaikan"]
+          FA3["3. Pelacak Tindak Lanjut Perbaikan (Follow-Up Tracker)"]
+          FA1 --> FA2 --> FA3
+      end
+      
+      FormAudit --> OutFase8["🎯 OUTPUT FASE 8: LAPORAN HASIL AUDIT KEPATUHAN SPBE<br/>• LHA-SPBE Resmi Ditandatangani Auditor Inspektorat<br/>• Tiket Kepatuhan Dikirim ke Tim Pengembang / Diskominfo<br/>• Audit Trail Kepatuhan Terkunci Permanen"]
+  ```
+
 - **A.1.3. Pemicu Perubahan**:
   Ditetapkannya **Keputusan Wali Kota Yogyakarta Nomor 108 Tahun 2026** mencabut Kepwal 278/2024 dan menyelaraskan dengan Permenkomdigi No. 6/2025 serta Perpres 132/2022. Regulasi ini mewajibkan kontrol ketat 10 tahapan SPBE, audit keamanan CSIRT, kepatuhan SLA 90%, klausul pemanfaatan 3 bulan, dan standarisasi replikasi.
 - **A.1.4. Kaitan dengan Strategi Organisasi**:
@@ -444,6 +478,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 12. **Modul Replikasi SPBE Antar-Instansi (F.RA01 & F.RA02)**:
     - Intake Assessment Replikasi oleh instansi pemohon (**F.RA01**), telaah kelayakan teknis/operasional (**F.RA02**), dan register PKS.
 13. **4 Modul Pengaturan Sistem Wajib**: User Management, Dynamic RBAC, 8 Tema UI Apple HIG, Master Data Terpadu.
+14. **Modul Dashboard Auditor Internal & Pengawasan Kepatuhan SPBE**: Antarmuka khusus auditor pengawas (Inspektorat Kota Yogyakarta / Tim Audit SPBE), pemantauan kepatuhan tahap pengembangan (milestone KAK, timesheet dev, commit Git, QA gates), rekapitulasi matriks 10 kelengkapan artefak mandatori, verifikasi keabsahan checksum hash log SHA-256 berantai, dan penerbitan Form Lembar Temuan & Rekomendasi Audit (F.AUD01).
 
 ---
 
@@ -464,6 +499,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 | `BR-09` | Sistem wajib menyediakan instrumen Monev F.E01 untuk mengukur pertumbuhan data transaksi dan evaluasi penonaktifan aplikasi jika *idle* 3 bulan. | **Must Have** | Kepwal 108/2026 BAB II Hal 13 & Hal 121 | Terverifikasi |
 | `BR-10` | Sistem wajib menyediakan modul Replikasi Aplikasi SPBE melalui Form Assessment F.RA01 dan Kelayakan Replikasi F.RA02. | **Must Have** | Kepwal 108/2026 BAB II Hal 14 & Hal 123 | Terverifikasi |
 | `BR-11` | Sistem wajib menyediakan 4 Modul Pengaturan Sistem (User & RBAC, Hak Akses Modul, 8 Tema UI Apple HIG, Master Data). | **Must Have** | AGENTS.md Diskominfo Standard | Terverifikasi |
+| `BR-12` | Sistem wajib menyediakan Dashboard Auditor Internal khusus bagi Inspektorat Kota Yogyakarta / Tim Auditor SPBE untuk monitoring progres, rekapitulasi kepatuhan artefak tahap pengembangan, verifikasi integritas audit trail SHA-256, dan penerbitan Form Lembar Temuan & Rekomendasi Audit (F.AUD01). | **Must Have** | Kepwal 108/2026 BAB II & Pengawasan Intern SPBE | Terverifikasi |
 
 ---
 
@@ -572,6 +608,22 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 - **`[Aktor: Tim Analis Replikasi Kominfo]`**: Mengisi Form Kelayakan Replikasi (**F.RA02** - hasil analisis kelayakan teknis, operasional, keamanan) dan mencatat nomor dokumen PKS.
 - **`[Sistem]`**: Menerbitkan surat rekomendasi kelayakan replikasi dan mendokumentasikan jejak replikasi sistem.
 
+### Probis 11: Audit Internal, Monitoring Tahap Pengembangan & Lembar Rekomendasi Kepatuhan (Form F.AUD01)
+- **`[Aktor: Auditor Internal (Inspektorat Kota Yogyakarta / Tim Audit SPBE)]`**: Mengakses sistem via Keycloak SSO JSS menuju **Dashboard Auditor Internal**:
+  1. *Monitoring Kepatuhan Tahap Pengembangan (Dev Work Packages)*:
+     - Memeriksa keabsahan Dokumen KAK F.P01 (memastikan pengembangan dilarang dimulai sebelum ditandatangani kedua belah pihak).
+     - Menginspeksi kurva S realisasi fisik vs milestone target KAK, mendeteksi deviasi jadwal di atas toleransi.
+     - Memeriksa kepatuhan pencatatan jam kerja pengembang (*timesheet log*) terhadap estimasi beban kerja.
+     - Melacak konsistensi commit hash Git terhadap tiket work packages untuk mendeteksi koding di luar ruang lingkup KAK.
+     - Memverifikasi kepatuhan kelulusan 5 pilar QA Suite (memastikan tidak ada celah keamanan CSIRT atau bug fungsional yang di-bypass secara ilegal).
+  2. *Rekapitulasi Matriks 10 Artefak Mandatori SPBE*:
+     - Memeriksa kelengkapan matriks dokumen permohonan dari Fase 1 s/d Fase 7 (F.A01, Berita Acara Rapat Klarifikasi Teknis, F.A02 Sah Kabid, Rekomendasi SDI Walidata, KAK F.P01 TTD 2 Pihak, Dokumentasi FI.01/FI.02, Laporan Pentest F.U06, Berita Acara UAT F.UO5, BAST F.SR01 klausul 3 bulan).
+  3. *Verifikasi Integritas Audit Trail SHA-256*:
+     - Menjalankan uji keabsahan rantai hash (*hash chain verification*) pada tabel audit log untuk menjamin ketiadaan manipulasi data riwayat telaah atau status tiket.
+  4. *Penyusunan Lembar Hasil Audit Kepatuhan (Form F.AUD01)*:
+     - Menginput temuan ketidakpatuhan (*Compliance Findings* - klasifikasi: *Minor / Major / Critical*), merumuskan rekomendasi perbaikan resmi, menetapkan batas waktu penyelesaian, dan memantau status tindak lanjut (*Follow-Up Action*).
+- **`[Sistem]`**: Mengagregasi metrik kepatuhan per aplikasi, menerbitkan Laporan Hasil Audit Kepatuhan SPBE (LHA-SPBE) berformat PDF resmi ber-KOP Inspektorat/Pemkot Yogyakarta, mengunci jejak temuan audit secara permanen, dan mengirimkan tiket notifikasi tindakan korektif ke Tim Pengembang / Diskominfo / OPD terkait.
+
 ---
 
 # BAGIAN B — PRD (Product Requirements Document)
@@ -588,13 +640,15 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 | `P-06` | **Pengawas / Pimpinan** | Walikota, Sekda, Asisten, Kepala Dinas. | Read-Only: Dashboard analitik eksekutif, rekapitulasi, laporan monev F.E01, ekspor Excel/PDF. |
 | `P-07` | **Superadmin** | Administrator Sentral Diskominfo. | Full Access: User CRUD, RBAC dinamis, permission matrix, tema UI, master data, konfigurasi SLA. |
 | `P-08` | **Publik / Tamu** | Masyarakat umum & pegawai non-login. | Melihat dashboard ringkasan statistik & top 10 aplikasi prioritas beserta stepper progres. |
+| `P-09` | **Auditor Internal SPBE** | Auditor Inspektorat Kota Yogyakarta & Tim Audit Tata Kelola SPBE. | Akses Dashboard Auditor: monitoring rekapitulasi seluruh fase, inspeksi kepatuhan tahap development (milestone KAK, timesheet, git commits), uji integritas audit trail SHA-256, input Lembar Temuan Audit (Form F.AUD01) & rekomendasi perbaikan. |
 
-### Pemetaan Persona ke 4 Role Standar Keycloak Pemkot Yogyakarta
+### Pemetaan Persona ke Role Standar Keycloak Pemkot Yogyakarta
 
 | Role Keycloak | Persona yang Dipetakan | Wewenang Inti |
 | :---: | :--- | :--- |
 | `Superadmin` | P-07 (Administrator Sentral Diskominfo) | Full Access seluruh modul & konfigurasi sistem, CRUD User, RBAC, Master Data, Tema UI. |
 | `Pengawas` | P-06 (Pimpinan / Walikota / Sekda / Kadis) | Read-Only seluruh modul (hanya method `GET`), dashboard analitik eksekutif, ekspor laporan Excel/PDF, audit trail. |
+| `Auditor` | P-09 (Auditor Internal SPBE Inspektorat) | Akses read-only komprehensif ke seluruh artefak siklus hidup, metrik dev, log audit, serta hak input & penerbitan Lembar Temuan/Rekomendasi Audit F.AUD01. |
 | `Admin` | P-02 (Tim Analis & Kabid), P-03 (Tim Bisnis Analis & QA), P-05 (Tim CSIRT) | Manajemen permohonan, telaah kelayakan F.A02, approval Kabid, pengujian mutu, evaluasi monev, insiden keamanan. |
 | `Operator` | P-01 (PIC Pemohon OPD), P-04 (Ketua Tim Project & Developer) | Input form permohonan F.A01, upload artefak, update status siklus pengerjaan, pengajuan Change Request, log pemeliharaan. |
 
@@ -604,7 +658,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 
 ## B.2. Daftar Fitur Produk & Prioritas MoSCoW
 
-Daftar kebutuhan produk (PRD) di bawah ini disusun secara komprehensif berdasarkan dekomposisi proses bisnis 7 fase siklus hidup SPBE Kepwal 108/2026, siklus pasca-rilis, modul pengawasan & monitoring development, serta tata kelola administrasi sistem terpadu:
+Daftar kebutuhan produk (PRD) di bawah ini disusun secara komprehensif berdasarkan dekomposisi proses bisnis 7 fase siklus hidup SPBE Kepwal 108/2026, siklus pasca-rilis, modul pengawasan & monitoring development, pengawasan audit internal Inspektorat, serta tata kelola administrasi sistem terpadu:
 
 | ID Fitur | Modul & Nama Fitur | Deskripsi Fungsionalitas & Spesifikasi Bisnis | Prioritas | Traceability |
 | :---: | :--- | :--- | :---: | :---: |
@@ -686,12 +740,16 @@ Daftar kebutuhan produk (PRD) di bawah ini disusun secara komprehensif berdasark
 | `PRD-19B` | **Pengaturan Sistem: Dynamic RBAC & Permission Matrix**| Matriks hak akses fungsional granular dinamis berbasis modul dan peran pengguna (*granularity action-level access control*). | **Must Have** | `BR-11` |
 | `PRD-19C` | **Pengaturan Sistem: Theme Switcher 8 Tema Apple HIG** | Konfigurasi preferensi antarmuka pengguna responsif dengan 8 palet tema visual premium terkurasi berbasis Apple Human Interface Guidelines dan mode gelap/terang. | **Should Have** | `BR-11` |
 | `PRD-19D` | **Pengaturan Sistem: Master Data Terpadu & Config** | CRUD master data terpusat: direktori instansi OPD, kategori urusan layanan, master server/cluster data center, konfigurasi ambang batas SLA, dan bobot rubrik telaah. | **Must Have** | `BR-11` |
+| `PRD-20A` | **Dashboard Auditor: Matriks Kepatuhan Artefak SPBE** | Rekapitulasi matriks kepatuhan 10 artefak mandatori SPBE per aplikasi dari Fase 1 hingga Rilis & Pasca-Rilis dengan verifikasi kelengkapan dokumen sah. | **Must Have** | `BR-12` |
+| `PRD-20B` | **Dashboard Auditor: Inspector Kepatuhan Tahap Dev** | Pengecekan kepatuhan pengerjaan sprint: keabsahan KAK 2 pihak sebelum koding, deviasi kurva S realisasi vs jadwal, log timesheet jam kerja pengembang, dan commit Git. | **Must Have** | `BR-12` |
+| `PRD-20C` | **Dashboard Auditor: Verifikasi Integritas Audit Trail** | Mesin verifikasi integritas rantai hash SHA-256 (*blockchain-like hash chain verification*) untuk mendeteksi potensi pemalsuan nilai atau bypass ilegal status tiket. | **Must Have** | `BR-12` |
+| `PRD-20D` | **Dashboard Auditor: Lembar Temuan & Rekomendasi (F.AUD01)**| Antarmuka pencatatan temuan audit kepatuhan (*Compliance Findings*), perumusan rekomendasi perbaikan, penerbitan LHA-SPBE PDF resmi, dan pelacak tindak lanjut. | **Must Have** | `BR-12` |
 
 ---
 
 # BAGIAN C — SRS (Software Requirements Specification)
 
-## C.1. Kebutuhan Fungsional Baku (Standar 6 Bagian SSOT: 20 Kebutuhan Fungsional `SRS-F-01` s/d `SRS-F-20`)
+## C.1. Kebutuhan Fungsional Baku (Standar 6 Bagian SSOT: 21 Kebutuhan Fungsional `SRS-F-01` s/d `SRS-F-21`)
 
 Setiap kebutuhan fungsional di bawah ini dijabarkan secara rinci dan terstandarisasi mencakup **(1) Input Data, (2) Validasi, (3) Penyimpanan Data, (4) Status, (5) Error Handling, dan (6) QA Testing Acceptance** (Positive & Negative Test Cases):
 
@@ -991,6 +1049,21 @@ SRS-F-20: Pengaturan Sistem Terpadu: User Directory, Dynamic RBAC, Switcher 8 Te
     - Negative: Pengguna dengan role Operator mencoba mengakses endpoint modifikasi RBAC ditolak dengan error HTTP 403 Forbidden.
 ```
 
+```
+SRS-F-21: Dashboard Auditor Internal, Monitoring Dev & Lembar Audit Kepatuhan (Form F.AUD01)
+├── 1. Input Data: HTTP GET Request data kepatuhan per aplikasi (Application ID, Filter Fase), Query Rekapitulasi Tahap Development (KAK Milestone, Realisasi Kurva S, Log Timesheet Jam Kerja, Commit Git, Hasil 5 Pilar QA), DTO Input Lembar Temuan Audit Form F.AUD01 (Application ID, Auditor NIP/ID, Kategori Temuan: 'Minor' / 'Major' / 'Critical', Deskripsi Pelanggaran Kepatuhan, Rekomendasi Korektif Auditor, Batas Waktu Tindak Lanjut Due Date), Passphrase TTE Auditor.
+├── 2. Validasi: Role wajib `Auditor` (Inspektorat Kota Yogyakarta) atau `Superadmin`; verifikasi keabsahan rantai hash SHA-256 pada seluruh event audit log; status temuan wajib menyertakan rekomendasi dan batas waktu tindak lanjut; berkas LHA-SPBE wajib ditandatangani digital oleh Auditor Penanggung Jawab.
+├── 3. Penyimpanan Data: Tabel `internal_audits`, `compliance_findings`, `audit_follow_ups`; dokumen Laporan Hasil Audit Kepatuhan (LHA-SPBE) berformat PDF resmi tersimpan di MinIO bucket `mpsi-internal-audits`.
+├── 4. Status: `AUDIT_EVALUASI_AKTIF`, `TEMUAN_AUDIT_DITERBITKAN`, `TINDAK_LANJUT_DALAM_PERBAIKAN`, `AUDIT_CLEARANCE_TERPENUHI`.
+├── 5. Error Handling:
+│   ├── 403 Forbidden: Staf pengembang atau OPD mencoba mengedit atau membatalkan lembar temuan audit F.AUD01.
+│   ├── 422 Unprocessable Entity: Temuan audit berkategori 'Critical' diajukan tanpa rekomendasi tindakan perbaikan.
+│   └── 500 Internal Server Error: Terdeteksi broken hash chain pada audit trail saat proses verifikasi kepatuhan sistem.
+└── 6. QA Acceptance:
+    - Positive: Auditor Inspektorat membuka Dashboard Auditor, memverifikasi rekapitulasi 10 artefak dan kurva S dev, menerbitkan Form F.AUD01 dengan temuan Minor, sistem menerbitkan PDF LHA-SPBE sah dan mengirimkan tiket perbaikan ke Tim Pengembang.
+    - Negative: Upaya menghapus catatan temuan audit oleh non-auditor diblokir secara absolut oleh sistem dengan status HTTP 403 Forbidden.
+```
+
 ---
 
 ## C.2. Non-Functional Requirements (SRS-NF)
@@ -1042,6 +1115,8 @@ erDiagram
     APPLICATIONS ||--o{ REPLICATION_REQUESTS : replicated_by_fra01
     REPLICATION_REQUESTS ||--|| REPLICATION_FEASIBILITY : analyzed_by_fra02
     APPLICATIONS ||--o{ APPLICATION_AUDIT_LOGS : records
+    APPLICATIONS ||--o{ INTERNAL_AUDITS : audited_by_faud01
+    INTERNAL_AUDITS ||--o{ COMPLIANCE_FINDINGS : contains_findings
 
     APPLICATIONS {
         uuid id PK
@@ -1332,24 +1407,52 @@ erDiagram
         uuid analyst_user_id FK
         timestamptz created_at
     }
+
+    INTERNAL_AUDITS {
+        uuid id PK
+        uuid application_id FK
+        uuid auditor_user_id FK
+        varchar audit_report_number
+        varchar audit_scope
+        varchar overall_compliance_status
+        text executive_summary
+        varchar lha_minio_pdf_key
+        timestamptz signed_at
+        timestamptz created_at
+    }
+
+    COMPLIANCE_FINDINGS {
+        uuid id PK
+        uuid internal_audit_id FK
+        varchar lifecycle_phase
+        varchar artifact_reference
+        varchar severity_level
+        text finding_description
+        text corrective_recommendation
+        varchar finding_status
+        date follow_up_due_date
+        text resolution_notes
+        timestamptz resolved_at
+        timestamptz created_at
+    }
 ```
 
 ---
 
-# BAGIAN D — RENCANA IMPLEMENTASI MODULAR LENGKAP (20 MODUL: `MOD-00` s/d `MOD-19`)
+# BAGIAN D — RENCANA IMPLEMENTASI MODULAR LENGKAP (21 MODUL: `MOD-00` s/d `MOD-20`)
 
-Rencana implementasi sistem MPSI SPBE Kota Yogyakarta didekomposisi ke dalam **20 Modul Implementasi Mandiri (`MOD-00` s/d `MOD-19`)**. Seluruh modul dirancang mengikuti kaidah *Clean & Hexagonal Architecture*, pemisahan tanggung jawab yang ketat (*Separation of Concerns*), penegakan *Mandatory Quality Gates*, serta kompatibilitas penuh terhadap regulasi Kepwal 108/2026.
+Rencana implementasi sistem MPSI SPBE Kota Yogyakarta didekomposisi ke dalam **21 Modul Implementasi Mandiri (`MOD-00` s/d `MOD-20`)**. Seluruh modul dirancang mengikuti kaidah *Clean & Hexagonal Architecture*, pemisahan tanggung jawab yang ketat (*Separation of Concerns*), penegakan *Mandatory Quality Gates*, modul pengawasan audit intern independen Inspektorat, serta kompatibilitas penuh terhadap regulasi Kepwal 108/2026.
 
 ---
 
-## D.1. Peta 20 Modul Implementasi & Dependensi Sistem
+## D.1. Peta 21 Modul Implementasi & Dependensi Sistem
 
-Tabel berikut memetakan ke-20 modul implementasi, relasi terhadap modul PRD (Bagian B.2), spesifikasi kebutuhan SRS-F (Bagian C.1), deliverables kunci, dependensi prasyarat, urutan prioritas pembuatan (*build order*), dan estimasi kompleksitas teknis:
+Tabel berikut memetakan ke-21 modul implementasi, relasi terhadap modul PRD (Bagian B.2), spesifikasi kebutuhan SRS-F (Bagian C.1), deliverables kunci, dependensi prasyarat, urutan prioritas pembuatan (*build order*), dan estimasi kompleksitas teknis:
 
 | ID Modul | Nama Modul Implementasi & Ruang Lingkup | PRD Terkait | SRS-F Terkait | Komponen & Deliverables Kunci | Prasyarat (Dependencies) | Urutan Build | Bobot Teknis |
 | :---: | :--- | :---: | :---: | :--- | :---: | :---: | :---: |
 | `MOD-00` | **Core Foundation, Keycloak SSO JSS & Base Layout** | `PRD-01A`, `PRD-19A` | `SRS-F-01`, `SRS-NF-01..07` | Auth Gateway OIDC, RS256 JWT Validator, Shell App, Frosted Glass Header/Sidebar, Interceptor HTTP, Session Store. | - | 1 | Tinggi |
-| `MOD-01` | **Dynamic RBAC, User Directory & Master Data Terpadu** | `PRD-19B`, `PRD-19D` | `SRS-F-20` | Matrix Wewenang 4 Role Keycloak, Master OPD SOTK, Master Urusan SPBE, Master Server/Cluster Data Center, Konfigurasi Bobot. | `MOD-00` | 2 | Sedang |
+| `MOD-01` | **Dynamic RBAC, User Directory & Master Data Terpadu** | `PRD-19B`, `PRD-19D` | `SRS-F-20` | Matrix Wewenang 5 Role Keycloak, Master OPD SOTK, Master Urusan SPBE, Master Server/Cluster Data Center, Konfigurasi Bobot. | `MOD-00` | 2 | Sedang |
 | `MOD-02` | **Portal Publik & Monitoring Usulan Prioritas** | `PRD-01A..01C` | `SRS-F-02` | Hero Banner Publik, 6 Card Status Agregat, Interactive Stepper Top 10 Prioritas, Search & Filter Katalog Tanpa Autentikasi. | `MOD-00`, `MOD-01` | 3 | Rendah |
 | `MOD-03` | **Registrasi Permohonan OPD & Integrasi eOffice (Form F.A01)** | `PRD-02A..02E` | `SRS-F-03` | Wizard Intake 5 Langkah, Generator No Reg `REG-YYYYMMDD-XXXX`, Uploader 4 Berkas MinIO, Validator No Surat eOffice, PDF Generator F.A01. | `MOD-00`, `MOD-01` | 4 | Tinggi |
 | `MOD-04` | **Manajemen Rapat Klarifikasi Teknis OPD Multi-Sesi** | `PRD-03A..03E` | `SRS-F-04` | Studio Sesi Rapat (#1, #2, dst), Mandatory Guard Target Kesepakatan (100%), Rich-Text Notulensi, Galeri Bukti MinIO, Action Items OPD, TTE Berita Acara. | `MOD-03` | 5 | Tinggi |
@@ -1368,6 +1471,7 @@ Tabel berikut memetakan ke-20 modul implementasi, relasi terhadap modul PRD (Bag
 | `MOD-17` | **Monitoring, Evaluasi Operasional & Deteksi SLA 3 Bulan** | `PRD-16A..16D` | `SRS-F-17` | Sinkronisasi Telemetri Transaksi 30 Hari, Pelacak SLA Kepatuhan $\ge 90\%$, Deteksi Mangkrak (Zero Data 3 Bulan Berturut-turut), Evaluasi Triwulan F.E01. | `MOD-15` | 18 | Sedang |
 | `MOD-18` | **Katalog Portofolio & Replikasi Aplikasi SPBE** | `PRD-17A..17C` | `SRS-F-18` | Etalase Publik Katalog Berbagi Pakai, Self-Assessment Kesiapan Pemohon (F.RA01), Telaah Kelayakan 4 Aspek (F.RA02), Registrasi PKS Antar-Pemerintah Daerah. | `MOD-15` | 19 | Sedang |
 | `MOD-19` | **Pengawasan Eksekutif, Dashboard Analitik & Audit Trail** | `PRD-18A..18C`, `PRD-19C` | `SRS-F-19` | Dashboard Eksekutif Read-Only (Walikota/Sekda/Kadis), Generator Laporan Excel & PDF Resmi, Tamper-Proof Audit Trail Logger, 8 Palet Tema Apple HIG Switcher. | `MOD-00..MOD-18`| 20 | Tinggi |
+| `MOD-20` | **Dashboard Auditor Internal & Pengawasan Kepatuhan SPBE** | `PRD-20A..20D` | `SRS-F-21` | Dashboard Auditor Inspektorat, Rekapitulasi 10 Artefak Mandatori SPBE, Inspector Kepatuhan Sprint Dev, Uji Integritas Rantai Hash SHA-256, Lembar Temuan & Rekomendasi Audit (F.AUD01), Generator LHA-SPBE PDF. | `MOD-00..MOD-19`| 21 | Tinggi |
 
 ---
 
@@ -1705,6 +1809,28 @@ Setiap modul implementasi memiliki spesifikasi teknis mendalam yang mencakup lap
 - **Integrasi**: Integrasi pelaporan statistik ke Executive Information System (EIS) Pemerintah Kota Yogyakarta.
 - **Guard Validation**: Seluruh interaksi pengguna pada role Pengawas strictly dibatasi hanya pada method HTTP `GET`; setiap aksi mutasi atau bypass langsung menghasilkan error HTTP 403 dan terekam di Security Alert CSIRT.
 
+### 21. `MOD-20`: Dashboard Auditor Internal & Pengawasan Kepatuhan SPBE
+- **Peran & Tujuan**: Menyediakan antarmuka kerja audit kepatuhan (*Internal Audit & Compliance Inspector Dashboard*) khusus bagi Auditor SPBE (Inspektorat Kota Yogyakarta / Tim Auditor Kepatuhan SPBE). Berfungsi sebagai pusat monitoring dan rekapitulasi real-time tahapan siklus hidup pembangunan aplikasi, evaluasi kesesuaian deliverables terhadap regulasi Kepwal 108/2026 dan Kerangka Acuan Kerja (KAK), penyusunan lembar audit resmi Formulir F.AUD01 (Lembar Rekomendasi/Temuan Audit Kepatuhan Pengembangan SPBE), verifikasi integritas rantai hash (*audit trail hash-chain verification*), penerbitan Berita Acara Rekomendasi/Temuan Audit (*Compliance Findings*), serta integrasi rekomendasi tindak lanjut ke SIMWAS Inspektorat Kota Yogyakarta.
+- **Backend Components (Go)**:
+  - `internal/handler/internal_audit_handler.go`: Endpoint dashboard audit `/api/v1/audits/dashboard`, `/api/v1/audits/reviews`, `/api/v1/audits/recap`.
+  - `internal/service/dev_compliance_inspector.go`: Mesin inspeksi kepatuhan otomatis terhadap checklist 10 tahapan Kepwal 108/2026, membandingkan milestone KAK vs deliverable repositori git, dokumen FI.01, dan hasil pengujian QA Suite.
+  - `internal/handler/compliance_findings_handler.go`: Manajemen temuan audit `/api/v1/audits/findings` (Minor, Major, Critical) dan status tindak lanjut temuan (*Open, In-Progress, Resolved, Verified*).
+  - `internal/service/hash_chain_verifier.go`: Verifikator integritas berkas dan riwayat log mutasi data permohonan menggunakan komputasi checksum SHA-256 berantai untuk menjamin tidak adanya manipulasi rekaman siklus hidup.
+  - `pkg/pdf/audit_report_generator.go`: Generator naskah dinas resmi Formulir F.AUD01 (Lembar Rekomendasi/Temuan Audit Internal SPBE) ber-KOP Naskah Dinas Inspektorat/Diskominfo dan TTE Digital penanggung jawab audit.
+- **Frontend Components**:
+  - `views/auditor/auditor-dashboard.html`: Antarmuka eksekutif auditor bergaya Apple macOS: kartu rekapitulasi status audit (Compliant, Under Review, Non-Compliant), visual timeline tahapan pengembangan vs batas waktu KAK, dan tabel daftar proyek aktif dengan indikator integritas hash.
+  - `assets/js/components/dev-compliance-inspector.js`: Panel inspeksi detail proyek: matriks kesesuaian artefak wajib (F.A01, F.A02, Rekomendasi SDI, KAK F.P01, FI.01, QA Suite, BAST), viewer commit log, dan rekap rasio penyelesaian sprint.
+  - `assets/js/components/faud01-findings-modal.html`: Modal interaktif formulir F.AUD01 untuk mencatat temuan kepatuhan, tingkat keparahan (*severity*), regulasi rujukan yang dilanggar, batas waktu perbaikan (*due date*), serta lampiran bukti temuan PDF/foto ke MinIO.
+  - `assets/js/components/hash-integrity-badge.js`: Komponen visual verifikasi rantai hash real-time (tanda centang hijau "Integritas Data Terverifikasi SHA-256" vs peringatan merah jika terjadi anomali/ketidakcocokan data).
+- **Database & Data Store**:
+  - Tabel: `internal_audits`, `compliance_findings`, `audit_follow_ups`.
+  - Object Storage: MinIO Bucket `mpsi-internal-audits` untuk berkas formulir F.AUD01 dan bundel bukti temuan fisik/dokumen pendukung.
+- **Integrasi**: SIMWAS (Sistem Informasi Manajemen Pengawasan) Inspektorat Kota Yogyakarta, CSIRT Pemkot Yogyakarta, dan Sistem Monitoring SPBE KemenPANRB.
+- **Guard Validation**:
+  - Hak akses penulisan lembar audit F.AUD01 dan penerbitan temuan strictly dikunci hanya untuk role `Auditor` dan `Superadmin`.
+  - Berita Acara Audit Kepatuhan (F.AUD01) yang telah ditandatangani digital berstatus *Immutable* (tidak dapat diubah/dihapus).
+  - Temuan berkategori *Critical* secara otomatis memicu notifikasi peringatan eskalasi ke Kabid Aplikasi Informatika dan membekukan sementara proses serah terima produksi (MOD-15) hingga tim pengembang menyerahkan Berita Acara Tindak Lanjut Perbaikan yang diverifikasi ulang oleh Auditor.
+
 ---
 
 ## D.3. Matriks Dependensi & Analisis Jalur Kritis (Critical Path)
@@ -1732,7 +1858,7 @@ Setiap keterlambatan pada modul-modul di sepanjang jalur kritis di atas akan sec
 
 ## D.4. Diagram Alur Kerja Dependensi Antar-Modul
 
-Diagram alur dependensi di bawah ini memvisualisasikan keterkaitan struktural seluruh 20 modul implementasi (`MOD-00` s/d `MOD-19`), dikelompokkan ke dalam 8 klaster fase siklus hidup SPBE:
+Diagram alur dependensi di bawah ini memvisualisasikan keterkaitan struktural seluruh 21 modul implementasi (`MOD-00` s/d `MOD-20`), dikelompokkan ke dalam 9 klaster fase siklus hidup SPBE:
 
 ```mermaid
 flowchart TD
@@ -1781,12 +1907,17 @@ flowchart TD
         MOD18["MOD-18: Katalog Portofolio & Replikasi SPBE Antar-Instansi"]
     end
 
+    subgraph KLASTER_AUDIT["Fase 8: Audit Internal & Pengawasan Kepatuhan SPBE"]
+        MOD20["MOD-20: Dashboard Auditor Internal & Kepatuhan SPBE (Form F.AUD01)"]
+    end
+
     %% DEPENDENCY RELATIONS
     MOD00 --> MOD01
     MOD00 --> MOD02
     MOD01 --> MOD02
     MOD01 --> MOD03
     MOD01 --> MOD19
+    MOD01 --> MOD20
 
     MOD03 --> MOD04
     MOD04 -->|Gate 1: Kesepakatan 100%| MOD05
@@ -1808,12 +1939,24 @@ flowchart TD
     MOD15 --> MOD17
     MOD15 --> MOD18
 
+    %% AUDIT MONITORING INSPECTIONS
+    MOD03 -.->|Audit Permohonan & eOffice| MOD20
+    MOD06 -.->|Audit Kelayakan F.A02| MOD20
+    MOD09 -.->|Audit KAK & Jadwal| MOD20
+    MOD11 -.->|Audit Sprint & Deliverables| MOD20
+    MOD12 -.->|Audit Kurva S & Keterlambatan| MOD20
+    MOD14 -.->|Audit Hasil UAT & Pentest| MOD20
+    MOD15 -.->|Audit BAST & Klausul Garansi| MOD20
+    MOD17 -.->|Audit Telemetri SLA 3 Bulan| MOD20
+
+    %% EXECUTIVE AGGREGATION
     MOD03 -.-> MOD19
     MOD06 -.-> MOD19
     MOD12 -.-> MOD19
     MOD14 -.-> MOD19
     MOD15 -.-> MOD19
     MOD17 -.-> MOD19
+    MOD20 -.->|Kompilasi Temuan & Kepatuhan| MOD19
 ```
 
 ---
