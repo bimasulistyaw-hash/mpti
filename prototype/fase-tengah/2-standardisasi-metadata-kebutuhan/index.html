@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telaah Metadata Satu Data Indonesia (SDI) & Konfirmasi Walidata - Diskominfo Kota Yogyakarta</title>
+  <meta name="description" content="Workbench Interaktif Telaah Metadata Satu Data (SDI), Validasi Kamus Data & Standar Data, serta Konfirmasi Walidata Daerah (Seksi Data & Statistik).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../tengah.css">
+  <style>
+    /* Custom Stylings for Metadata SDI Workbench */
+    .sdi-nav-pill-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      background: #f1f5f9;
+      padding: 0.4rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.75rem;
+    }
+    .sdi-nav-pill {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+    .sdi-nav-pill:hover { color: #0f172a; background: #e2e8f0; }
+    .sdi-nav-pill.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-xs);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .sdi-pane { display: none; }
+    .sdi-pane.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 4 Prinsip SDI Check Tags */
+    .prinsip-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      margin-right: 0.2rem;
+      margin-bottom: 0.2rem;
+    }
+    .prinsip-tag.pass { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .prinsip-tag.fail { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    .pdp-tag {
+      display: inline-flex;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-xs);
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .pdp-tag.sensitif { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .pdp-tag.umum { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .pdp-tag.publik { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+    .catalog-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 0.65rem;
+      background: #ffffff;
+      transition: all 0.15s ease;
+    }
+    .catalog-item-row:hover {
+      border-color: #93c5fd;
+      background: #f0f9ff;
+    }
+
+    .walidata-verif-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <a href="../1-kertas-kerja-asesmen-analis/index.html" class="brand-link">
+          <div class="logo-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">MPSI SPBE &bull; Walidata Daerah</span>
+            <span class="brand-subtitle">Telaah Metadata Satu Data (SDI) & Konfirmasi Walidata</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="../1-kertas-kerja-asesmen-analis/index.html" class="nav-link">&larr; Antrean Usulan OPD</a>
+        <a href="../1-kertas-kerja-asesmen-analis/katalog-portofolio-pemkot.html" class="nav-link">Portofolio Pemkot</a>
+        <a href="../1-kertas-kerja-asesmen-analis/kertas-kerja-fa02.html" class="nav-link">Kertas Kerja F.A02</a>
+        <a href="../1-kertas-kerja-asesmen-analis/manajemen-hearing-opd.html" class="nav-link">Hearing OPD</a>
+        <a href="../1-kertas-kerja-asesmen-analis/dashboard-kuadran-portofolio.html" class="nav-link">Dashboard 4 Kuadran</a>
+        <a href="index.html" class="nav-link active">Telaah Metadata SDI</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="../1-kertas-kerja-asesmen-analis/kertas-kerja-fa02.html" class="btn btn-secondary btn-sm">
+          &larr; Kertas Kerja F.A02
+        </a>
+        <div class="user-badge">
+          <span class="user-badge-avatar" style="background:#059669;">WD</span>
+          <div class="user-badge-text">
+            <span class="user-badge-name">Rina Kusuma, S.Si</span>
+            <span class="user-badge-role">Walidata Statistik Daerah</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="page-container">
+
+    <!-- Header Card Usulan yang Ditelaah Walidata -->
+    <section class="workbench-header-card">
+      <div class="wb-app-info">
+        <div class="wb-app-avatar">📊</div>
+        <div class="wb-app-meta">
+          <div class="wb-app-title-row">
+            <h1 class="wb-app-title">SIP-RUJUK &bull; Sistem Informasi Rujukan Terpadu Daerah</h1>
+            <span class="status-pill status-approved">
+              <span class="status-dot"></span>
+              F.A02 Lolos (Skor 86.5 / 100)
+            </span>
+            <span class="walidata-verif-badge">
+              ✓ 94% Kepatuhan 4 Prinsip SDI
+            </span>
+          </div>
+          <div class="wb-app-sub">
+            <span><strong>No. Registrasi:</strong> <span class="mono-text">REG-20261006-0042</span></span>
+            <span>&bull;</span>
+            <span><strong>Produsen Data:</strong> Dinas Kesehatan Kota Yogyakarta</span>
+            <span>&bull;</span>
+            <span><strong>Tahap:</strong> Penyelarasan Kamus Data SDI & Sign-Off Walidata</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wb-actions-right">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnPreviewFA03">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Preview Berita Acara SDI PDF
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnSahkanFA03">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Konfirmasi & Sahkan Rekomendasi Walidata
+        </button>
+      </div>
+    </section>
+
+    <!-- Banner Dossier Berkas Hulu (F.A01) & Report Hasil Asesmen Analis (F.A02) -->
+    <section style="background:#ffffff; border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:1.25rem 1.5rem; margin-bottom:1.5rem; box-shadow:0 4px 16px rgba(15,23,42,0.04);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem; border-bottom:1px solid #f1f5f9; padding-bottom:0.75rem;">
+        <div style="display:flex; align-items:center; gap:0.65rem;">
+          <span style="font-size:1.3rem;">📂</span>
+          <div>
+            <h3 style="font-size:0.95rem; font-weight:800; color:#0f172a; margin:0;">
+              Dossier Berkas Hulu (F.A01) & Report Hasil Asesmen Analis (F.A02)
+            </h3>
+            <p style="font-size:0.76rem; color:#64748b; margin-top:0.15rem;">
+              Dokumen referensi resmi dari tahap Hulu dan Tengah sebagai dasar acuan Walidata Statistik dalam menelaah Kamus Data SDI.
+            </p>
+          </div>
+        </div>
+        <span class="chip chip-blue" style="font-size:0.75rem; font-weight:700;">
+          ✓ 4 Dokumen Ter-Inspeksi & Syarat Lengkap
+        </span>
+      </div>
+
+      <!-- Grid List Dokumen Referensi Walidata -->
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:1rem;">
+        
+        <!-- File 1: Report Asesmen FA02 -->
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.85rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.4rem;">
+              <span style="font-size:1.2rem;">📑</span>
+              <span class="badge badge-emerald" style="font-size:0.68rem;">Skor 86.5/100</span>
+            </div>
+            <strong style="font-size:0.82rem; color:#0f172a; display:block; line-height:1.3;">
+              Berita-Acara-Asesmen-FA02-TTE.pdf
+            </strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Report Hasil Asesmen Analis SPBE &bull; TTE Kabid &bull; Kuadran Strategic
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-xs" style="margin-top:0.75rem; width:100%; justify-content:center;" onclick="inspectDossierDoc('fa02_report')">
+            🔍 Inspeksi Report F.A02
+          </button>
+        </div>
+
+        <!-- File 2: Surat eOffice Permohonan OPD -->
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.85rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.4rem;">
+              <span style="font-size:1.2rem;">📄</span>
+              <span class="badge badge-blue" style="font-size:0.68rem;">Form F.A01</span>
+            </div>
+            <strong style="font-size:0.82rem; color:#0f172a; display:block; line-height:1.3;">
+              Surat-Pengantar-Permohonan-OPD.pdf
+            </strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Surat eOffice Permohonan &bull; Reg: REG-20261006-0042 &bull; 1.2 MB
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-xs" style="margin-top:0.75rem; width:100%; justify-content:center;" onclick="inspectDossierDoc('surat_opd')">
+            🔍 Inspeksi Surat eOffice
+          </button>
+        </div>
+
+        <!-- File 3: KAK Form F.P01 -->
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.85rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.4rem;">
+              <span style="font-size:1.2rem;">📘</span>
+              <span class="badge badge-indigo" style="font-size:0.68rem;">Form F.P01</span>
+            </div>
+            <strong style="font-size:0.82rem; color:#0f172a; display:block; line-height:1.3;">
+              KAK-Kerangka-Acuan-Kerja-2026.pdf
+            </strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Dokumen KAK Permohonan OPD &bull; Bab I-IV &bull; MinIO Stored &bull; 4.2 MB
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-xs" style="margin-top:0.75rem; width:100%; justify-content:center;" onclick="inspectDossierDoc('kak_doc')">
+            🔍 Inspeksi KAK F.P01
+          </button>
+        </div>
+
+        <!-- File 4: Clearance SOP Ortala Setda -->
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.85rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.4rem;">
+              <span style="font-size:1.2rem;">📋</span>
+              <span class="badge badge-amber" style="font-size:0.68rem;">Gate 1 Valid</span>
+            </div>
+            <strong style="font-size:0.82rem; color:#0f172a; display:block; line-height:1.3;">
+              Surat-Rekomendasi-SOP-Ortala.pdf
+            </strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Clearance Bagian Organisasi Setda &bull; Peta Proses Bisnis &bull; 890 KB
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-xs" style="margin-top:0.75rem; width:100%; justify-content:center;" onclick="inspectDossierDoc('sop_ortala')">
+            🔍 Inspeksi SOP Ortala
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Navigation Pills / Step Switcher -->
+    <div class="sdi-nav-pill-group">
+      <button type="button" class="sdi-nav-pill active" data-pane="pane-kamus">
+        <span>📊</span> 1. Validasi Kamus Data & Standar Data
+      </button>
+      <button type="button" class="sdi-nav-pill" data-pane="pane-bagipakai">
+        <span>🔗</span> 2. Skema Bagi Pakai & Interoperabilitas SPLP
+      </button>
+      <button type="button" class="sdi-nav-pill" data-pane="pane-walidata">
+        <span>✍️</span> 3. Konfirmasi & Pengesahan Walidata Daerah
+      </button>
+    </div>
+
+    <!-- PANE 1: VALIDASI KAMUS DATA & STANDAR DATA -->
+    <section class="sdi-pane active" id="pane-kamus">
+      <div class="wb-grid">
+        <div class="wb-col-left">
+
+          <!-- Card Kamus Data & Standar Data -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Validasi Kamus Data & Standar Data Terpadu</h2>
+                <p class="panel-subtitle">Penelaahan kepatuhan elemen variabel data terhadap Perwal Satu Data Jogja dan Kode Referensi Induk Pemkot.</p>
+              </div>
+              <span class="chip chip-blue" style="font-weight:700;">Walidata Audit Grid</span>
+            </div>
+
+            <div class="panel-body">
+              
+              <!-- Toolbar Filter & Action -->
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; background:#f8fafc; padding:0.75rem 1rem; border-radius:var(--radius-sm); border:1px solid var(--border-subtle); flex-wrap:wrap; gap:0.6rem;">
+                <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                  <input type="text" id="sdiSearchInput" placeholder="Cari nama variabel / deskripsi..." class="form-input" style="width:220px; font-size:0.8rem; padding:0.4rem 0.65rem;">
+                  <select id="sdiFilterProdusen" class="form-select" style="width:160px; font-size:0.8rem; padding:0.4rem 0.65rem;">
+                    <option value="all">Semua Produsen Data</option>
+                    <option value="dukcapil">Dukcapil</option>
+                    <option value="bpkad">BPKAD</option>
+                    <option value="bkpsdm">BKPSDM</option>
+                    <option value="bappeda">Bappeda GIS</option>
+                  </select>
+                </div>
+
+                <div style="display:flex; gap:0.5rem;">
+                  <button type="button" class="btn btn-outline btn-xs" id="btnOpenCatalogModal" style="background:#eff6ff; border-color:#93c5fd; color:#1d4ed8; font-weight:700;">
+                    📦 Impor dari Katalog Master Pemkot
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-xs" id="btnAddMetaElem">
+                    + Tambah Variabel Manual
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tabel Kamus Data Elemen SDI -->
+              <div class="table-responsive">
+                <table class="data-table meta-table" style="font-size:0.82rem;" id="sdiMainTable">
+                  <thead>
+                    <tr>
+                      <th style="width:18%;">Elemen Data</th>
+                      <th style="width:12%;">Tipe & Format</th>
+                      <th>Definisi Operasional Baku</th>
+                      <th style="width:16%;">PDP (UU 27/2022)</th>
+                      <th style="width:17%;">Kode Referensi Induk</th>
+                      <th style="width:17%;">Uji 4 Prinsip SDI</th>
+                      <th style="width:10%; text-align:center;">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sdiTableBody">
+                    <tr>
+                      <td>
+                        <strong>nik_warga</strong>
+                        <div class="text-xs text-muted">Identitas Penduduk</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(16)</span></td>
+                      <td>Nomor Induk Kependudukan 16 digit terverifikasi Ditjen Dukcapil</td>
+                      <td><span class="pdp-tag sensitif">Data Sensitif</span></td>
+                      <td>Master Dukcapil (JSS Core)</td>
+                      <td>
+                        <span class="prinsip-tag pass">✓ Standar</span>
+                        <span class="prinsip-tag pass">✓ Meta</span>
+                        <span class="prinsip-tag pass">✓ Interop</span>
+                        <span class="prinsip-tag pass">✓ Ref</span>
+                      </td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>kode_kemantren</strong>
+                        <div class="text-xs text-muted">Wilayah Administrasi</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(10)</span></td>
+                      <td>Kode Wilayah Administrasi 14 Kemantren se-Kota Yogyakarta</td>
+                      <td><span class="pdp-tag publik">Data Publik</span></td>
+                      <td>Master Wilayah Bappeda</td>
+                      <td>
+                        <span class="prinsip-tag pass">✓ Standar</span>
+                        <span class="prinsip-tag pass">✓ Meta</span>
+                        <span class="prinsip-tag pass">✓ Interop</span>
+                        <span class="prinsip-tag pass">✓ Ref</span>
+                      </td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>npwprd_wajib_pajak</strong>
+                        <div class="text-xs text-muted">Identitas Perpajakan</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(18)</span></td>
+                      <td>Nomor Pokok Wajib Pajak & Retribusi Daerah Kota Yogyakarta</td>
+                      <td><span class="pdp-tag umum">Data Spesifik</span></td>
+                      <td>Master Keuangan BPKAD</td>
+                      <td>
+                        <span class="prinsip-tag pass">✓ Standar</span>
+                        <span class="prinsip-tag pass">✓ Meta</span>
+                        <span class="prinsip-tag pass">✓ Interop</span>
+                        <span class="prinsip-tag pass">✓ Ref</span>
+                      </td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>nip_asn_pelaksana</strong>
+                        <div class="text-xs text-muted">Aparatur Pelaksana</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(18)</span></td>
+                      <td>Nomor Induk Pegawai ASN Pemkot Yogyakarta terverifikasi SIMPEG</td>
+                      <td><span class="pdp-tag umum">Data Internal</span></td>
+                      <td>Master Kepegawaian BKPSDM</td>
+                      <td>
+                        <span class="prinsip-tag pass">✓ Standar</span>
+                        <span class="prinsip-tag pass">✓ Meta</span>
+                        <span class="prinsip-tag pass">✓ Interop</span>
+                        <span class="prinsip-tag pass">✓ Ref</span>
+                      </td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>koordinat_gis_lat_long</strong>
+                        <div class="text-xs text-muted">Geospasial Layanan</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(50)</span></td>
+                      <td>Titik koordinat geospasial WGS84 lokasi transaksi/layanan masyarakat</td>
+                      <td><span class="pdp-tag publik">Data Publik</span></td>
+                      <td>Master GIS Bappeda Kota</td>
+                      <td>
+                        <span class="prinsip-tag pass">✓ Standar</span>
+                        <span class="prinsip-tag pass">✓ Meta</span>
+                        <span class="prinsip-tag pass">✓ Interop</span>
+                        <span class="prinsip-tag pass">✓ Ref</span>
+                      </td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Card Summary Status 4 Prinsip SDI -->
+        <div class="wb-col-right">
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Penilaian 4 Prinsip Satu Data (SDI)</h3>
+            </div>
+            <div class="panel-body">
+              
+              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.8rem;">
+                <div style="font-weight:800; color:#0f172a; margin-bottom:0.4rem;">4 Pilar Kepatuhan Perwal SDI:</div>
+                <ul style="padding-left:1.1rem; margin:0; line-height:1.6; color:#334155;">
+                  <li><strong style="color:#059669;">1. Standar Data:</strong> Definisi operasional & satuan baku terverifikasi.</li>
+                  <li><strong style="color:#059669;">2. Metadata Baku:</strong> Terdaftar dalam Katalog Metadata Daerah.</li>
+                  <li><strong style="color:#059669;">3. Interoperabilitas:</strong> Format REST API JSON/GeoJSON terbuka via SPLP.</li>
+                  <li><strong style="color:#059669;">4. Kode Referensi:</strong> Terhubung ke Kode Induk Pemkot (Dukcapil/BPKAD/BKPSDM).</li>
+                </ul>
+              </div>
+
+              <div class="summary-metric-card" style="text-align:center; background:#ecfdf5; border-color:#a7f3d0; margin-bottom:1rem;">
+                <div class="summary-metric-label" style="color:#065f46;">Tingkat Kepatuhan SDI</div>
+                <div style="font-size:2rem; font-weight:800; color:#059669; margin:0.2rem 0;">94.0%</div>
+                <span class="chip chip-green" style="font-size:0.75rem;">Sesuai Kaidah Satu Data</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PANE 2: SKEMA BAGI PAKAI & INTEROPERABILITAS SPLP -->
+    <section class="sdi-pane" id="pane-bagipakai">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Skema Bagi Pakai Data & Interoperabilitas SPLP</h2>
+            <p class="panel-subtitle">Protokol integrasi data antar-perangkat daerah dan penyedia saluran API terpadu.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <!-- Pemetaan Endpoint API Bagi Pakai -->
+          <div class="table-responsive" style="margin-bottom:1.5rem;">
+            <table class="data-table" style="font-size:0.83rem;">
+              <thead>
+                <tr>
+                  <th style="width:25%;">Endpoint API Bagi Pakai</th>
+                  <th style="width:10%;">Method</th>
+                  <th style="width:15%;">Frekuensi Synchronize</th>
+                  <th>Konsumen Data Definitif (Perangkat Daerah)</th>
+                  <th style="width:18%;">Protokol Keamanan</th>
+                  <th style="width:12%; text-align:center;">Status API</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code class="mono-text">/api/v1/rujukan/ketersediaan-bed</code></td>
+                  <td><span class="chip chip-blue" style="font-size:0.7rem; font-weight:800;">GET</span></td>
+                  <td>Real-time (5 Menit)</td>
+                  <td>Dashboard Pimpinan Wali Kota & Portal JSS Mobile</td>
+                  <td>OAuth 2.0 + TLS 1.3</td>
+                  <td style="text-align:center;"><span class="badge badge-emerald">Approved</span></td>
+                </tr>
+                <tr>
+                  <td><code class="mono-text">/api/v1/rujukan/create-ticket</code></td>
+                  <td><span class="chip chip-green" style="font-size:0.7rem; font-weight:800;">POST</span></td>
+                  <td>Transaksional Instan</td>
+                  <td>Sistem Faskes Primer & Rumah Sakit Rujukan</td>
+                  <td>JWT Bearer + NIK Masking</td>
+                  <td style="text-align:center;"><span class="badge badge-emerald">Approved</span></td>
+                </tr>
+                <tr>
+                  <td><code class="mono-text">/api/v1/rujukan/rekap-spm-bulanan</code></td>
+                  <td><span class="chip chip-blue" style="font-size:0.7rem; font-weight:800;">GET</span></td>
+                  <td>Bulanan (Scheduled Dump)</td>
+                  <td>Bagian Ortala Setda & Inspektorat Kota Yogya</td>
+                  <td>API Key + IP Whitelist</td>
+                  <td style="text-align:center;"><span class="badge badge-emerald">Approved</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mitigasi Risk Interoperabilitas -->
+          <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:1.25rem;">
+            <h4 style="font-size:0.92rem; font-weight:800; color:#0f172a; margin-bottom:0.5rem;">🔒 Ketentuan Mitigasi Keamanan Data Bagi Pakai (UU 27/2022 PDP):</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; font-size:0.8rem;">
+              <div style="background:#ffffff; border:1px solid #e2e8f0; padding:0.85rem; border-radius:8px;">
+                <strong style="color:#0f172a; display:block; margin-bottom:0.25rem;">1. Rate Limiting & Throttling</strong>
+                Maksimal 120 request/menit per client IP untuk mencegah serangan DDoS pada API Gateway SPLP.
+              </div>
+              <div style="background:#ffffff; border:1px solid #e2e8f0; padding:0.85rem; border-radius:8px;">
+                <strong style="color:#0f172a; display:block; margin-bottom:0.25rem;">2. API Response Data Masking</strong>
+                Digit NIK warga disamarkan pada respon publik (<code class="mono-text">347101******0001</code>).
+              </div>
+              <div style="background:#ffffff; border:1px solid #e2e8f0; padding:0.85rem; border-radius:8px;">
+                <strong style="color:#0f172a; display:block; margin-bottom:0.25rem;">3. Immutable Audit Log</strong>
+                Seluruh aktivitas pertukaran data dicatat secara terenkripsi pada log audit Data Center Pemkot.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PANE 3: KONFIRMASI & PENGESAHAN WALIDATA DAERAH -->
+    <section class="sdi-pane" id="pane-walidata">
+      <div class="wb-grid">
+        <div class="wb-col-left">
+
+          <!-- Card Form Pengesahan Walidata -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Konfirmasi & Lembar Pengesahan Walidata Daerah</h2>
+                <p class="panel-subtitle">Hasil konfirmasi akhir kelayakan Kamus Data SDI oleh Seksi Data & Statistik Diskominfo.</p>
+              </div>
+            </div>
+            <div class="panel-body">
+
+              <div class="info-callout info-callout-success" style="margin-bottom:1.25rem;">
+                <div class="info-callout-icon">✓</div>
+                <div>
+                  <strong>Clearance Walidata Daerah Disetujui:</strong>
+                  <div class="text-xs" style="margin-top:0.25rem;">
+                    Seluruh elemen data usulan terbukti mematuhi 4 Prinsip Satu Data Indonesia, terintegrasi ke Kode Referensi Induk Pemkot, dan bebas dari duplikasi variabel.
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Nomor Rekomendasi Metadata SDI Resmi:</label>
+                <input type="text" class="form-input mono-text" value="BA-SDI/DKIS/X/2026/088" readonly style="background:#f8fafc; font-weight:700;">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Pejabat Walidata Statistik Penanggung Jawab:</label>
+                <input type="text" class="form-input" value="Rina Kusuma, S.Si (NIP. 198804152011012003) &bull; Penelaah Data Statistik" readonly style="background:#f8fafc;">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Catatan Rekomendasi & Catatan Harmonisasi Walidata:</label>
+                <textarea class="form-textarea" rows="4" style="background:#ffffff; font-size:0.83rem;">1. Seluruh variabel terbukti memenuhi 4 prinsip SDI dan telah terhubung ke Kode Referensi Induk Pemkot.
+2. Disetujui pembuatan endpoint API Bagi Pakai via SPLP Pemkot untuk feed data real-time ke Dashboard Wali Kota.
+3. Penanganan variabel NIK wajib mematuhi skema data masking dan enkripsi AES-256 pada database storage.</textarea>
+              </div>
+
+              <!-- Upload Berkas Resmi Walidata (MinIO Storage) -->
+              <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:1.15rem; margin-bottom:1.25rem;">
+                <h4 style="font-size:0.88rem; font-weight:800; color:#0f172a; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem;">
+                  <span>📁</span> Unggah Berkas Resmi Walidata Statistik (MinIO Object Storage):
+                </h4>
+                
+                <div class="evidence-list" style="margin-bottom:0.85rem;" id="walidataUploadedFiles">
+                  <div class="evidence-item" style="background:#ffffff;">
+                    <div class="evidence-icon">📄</div>
+                    <div class="evidence-info">
+                      <div class="evidence-name">Surat-Rekomendasi-Walidata-Statistik-2026.pdf</div>
+                      <div class="evidence-meta">Surat eOffice Bidang Statistik &bull; 1.4 MB &bull; TTE BSrE Sah &bull; MinIO Stored</div>
+                    </div>
+                    <div style="display:flex; gap:0.35rem;">
+                      <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Membuka preview Surat Rekomendasi Walidata Statistik...'); return false;">Preview</a>
+                      <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Mengunduh dokumen dari MinIO Object Storage...'); return false;">Unduh</a>
+                    </div>
+                  </div>
+
+                  <div class="evidence-item" style="background:#ffffff;">
+                    <div class="evidence-icon">📊</div>
+                    <div class="evidence-info">
+                      <div class="evidence-name">Matriks-Harmonisasi-Kamus-Data-SDI.xlsx</div>
+                      <div class="evidence-meta">Lampiran Hasil Hearing Statistik &bull; 850 KB &bull; MinIO Stored</div>
+                    </div>
+                    <div style="display:flex; gap:0.35rem;">
+                      <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Membuka preview Matriks Harmonisasi Kamus Data...'); return false;">Preview</a>
+                      <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Mengunduh dokumen dari MinIO Object Storage...'); return false;">Unduh</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dropzone Input Form -->
+                <div style="border:2px dashed #cbd5e1; border-radius:8px; padding:1rem; text-align:center; background:#ffffff;">
+                  <span style="font-size:1.5rem; display:block; margin-bottom:0.25rem;">📤</span>
+                  <div style="font-weight:700; font-size:0.82rem; color:#0f172a;">Unggah Surat / Lampiran Berkas Baru Walidata</div>
+                  <div class="text-xs text-muted" style="margin-top:0.15rem;">Format: PDF, XLSX, DOCX (Maksimal 15 MB per berkas)</div>
+                  <button type="button" class="btn btn-outline btn-xs" style="margin-top:0.6rem; font-weight:700;" onclick="uploadWalidataDoc()">
+                    + Pilih Berkas Surat Rekomendasi
+                  </button>
+                </div>
+              </div>
+
+              <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:var(--radius-sm); padding:0.85rem; margin-bottom:1.25rem; display:flex; align-items:center; gap:0.75rem;">
+                <span style="font-size:1.6rem;">🔒</span>
+                <div>
+                  <div style="font-weight:800; font-size:0.85rem; color:#065f46;">Tanda Tangan Elektronik Terverifikasi (BSrE BSSN)</div>
+                  <div style="font-size:0.74rem; color:#047857;">Sertifikat Digital Aktif &bull; ID: BSR-SDI-20261007-091</div>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-primary" style="width:100%; justify-content:center; padding:0.85rem; font-size:0.9rem; font-weight:800;" id="btnFinalSubmitFaseHilir">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Sahkan Rekomendasi Metadata SDI & Teruskan ke Seksi Perangkat Lunak &rarr;
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column Sidebar -->
+        <div class="wb-col-right">
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Dokumen Pendukung SDI</h3>
+            </div>
+            <div class="panel-body">
+              <div class="evidence-list">
+                <div class="evidence-item">
+                  <div class="evidence-icon">📄</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">Kamus-Data-Master-SDI-Yogya.pdf</div>
+                    <div class="evidence-meta">Perwal SDI Kota Yogyakarta &bull; 2.4 MB</div>
+                  </div>
+                  <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Mengunduh Perwal Kamus Data SDI...'); return false;">Unduh</a>
+                </div>
+
+                <div class="evidence-item">
+                  <div class="evidence-icon">📑</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">Berita-Acara-Asesmen-FA02-Valid.pdf</div>
+                    <div class="evidence-meta">Kelayakan SPBE Diskominfo &bull; Skor 86.5/100</div>
+                  </div>
+                  <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Membuka Berita Acara F.A02...'); return false;">Lihat</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL KATALOG MASTER METADATA & API REGISTRI PEMKOT -->
+  <div class="modal-overlay" id="modalMasterCatalog">
+    <div class="modal-container" style="max-width:800px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="pdf-tag" style="background:#2563eb;">KATALOG MASTER PEMKOT</div>
+          <strong style="font-size:0.95rem;">Registri Master Metadata & API Induk Pemkot Yogyakarta</strong>
+        </div>
+        <button type="button" class="btn btn-secondary btn-xs" id="btnCloseCatalogModal">&times; Tutup</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="text-sm text-muted" style="margin-bottom:1rem;">
+          Pilih elemen variabel standar yang sudah terdaftar dalam <strong>Katalog Master Metadata Daerah</strong> untuk diimpor langsung ke Kamus Data usulan:
+        </p>
+
+        <div class="catalog-item-row">
+          <div>
+            <strong style="font-size:0.88rem; color:#0f172a;">nik_warga &bull; NIK Kependudukan</strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Tipe: <span class="mono-text">VARCHAR(16)</span> &bull; Produsen: <strong>Dinas Dukcapil</strong> &bull; <span class="pdp-tag sensitif">Sensitif PDP</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-xs" onclick="importCatalogItem('nik_warga', 'VARCHAR(16)', 'NIK Kependudukan terverifikasi Ditjen Dukcapil', 'Data Sensitif', 'Master Dukcapil (SSO JSS Core)')">+ Impor Variabel</button>
+        </div>
+
+        <div class="catalog-item-row">
+          <div>
+            <strong style="font-size:0.88rem; color:#0f172a;">kode_kemantren &bull; Wilayah Kemantren</strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Tipe: <span class="mono-text">VARCHAR(10)</span> &bull; Produsen: <strong>Bappeda Kota</strong> &bull; <span class="pdp-tag publik">Data Publik</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-xs" onclick="importCatalogItem('kode_kemantren', 'VARCHAR(10)', 'Kode Wilayah Administrasi 14 Kemantren', 'Data Publik Instansi', 'Master Wilayah Bappeda')">+ Impor Variabel</button>
+        </div>
+
+        <div class="catalog-item-row">
+          <div>
+            <strong style="font-size:0.88rem; color:#0f172a;">npwprd_wajib_pajak &bull; Nomor Pajak & Retribusi</strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Tipe: <span class="mono-text">VARCHAR(18)</span> &bull; Produsen: <strong>BPKAD Kota</strong> &bull; <span class="pdp-tag umum">Data Spesifik</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-xs" onclick="importCatalogItem('npwprd_wajib_pajak', 'VARCHAR(18)', 'Nomor Pokok Wajib Pajak & Retribusi Daerah', 'Data Spesifik', 'Master Keuangan BPKAD')">+ Impor Variabel</button>
+        </div>
+
+        <div class="catalog-item-row">
+          <div>
+            <strong style="font-size:0.88rem; color:#0f172a;">nip_asn_pelaksana &bull; NIP Pegawai ASN</strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Tipe: <span class="mono-text">VARCHAR(18)</span> &bull; Produsen: <strong>BKPSDM Kota</strong> &bull; <span class="pdp-tag umum">Data Internal</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-xs" onclick="importCatalogItem('nip_asn_pelaksana', 'VARCHAR(18)', 'Nomor Induk Pegawai ASN Pemkot terverifikasi SIMPEG', 'Data Internal ASN', 'Master Kepegawaian BKPSDM')">+ Impor Variabel</button>
+        </div>
+
+        <div class="catalog-item-row">
+          <div>
+            <strong style="font-size:0.88rem; color:#0f172a;">koordinat_gis_lat_long &bull; Koordinat Geospasial</strong>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              Tipe: <span class="mono-text">VARCHAR(50)</span> &bull; Produsen: <strong>Bappeda GIS</strong> &bull; <span class="pdp-tag publik">Data Publik</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-xs" onclick="importCatalogItem('koordinat_gis_lat_long', 'VARCHAR(50)', 'Titik koordinat geospasial WGS84 lokasi transaksi', 'Data Publik Geospasial', 'Master GIS Bappeda Kota')">+ Impor Variabel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PREVIEW BERITA ACARA SDI RESMI KOP DISKOMINFO -->
+  <div class="modal-overlay" id="modalFA03Preview">
+    <div class="modal-container" style="max-width:850px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="pdf-tag">DOKUMEN RESMI PEMKOT</div>
+          <strong style="font-size:0.95rem;">Rekomendasi Standar Metadata Satu Data Indonesia (SDI)</strong>
+        </div>
+        <button type="button" class="btn btn-secondary btn-xs" id="btnCloseFA03Modal">&times; Tutup</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Paper Kop Surat Resmi -->
+        <div class="pdf-paper">
+          <div class="pdf-kop">
+            <div class="pdf-logo-box">🏛️</div>
+            <div class="pdf-kop-text">
+              <h2 class="pdf-kop-instansi">PEMERINTAH KOTA YOGYAKARTA</h2>
+              <h1 class="pdf-kop-dinas">DINAS KOMUNIKASI INFORMATIKA DAN PERSANDIAN</h1>
+              <p class="pdf-kop-alamat">Jl. Kenari No. 56 Kompleks Balai Kota Yogyakarta 55165 | Telp. (0274) 551230 | kominfo@jogjakota.go.id</p>
+            </div>
+          </div>
+
+          <div class="pdf-doc-title">
+            <h3>BERITA ACARA REKOMENDASI METADATA SATU DATA INDONESIA</h3>
+            <p>NOMOR: BA-SDI/DKIS/X/2026/088 &bull; WALIDATA DAERAH</p>
+          </div>
+
+          <div style="font-size:0.83rem; line-height:1.6; margin-bottom:1rem;">
+            Pada hari ini, <strong>Rabu tanggal Tujuh bulan Oktober tahun Dua Ribu Dua Puluh Enam</strong>, bertempat di Kantor Dinas Komunikasi Informatika dan Persandian Kota Yogyakarta, Walidata Statistik Daerah telah menyelesaikan penelaahan Kamus Data dan Kepatuhan 4 Prinsip Satu Data Indonesia sebagai berikut:
+          </div>
+
+          <table class="pdf-table">
+            <tr>
+              <td style="width:30%; font-weight:700;">Usulan Layanan SPBE</td>
+              <td>SIP-RUJUK (Sistem Pelayanan Rujukan Terpadu Daerah)</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Nomor Registrasi & Status</td>
+              <td><span class="mono-text">REG-20261006-0042</span> &bull; Form F.A02 Valid (Skor 86.5/100)</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Kepatuhan 4 Prinsip SDI</td>
+              <td><strong>Memenuhi Kaidah Walidata Statistik (94.0%)</strong> &bull; Standar Data, Metadata, Interoperabilitas, Kode Ref Induk</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Integrasi Platform Bagi Pakai</td>
+              <td>REST API Gateway SPLP & Feed Real-time Executive Dashboard Wali Kota</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Perlindungan Data Pribadi (PDP)</td>
+              <td>Kepatuhan UU No. 27/2022 PDP: Enkripsi DB AES-256 & Masking NIK Output API</td>
+            </tr>
+          </table>
+
+          <div style="margin-top:1.5rem; display:flex; justify-content:space-between; text-align:center; font-size:0.8rem;">
+            <div style="width:30%;">
+              <div>Disetujui Oleh,</div>
+              <strong>Walidata Statistik Daerah</strong>
+              <div style="margin:0.75rem 0; font-family:var(--font-mono); font-size:0.7rem; color:#059669; border:1px dashed #a7f3d0; padding:0.35rem; border-radius:4px;">
+                🔒 TTE BSrE Terverifikasi<br>
+                RINA KUSUMA, S.Si
+              </div>
+              <div>NIP. 198804152011012003</div>
+            </div>
+
+            <div style="width:30%;">
+              <div>Disusun Oleh,</div>
+              <strong>Tim Analis Data SPBE</strong>
+              <div style="margin:0.75rem 0; font-family:var(--font-mono); font-size:0.7rem; color:#059669; border:1px dashed #a7f3d0; padding:0.35rem; border-radius:4px;">
+                🔒 TTE BSrE Terverifikasi<br>
+                HENDRA WIJAYA, S.Kom
+              </div>
+              <div>NIP. 198407222009021001</div>
+            </div>
+
+            <div style="width:32%;">
+              <div>Mengetahui,</div>
+              <strong>Kepala Bidang TI & Komunikasi</strong>
+              <div style="margin:0.75rem 0; font-family:var(--font-mono); font-size:0.7rem; color:#059669; border:1px dashed #a7f3d0; padding:0.35rem; border-radius:4px;">
+                🔒 TTE BSrE Terverifikasi<br>
+                BAMBANG PRANOTO, M.Eng
+              </div>
+              <div>NIP. 197709122002121003</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnPrintFA03Doc" onclick="window.print();">
+          🖨️ Cetak / Unduh PDF
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnConfirmFromModal">
+          Sahkan Rekomendasi SDI & Teruskan ke Pengembang &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../tengah.js"></script>
+  <script>
+    // Function for Inspecting Upstream Dossiers & FA02 Report
+    function inspectDossierDoc(type) {
+      if (type === 'fa02_report') {
+        alert(
+          '📑 INSPEKSI REPORT HASIL TELAAH ANALIS (FORM F.A02):\n\n' +
+          '• Skor Kelayakan SPBE: 86.5 / 100 (Sangat Layak)\n' +
+          '• Klasifikasi Portofolio: KUADRAN STRATEGIC (Strategis)\n' +
+          '• Clearance Gate 1 Ortala: VALID (Surat Rekomendasi No. 060/1182/ORTALA/2026)\n' +
+          '• Rekomendasi Jalur Delivery: JALUR A (In-House Programmer Kominfo - 6 Sprint)\n' +
+          '• Catatan Hearing: Wajib memanfaatkan Single Sign-On (SSO) JSS & REST API Gateway SPLP.'
+        );
+      } else if (type === 'surat_opd') {
+        alert(
+          '📄 INSPEKSI SURAT eOFFICE PERMOHONAN OPD (FORM F.A01):\n\n' +
+          '• Nomor Registrasi: REG-20261006-0042\n' +
+          '• Nomor Surat eOffice: 000.8.3/1420/DINKES/2026\n' +
+          '• Instansi Pemohon: Dinas Kesehatan Kota Yogyakarta\n' +
+          '• Hal: Permohonan Pembangunan & Integrasi Sistem Informasi Rujukan Terpadu'
+        );
+      } else if (type === 'kak_doc') {
+        alert(
+          '📘 INSPEKSI KERANGKA ACUAN KERJA (KAK FORM F.P01):\n\n' +
+          '• Bab I Urgensi: Penanganan perlambatan rujukan antar-instansi & monitoring bed\n' +
+          '• Bab II Probis: Bagan alur pemangkasan durasi rujukan (4.5 jam -> 30 menit)\n' +
+          '• Bab III Target: Integrasi 18 Puskesmas, RSUD Jogja, PSC 119, dan Portal JSS'
+        );
+      } else if (type === 'sop_ortala') {
+        alert(
+          '📋 INSPEKSI REKOMENDASI SOP BAGIAN ORTALA SETDA:\n\n' +
+          '• Clearance Gate 1: VALID & TERVERIFIKASI\n' +
+          '• Nomor Rekomendasi: 060/1182/ORTALA/2026\n' +
+          '• Peta Proses Bisnis: Terdaftar resmi pada Peta Probis Pemerintah Daerah'
+        );
+      }
+    }
+
+    // Tab switcher logic specifically for SDI Pane Tabs
+    document.querySelectorAll('.sdi-nav-pill').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.sdi-nav-pill').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const targetId = this.getAttribute('data-pane');
+        document.querySelectorAll('.sdi-pane').forEach(pane => {
+          if (pane.id === targetId) pane.classList.add('active');
+          else pane.classList.remove('active');
+        });
+      });
+    });
+
+    // Functions for Master Metadata Catalog Modal
+    const modalCatalog = document.getElementById('modalMasterCatalog');
+    const btnOpenCatalog = document.getElementById('btnOpenCatalogModal');
+    const btnCloseCatalog = document.getElementById('btnCloseCatalogModal');
+
+    if (btnOpenCatalog && modalCatalog) {
+      btnOpenCatalog.addEventListener('click', () => modalCatalog.classList.add('active'));
+    }
+    if (btnCloseCatalog && modalCatalog) {
+      btnCloseCatalog.addEventListener('click', () => modalCatalog.classList.remove('active'));
+    }
+
+    function importCatalogItem(name, format, desc, pdp, ref) {
+      const body = document.getElementById('sdiTableBody');
+      if (!body) return;
+
+      let pdpClass = 'umum';
+      if (pdp.includes('Sensitif')) pdpClass = 'sensitif';
+      else if (pdp.includes('Publik')) pdpClass = 'publik';
+
+      const row = document.createElement('tr');
+      row.style.animation = 'fadeIn 0.3s ease';
+      row.innerHTML = `
+        <td>
+          <strong>${name}</strong>
+          <div class="text-xs text-muted">Diimpor dari Katalog Master</div>
+        </td>
+        <td><span class="mono-text">${format}</span></td>
+        <td>${desc}</td>
+        <td><span class="pdp-tag ${pdpClass}">${pdp}</span></td>
+        <td>${ref}</td>
+        <td>
+          <span class="prinsip-tag pass">✓ Standar</span>
+          <span class="prinsip-tag pass">✓ Meta</span>
+          <span class="prinsip-tag pass">✓ Interop</span>
+          <span class="prinsip-tag pass">✓ Ref</span>
+        </td>
+        <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+      `;
+      body.appendChild(row);
+
+      if (modalCatalog) modalCatalog.classList.remove('active');
+      alert(`✓ Variabel "${name}" berhasil diimpor dari Katalog Master Metadata Pemkot ke Kamus Data!`);
+    }
+
+    // Search and Filter logic inside Kamus Data Table
+    const sdiSearchInput = document.getElementById('sdiSearchInput');
+    const sdiFilterProdusen = document.getElementById('sdiFilterProdusen');
+    const sdiMainTable = document.getElementById('sdiMainTable');
+    if (sdiSearchInput && sdiMainTable) {
+      const rows = document.querySelectorAll('#sdiTableBody tr');
+      const filterTable = () => {
+        const query = sdiSearchInput.value.toLowerCase().trim();
+        const prod = sdiFilterProdusen ? sdiFilterProdusen.value.toLowerCase() : 'all';
+
+        rows.forEach(r => {
+          const text = r.textContent.toLowerCase();
+          const matchQuery = !query || text.includes(query);
+          const matchProd = (prod === 'all') || text.includes(prod);
+          r.style.display = (matchQuery && matchProd) ? '' : 'none';
+        });
+      };
+      sdiSearchInput.addEventListener('input', filterTable);
+      if (sdiFilterProdusen) sdiFilterProdusen.addEventListener('change', filterTable);
+    }
+
+    // Function for Uploading Walidata Official Document to MinIO
+    function uploadWalidataDoc() {
+      const fileName = prompt('Masukkan Nama Dokumen Surat / Lampiran Rekomendasi Walidata Statistik:', 'Surat-Clearance-Walidata-Statistik-2026.pdf');
+      if (!fileName) return;
+
+      const list = document.getElementById('walidataUploadedFiles');
+      if (!list) return;
+
+      const item = document.createElement('div');
+      item.className = 'evidence-item';
+      item.style.background = '#ffffff';
+      item.style.animation = 'fadeIn 0.3s ease';
+      item.innerHTML = `
+        <div class="evidence-icon">📄</div>
+        <div class="evidence-info">
+          <div class="evidence-name">${fileName}</div>
+          <div class="evidence-meta">Surat Bidang Statistik &bull; 1.1 MB &bull; TTE BSrE Sah &bull; MinIO Stored</div>
+        </div>
+        <div style="display:flex; gap:0.35rem;">
+          <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Membuka preview ${fileName}...'); return false;">Preview</a>
+          <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Mengunduh dari MinIO Storage...'); return false;">Unduh</a>
+        </div>
+      `;
+      list.appendChild(item);
+      alert(`✓ Dokumen "${fileName}" berhasil diunggah ke MinIO Object Storage Pemkot!`);
+    }
+  </script>
+</body>
+</html>

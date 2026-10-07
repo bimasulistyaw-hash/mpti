@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workspace Studio Inisiasi & Eksekusi Hearing Sesi - Diskominfo Kota Yogyakarta</title>
+  <meta name="description" content="Dedicated Full-Page Studio Inisiasi Sesi Hearing, Target Goal Checklist, Rich Text MS Word Notulensi, dan Validation Guard SPBE Pemkot Yogyakarta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../tengah.css">
+  <style>
+    /* Custom Styling for Full-Page Hearing Studio Workspace */
+    .studio-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem 1rem;
+    }
+
+    .studio-header {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .studio-step-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .goal-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 1rem 1.15rem;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s ease;
+    }
+    .goal-card.checked {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+    .goal-checkbox {
+      width: 20px;
+      height: 20px;
+      margin-top: 0.15rem;
+      cursor: pointer;
+      accent-color: #059669;
+    }
+
+    .attendee-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.75rem;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    /* Editor MS Word Style Toolbar Styling */
+    .editor-toolbar {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      padding: 0.45rem 0.65rem;
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .editor-btn {
+      padding: 0.28rem 0.6rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .editor-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+    .editor-content-box {
+      min-height: 220px;
+      max-height: 400px;
+      overflow-y: auto;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 0 0 8px 8px;
+      padding: 1rem 1.15rem;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: #0f172a;
+      outline: none;
+    }
+    .editor-content-box:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <a href="manajemen-hearing-opd.html" class="brand-link">
+          <div class="logo-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">Hearing Studio &bull; Dedicated Workspace</span>
+            <span class="brand-subtitle">Inisiasi, Penentuan Target Goal, & Eksekusi Risalah Rapat</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="manajemen-hearing-opd.html" class="btn btn-secondary btn-sm">
+          &larr; Batal & Kembali ke Pusat Hearing
+        </a>
+        <button type="button" class="btn btn-outline btn-sm" onclick="saveDraftSession()" style="background:#ffffff; font-weight:700;">
+          💾 Simpan Draf (Draft Status)
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="finalizeSession()" style="font-weight:800;" id="btnFinalizeHearing">
+          🔒 Sahkan & Terbitkan Final (TTE) &rarr;
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="studio-container">
+
+    <!-- Header Banner Usulan & Progress Tracker -->
+    <div class="studio-header">
+      <div>
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+          <span class="badge badge-amber" style="font-weight:800;">DRAFT IN PROGRESS</span>
+          <h1 style="font-size:1.15rem; font-weight:800; color:#0f172a; margin:0;">
+            SIP-RUJUK &bull; Form Inisiasi & Eksekusi Sesi Hearing #3
+          </h1>
+        </div>
+        <p class="text-xs text-muted">
+          Nomor Registrasi: <span class="mono-text">REG-20261006-0042</span> &bull; Pengusul: Dinas Kesehatan Kota Yogyakarta &bull; Analis: Hendra Wijaya, S.Kom
+        </p>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <div style="text-align:right;">
+          <div style="font-size:0.75rem; color:#64748b; font-weight:600;">Status Goal Rapat:</div>
+          <div style="font-size:0.92rem; font-weight:800; color:#d97706;" id="goalStatusText">2 dari 3 Goal Terpenuhi (67%)</div>
+        </div>
+        <div style="width:50px; height:50px; border-radius:50%; background:#fffbeb; border:3px solid #fde68a; display:flex; align-items:center; justify-content:center; font-weight:800; color:#d97706; font-size:0.85rem;" id="goalPercentCircle">
+          67%
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 1: INISIASI & PENJADWALAN RAPAT -->
+    <section class="studio-step-card">
+      <div style="border-bottom:1px solid #f1f5f9; padding-bottom:0.75rem; margin-bottom:1.25rem; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span class="step-number-tag">FASE 1 &bull; INISIASI & PENJADWALAN RAPAT</span>
+          <h2 style="font-size:1rem; font-weight:800; color:#0f172a; margin:0.2rem 0 0 0;">Informasi Utama Sesi Rapat Hearing</h2>
+        </div>
+        <span class="chip chip-blue">Langkah 1 dari 4</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+        <div>
+          <label class="form-label">Judul / Agendas Topik Sesi Hearing:</label>
+          <input type="text" id="hearingTitle" class="form-input" value="Hearing #3: Fine-Tuning Integrasi API Gateway & Security SPLP Pemkot" placeholder="Masukkan judul sesi hearing...">
+        </div>
+        <div>
+          <label class="form-label">Tanggal Rapat:</label>
+          <input type="date" id="hearingDate" class="form-input" value="2026-10-09">
+        </div>
+        <div>
+          <label class="form-label">Waktu Rapat:</label>
+          <input type="text" id="hearingTime" class="form-input" value="09:30 - 11:30 WIB" placeholder="HH:MM WIB">
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+        <div>
+          <label class="form-label">Tempat / Saluran Rapat:</label>
+          <input type="text" id="hearingLocation" class="form-input" value="Ruang Rapat Diskominfosan Lt. 2 & Zoom Teleconference">
+        </div>
+        <div>
+          <label class="form-label">Status Target Hearing:</label>
+          <select id="hearingOutcomeTarget" class="form-select" style="font-weight:700;">
+            <option value="✓ Clearance Approved (Final)">✓ Clearance Approved (Final)</option>
+            <option value="✓ Approved w/ Action Items" selected>✓ Approved w/ Action Items</option>
+            <option value="⏳ In Progress / Discussion">⏳ In Progress / Discussion</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- FASE 2: TIM & PIHAK YANG TERLIBAT -->
+    <section class="studio-step-card">
+      <div style="border-bottom:1px solid #f1f5f9; padding-bottom:0.75rem; margin-bottom:1.25rem; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span class="step-number-tag">FASE 2 &bull; PIHAK & PEJABAT YANG TERLIBAT</span>
+          <h2 style="font-size:1rem; font-weight:800; color:#0f172a; margin:0.2rem 0 0 0;">Daftar Tim Analis & OPD Pengusul yang Hadir</h2>
+        </div>
+        <span class="chip chip-blue">Langkah 2 dari 4</span>
+      </div>
+
+      <div style="margin-bottom:1rem;">
+        <label class="form-label">Daftar Peserta Rapat yang Terlibat:</label>
+        <div id="attendeeList" style="margin-bottom:0.75rem;">
+          <span class="attendee-chip">👤 Hendra Wijaya, S.Kom (Analis SPBE Kominfo) <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer; font-weight:bold; color:#ef4444;">&times;</button></span>
+          <span class="attendee-chip">👤 dr. Triana Rahmawati (Kabid Yankes Dinkes) <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer; font-weight:bold; color:#ef4444;">&times;</button></span>
+          <span class="attendee-chip">👤 Rina Kusuma, S.Si (Walidata Statistik) <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer; font-weight:bold; color:#ef4444;">&times;</button></span>
+          <span class="attendee-chip">👤 Tim CSIRT Cyber Kominfo <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer; font-weight:bold; color:#ef4444;">&times;</button></span>
+        </div>
+
+        <div style="display:flex; gap:0.5rem;">
+          <input type="text" id="inputNewAttendee" class="form-input" placeholder="Ketik nama & instansi peserta baru..." style="max-width:400px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addAttendee()">+ Tambah Peserta</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FASE 3: TARGET GOALS CHECKLIST (PREREQUISITE VALIDATION GUARD) -->
+    <section class="studio-step-card" style="border-left:5px solid #2563eb;">
+      <div style="border-bottom:1px solid #f1f5f9; padding-bottom:0.75rem; margin-bottom:1.25rem; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span class="step-number-tag">FASE 3 &bull; TARGET GOALS & SYARAT KESEPAKATAN RAPAT</span>
+          <h2 style="font-size:1rem; font-weight:800; color:#0f172a; margin:0.2rem 0 0 0;">Target Goal Rapat yang Wajib Disepakati (Mandatory Guard)</h2>
+        </div>
+        <span class="chip chip-amber" style="font-weight:800;">🔒 Syarat Wajib Pengesahan</span>
+      </div>
+
+      <div class="info-callout info-callout-warning" style="margin-bottom:1.25rem;">
+        <div class="info-callout-icon">💡</div>
+        <div>
+          <strong>Aturan Bisnis Pengesahan Hearing SPBE:</strong>
+          <div class="text-xs" style="margin-top:0.2rem;">
+            Sebelum Berita Acara Hearing dapat disahkan secara Final, seluruh **Target Goal Rapat** di bawah ini wajib ter-centang <strong>[✓] Disepakati</strong>. Jika belum 100% tercapai, gunakan tombol <strong>"Simpan Draf"</strong> untuk menyimpan kemajuan sementara.
+          </div>
+        </div>
+      </div>
+
+      <div id="goalChecklistContainer">
+
+        <!-- Goal 1 -->
+        <div class="goal-card checked" id="goalRow1">
+          <input type="checkbox" class="goal-checkbox" id="chkGoal1" checked onchange="updateGoalProgress()">
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:0.9rem; color:#0f172a;">Goal 1: Kesepakatan Rate Limiting API Gateway SPLP (120 req/menit)</strong>
+              <span class="badge badge-emerald" id="badgeGoal1">✓ Achieved (Terpenuhi)</span>
+            </div>
+            <p class="text-xs text-muted" style="margin-top:0.2rem;">
+              Dinkes menyetujui batasan trafik request 120 req/menit untuk mencegah beban berlebih pada infrastruktur Data Center Pemkot.
+            </p>
+          </div>
+        </div>
+
+        <!-- Goal 2 -->
+        <div class="goal-card checked" id="goalRow2">
+          <input type="checkbox" class="goal-checkbox" id="chkGoal2" checked onchange="updateGoalProgress()">
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:0.9rem; color:#0f172a;">Goal 2: Penerapan Data Masking NIK Warga Sesuai UU PDP 27/2022</strong>
+              <span class="badge badge-emerald" id="badgeGoal2">✓ Achieved (Terpenuhi)</span>
+            </div>
+            <p class="text-xs text-muted" style="margin-top:0.2rem;">
+              Payload NIK pada antarmuka publik disamarkan 6 digit tengah (contoh: <code>347101******0001</code>).
+            </p>
+          </div>
+        </div>
+
+        <!-- Goal 3 (Unchecked) -->
+        <div class="goal-card" id="goalRow3">
+          <input type="checkbox" class="goal-checkbox" id="chkGoal3" onchange="updateGoalProgress()">
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:0.9rem; color:#0f172a;">Goal 3: Pengesahan Matriks Kamus Data SDI oleh Walidata Statistik</strong>
+              <span class="badge badge-amber" id="badgeGoal3">⏳ Pending Agreement</span>
+            </div>
+            <p class="text-xs text-muted" style="margin-top:0.2rem;">
+              Seksi Data & Statistik wajib menandatangani Berita Acara Harmonisasi Kamus Data SDI 18 variabel.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <button type="button" class="btn btn-outline btn-xs" style="margin-top:0.5rem; font-weight:700; background:#ffffff;" onclick="addNewGoalRow()">
+        + Tambah Target Goal Rapat Baru
+      </button>
+    </section>
+
+    <!-- FASE 4: RISALAH NOTULENSI RICH TEXT MS WORD & FOTO -->
+    <section class="studio-step-card">
+      <div style="border-bottom:1px solid #f1f5f9; padding-bottom:0.75rem; margin-bottom:1.25rem; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span class="step-number-tag">FASE 4 &bull; RISALAH NOTULENSI MS WORD & FOTO DOKUMENTASI</span>
+          <h2 style="font-size:1rem; font-weight:800; color:#0f172a; margin:0.2rem 0 0 0;">Pencatatan Hasil Kesepakatan & Upload Bukti Foto</h2>
+        </div>
+        <span class="chip chip-blue">Langkah 4 dari 4</span>
+      </div>
+
+      <!-- Editor WYSIWYG MS Word Toolbar -->
+      <div class="form-group">
+        <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Risalah Notulensi Rapat (WYSIWYG Editor Format Document MS Word):</span>
+          <span class="text-xs text-muted">Bisa Format Bold, List, Headings, & Gambar</span>
+        </label>
+
+        <div class="editor-toolbar">
+          <button type="button" class="editor-btn" onclick="execEditorCommand('bold')" title="Bold"><b>B</b> Bold</button>
+          <button type="button" class="editor-btn" onclick="execEditorCommand('italic')" title="Italic"><i>I</i> Italic</button>
+          <button type="button" class="editor-btn" onclick="execEditorCommand('underline')" title="Underline"><u>U</u> Underline</button>
+          <button type="button" class="editor-btn" onclick="execEditorCommand('strikeThrough')" title="Strikethrough"><s>S</s> Strike</button>
+          <span style="border-right:1px solid #cbd5e1; height:18px; margin:0 0.2rem;"></span>
+          <button type="button" class="editor-btn" onclick="execEditorCommand('insertUnorderedList')" title="Bullet List">• List Bullet</button>
+          <button type="button" class="editor-btn" onclick="execEditorCommand('insertOrderedList')" title="Numbered List">1. List Angka</button>
+          <span style="border-right:1px solid #cbd5e1; height:18px; margin:0 0.2rem;"></span>
+          <button type="button" class="editor-btn" onclick="execEditorCommand('formatBlock', 'H3')" title="Subheading">Sub-Heading</button>
+          <button type="button" class="editor-btn" onclick="execEditorCommand('formatBlock', 'P')" title="Paragraph">Normal Text</button>
+          <span style="border-right:1px solid #cbd5e1; height:18px; margin:0 0.2rem;"></span>
+          <button type="button" class="editor-btn" onclick="triggerEditorImageUpload()" style="background:#eff6ff; color:#1d4ed8; font-weight:700;">
+            🖼️ + Sisipkan Foto / Gambar Dokumentasi
+          </button>
+        </div>
+
+        <div id="notesRichCanvas" class="editor-content-box" contenteditable="true">
+          <p><b>A. Latar Belakang &amp; Tujuan Hearing Sesi #3:</b></p>
+          <p>Sesi hearing ketiga diselenggarakan untuk menyelaraskan spesifikasi keamanan pertukaran data REST API Gateway SPLP dan penetapan batas rate limiting sebelum dilakukan TTE pengesahan.</p>
+          <p><b>B. Kesepakatan Teknis Kunci:</b></p>
+          <ol>
+            <li><b>Keamanan Payload API:</b> Seluruh data sensitif kependudukan wajib melewati lapisan enkripsi TLS 1.3 dan masking NIK 6 digit tengah.</li>
+            <li><b>Kapasitas Server:</b> Monitoring log audit akan dijalankan secara <i>real-time</i> oleh tim CSIRT Kominfo.</li>
+          </ol>
+        </div>
+        <input type="file" id="studioImageInput" accept="image/*" style="display:none;" onchange="handleStudioImageSelect(event)">
+      </div>
+
+      <!-- Upload Foto Dokumentasi & Diagram Gallery -->
+      <div class="form-group" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:1rem;">
+        <label class="form-label" style="margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
+          <span>📷 Bukti Lampiran Foto Dokumentasi Rapat &amp; Diagram Arsitektur:</span>
+          <span class="text-xs text-muted">Format: PNG, JPG, WEBP (Max 5MB)</span>
+        </label>
+
+        <div id="studioPhotoGallery" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+          <div style="padding:0.4rem 0.75rem; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; font-size:0.78rem; color:#0f172a; display:flex; align-items:center; gap:0.4rem;">
+            <span>🖼️ Foto_Absensi_Rapat_Hearing3.png</span>
+            <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="this.parentElement.remove()">&times;</span>
+          </div>
+          <div style="padding:0.4rem 0.75rem; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; font-size:0.78rem; color:#0f172a; display:flex; align-items:center; gap:0.4rem;">
+            <span>📐 Sketsa_Arsitektur_API_SPLP.jpg</span>
+            <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="this.parentElement.remove()">&times;</span>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-outline btn-xs" style="background:#ffffff; font-weight:700;" onclick="triggerEditorImageUpload()">
+          📷 + Unggah / Pilih Foto Dokumentasi Baru
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tautkan Berkas PDF Berita Acara Resmi (MinIO Storage):</label>
+        <input type="text" id="pdfFileName" class="form-input mono-text" value="Berita-Acara-Hearing-03-Security.pdf">
+      </div>
+    </section>
+
+    <!-- BOTTOM ACTION BAR -->
+    <div style="background:#ffffff; border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:1.25rem 1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; box-shadow:var(--shadow-md);">
+      <div>
+        <div style="font-size:0.85rem; font-weight:800; color:#0f172a;">Pilihan Penyelesaian Sesi Hearing:</div>
+        <div class="text-xs text-muted" style="margin-top:0.15rem;">
+          Gunakan <strong>Simpan Draf</strong> jika rapat masih berlangsung. Pengesahan Final membutuhkan 100% Target Goal ter-centang.
+        </div>
+      </div>
+
+      <div style="display:flex; gap:0.75rem;">
+        <a href="manajemen-hearing-opd.html" class="btn btn-secondary">
+          Batal
+        </a>
+        <button type="button" class="btn btn-outline" style="font-weight:700; background:#ffffff;" onclick="saveDraftSession()">
+          💾 Simpan Draf (Draft)
+        </button>
+        <button type="button" class="btn btn-primary" style="font-weight:800; padding:0.75rem 1.5rem;" onclick="finalizeSession()">
+          🔒 Sahkan & Terbitkan Sesi Hearing Final (TTE) &rarr;
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="../tengah.js"></script>
+  <script>
+    // Rich Text Editor Commands (MS Word Style)
+    function execEditorCommand(command, value = null) {
+      document.execCommand(command, false, value);
+      const editor = document.getElementById('notesRichCanvas');
+      if (editor) editor.focus();
+    }
+
+    function triggerEditorImageUpload() {
+      const fileInput = document.getElementById('studioImageInput');
+      if (fileInput) fileInput.click();
+    }
+
+    function handleStudioImageSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const imgSrc = evt.target.result;
+        const imgTag = `<img src="${imgSrc}" alt="${file.name}" style="max-width:100%; border-radius:6px; margin:0.5rem 0; border:1px solid #cbd5e1;"><br>`;
+        document.execCommand('insertHTML', false, imgTag);
+
+        const gallery = document.getElementById('studioPhotoGallery');
+        if (gallery) {
+          const badge = document.createElement('div');
+          badge.style.cssText = 'padding:0.4rem 0.75rem; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; font-size:0.78rem; color:#0f172a; display:flex; align-items:center; gap:0.4rem; animation:fadeIn 0.3s ease;';
+          badge.innerHTML = `
+            <span>🖼️ ${file.name}</span>
+            <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="this.parentElement.remove()">&times;</span>
+          `;
+          gallery.appendChild(badge);
+        }
+        alert(`✓ Foto "${file.name}" berhasil diunggah & disisipkan ke risalah!`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Add new attendee dynamically
+    function addAttendee() {
+      const input = document.getElementById('inputNewAttendee');
+      const val = input ? input.value.trim() : '';
+      if (!val) return;
+
+      const list = document.getElementById('attendeeList');
+      if (list) {
+        const chip = document.createElement('span');
+        chip.className = 'attendee-chip';
+        chip.innerHTML = `👤 ${val} <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer; font-weight:bold; color:#ef4444;">&times;</button>`;
+        list.appendChild(chip);
+      }
+      input.value = '';
+    }
+
+    // Dynamic Goal Checklist Calculation & Guard
+    let totalGoals = 3;
+    let checkedGoals = 2;
+
+    function updateGoalProgress() {
+      const chk1 = document.getElementById('chkGoal1').checked;
+      const chk2 = document.getElementById('chkGoal2').checked;
+      const chk3 = document.getElementById('chkGoal3').checked;
+
+      // Update card styles & badges
+      toggleGoalRow('goalRow1', 'badgeGoal1', chk1);
+      toggleGoalRow('goalRow2', 'badgeGoal2', chk2);
+      toggleGoalRow('goalRow3', 'badgeGoal3', chk3);
+
+      let count = (chk1 ? 1 : 0) + (chk2 ? 1 : 0) + (chk3 ? 1 : 0);
+      const percent = Math.round((count / totalGoals) * 100);
+
+      document.getElementById('goalStatusText').innerText = `${count} dari ${totalGoals} Goal Terpenuhi (${percent}%)`;
+      document.getElementById('goalPercentCircle').innerText = `${percent}%`;
+
+      if (percent === 100) {
+        document.getElementById('goalPercentCircle').style.background = '#ecfdf5';
+        document.getElementById('goalPercentCircle').style.borderColor = '#a7f3d0';
+        document.getElementById('goalPercentCircle').style.color = '#059669';
+        document.getElementById('goalStatusText').style.color = '#059669';
+      } else {
+        document.getElementById('goalPercentCircle').style.background = '#fffbeb';
+        document.getElementById('goalPercentCircle').style.borderColor = '#fde68a';
+        document.getElementById('goalPercentCircle').style.color = '#d97706';
+        document.getElementById('goalStatusText').style.color = '#d97706';
+      }
+    }
+
+    function toggleGoalRow(rowId, badgeId, isChecked) {
+      const row = document.getElementById(rowId);
+      const badge = document.getElementById(badgeId);
+      if (!row || !badge) return;
+
+      if (isChecked) {
+        row.classList.add('checked');
+        badge.className = 'badge badge-emerald';
+        badge.innerText = '✓ Achieved (Terpenuhi)';
+      } else {
+        row.classList.remove('checked');
+        badge.className = 'badge badge-amber';
+        badge.innerText = '⏳ Pending Agreement';
+      }
+    }
+
+    function addNewGoalRow() {
+      const text = prompt('Masukkan Target Goal Rapat Baru yang Wajib Disepakati:', 'Goal 4: Penandatanganan Komitmen Dukungan Teknis Dinkes');
+      if (!text) return;
+
+      totalGoals++;
+      const container = document.getElementById('goalChecklistContainer');
+      const newId = `goalRow${totalGoals}`;
+      const chkId = `chkGoal${totalGoals}`;
+      const badgeId = `badgeGoal${totalGoals}`;
+
+      const card = document.createElement('div');
+      card.className = 'goal-card';
+      card.id = newId;
+      card.style.animation = 'fadeIn 0.3s ease';
+      card.innerHTML = `
+        <input type="checkbox" class="goal-checkbox" id="${chkId}" onchange="updateGoalProgress()">
+        <div style="flex:1;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.9rem; color:#0f172a;">${text}</strong>
+            <span class="badge badge-amber" id="${badgeId}">⏳ Pending Agreement</span>
+          </div>
+          <p class="text-xs text-muted" style="margin-top:0.2rem;">Target prasyarat hasil kesepakatan rapat.</p>
+        </div>
+      `;
+      container.appendChild(card);
+      updateGoalProgress();
+    }
+
+    // Save Draft Logic
+    function saveDraftSession() {
+      const title = document.getElementById('hearingTitle').value.trim();
+      alert(`💾 DRAF SESI HEARING DISIMPAN!\n\nSesi rapat "${title}" berhasil disimpan sebagai DRAF SEMENTARA.\nAnda dapat melanjutkan pengisian notulensi dan pencapaian goal kapan saja.`);
+    }
+
+    // Finalize Session Guard
+    function finalizeSession() {
+      const chk1 = document.getElementById('chkGoal1').checked;
+      const chk2 = document.getElementById('chkGoal2').checked;
+      const chk3 = document.getElementById('chkGoal3').checked;
+
+      // GUARD CHECK: Are all goals checked?
+      if (!chk1 || !chk2 || !chk3) {
+        alert(
+          '⚠️ TIDAK DAPAT DISAHKAN KARENA TARGET GOAL BELUM TERPENUHI!\n\n' +
+          'Masih terdapat Target Goal Rapat yang BELUM DISAPAKATI [⏳ Pending Agreement].\n\n' +
+          '• Selesaikan diskusi rapat & centang seluruh checklist goal jika sudah disepakati.\n' +
+          '• Atau gunakan tombol "Simpan Draf (Draft)" jika rapat masih dalam proses.'
+        );
+        return;
+      }
+
+      const confirmed = confirm(
+        '🔒 PENGESAHAN FINAL SESI HEARING & TTE BSSN:\n\n' +
+        '100% Target Goal Rapat telah terpenuhi!\n\n' +
+        'Apakah Anda yakin ingin mengesahkan risalah notulensi ini secara elektronik (TTE BSrE) dan menerbitkan Berita Acara Rapat Sesi #3?'
+      );
+
+      if (confirmed) {
+        alert(
+          '🎉 SESI HEARING #3 BERHASIL DISAHKAN & DITERBITKAN!\n\n' +
+          '• Berita Acara Rapat telah ditandatangani TTE BSrE BSSN.\n' +
+          '• Log Sesi Hearing #3 otomatis diperbarui di Pusat Hearing OPD & Kertas Kerja F.A02.\n\n' +
+          'Mengarahkan kembali ke Pusat Hearing OPD...'
+        );
+        window.location.href = 'manajemen-hearing-opd.html?new_session_added=true';
+      }
+    }
+  </script>
+</body>
+</html>

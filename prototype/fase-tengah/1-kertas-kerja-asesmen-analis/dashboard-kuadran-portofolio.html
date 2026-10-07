@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Matriks 4 Kuadran McFarlan-Peppard SPBE - Diskominfo Kota Yogyakarta</title>
+  <meta name="description" content="Visualisasi Pemetaan Portofolio Strategis Seluruh Aplikasi SPBE Hasil Telaah Analisis Form F.A02 dalam Matriks 4 Kuadran McFarlan-Peppard Kota Yogyakarta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../tengah.css">
+  <style>
+    /* Styling Khusus Matriks 4 Kuadran */
+    .kuadran-container {
+      max-width: 1440px;
+      margin: 1.75rem auto 3.5rem;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    /* 4 Summary Metric Cards */
+    .quadrant-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 900px) {
+      .quadrant-stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .quad-stat-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow-xs);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition-fast);
+      cursor: pointer;
+    }
+    .quad-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .quad-stat-card.strategic { border-top: 4px solid #1d4ed8; }
+    .quad-stat-card.high-potential { border-top: 4px solid #d97706; }
+    .quad-stat-card.key-operational { border-top: 4px solid #059669; }
+    .quad-stat-card.support { border-top: 4px solid #64748b; }
+
+    .quad-stat-val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      margin-top: 0.35rem;
+    }
+    .quad-stat-label {
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    /* Grid Layout: Matriks Visual di Kiri, Detail Inspector di Kanan */
+    .matrix-layout-split {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (max-width: 1150px) {
+      .matrix-layout-split { grid-template-columns: 1fr; }
+    }
+
+    /* 2x2 Matrix Board */
+    .matrix-board-wrapper {
+      background: #ffffff;
+      border: 1.5px solid var(--border-medium);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .matrix-axis-y-label {
+      position: absolute;
+      left: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: #64748b;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .matrix-axis-x-label {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .matrix-2x2-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 290px 290px;
+      gap: 12px;
+      margin-left: 1.25rem;
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: var(--radius-lg);
+      position: relative;
+    }
+
+    .quad-cell {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      position: relative;
+      border: 1px solid var(--border-subtle);
+      transition: var(--transition-fast);
+      overflow: hidden;
+    }
+    .quad-cell:hover {
+      border-color: #cbd5e1;
+    }
+    .quad-cell.cell-strategic {
+      background: linear-gradient(135deg, #ffffff 60%, #eff6ff 100%);
+    }
+    .quad-cell.cell-high-pot {
+      background: linear-gradient(135deg, #ffffff 60%, #fffbeb 100%);
+    }
+    .quad-cell.cell-key-ops {
+      background: linear-gradient(135deg, #ffffff 60%, #ecfdf5 100%);
+    }
+    .quad-cell.cell-support {
+      background: linear-gradient(135deg, #ffffff 60%, #f8fafc 100%);
+    }
+
+    .quad-cell-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      border-bottom: 1px dashed var(--border-subtle);
+      padding-bottom: 0.5rem;
+    }
+    .quad-cell-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .quad-cell-desc {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Interactive Dot Marker */
+    .app-dot {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+    }
+    .app-dot:hover {
+      transform: scale(1.35);
+      z-index: 50;
+    }
+    .app-dot.active-selected {
+      transform: scale(1.4);
+      outline: 3px solid #0f172a;
+      z-index: 60;
+    }
+
+    .app-dot.pulse-new {
+      animation: pulseAnim 2s infinite;
+    }
+    @keyframes pulseAnim {
+      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+      70% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+    }
+
+    /* Colors per domain/quadrant */
+    .dot-blue { background: #2563eb; }
+    .dot-amber { background: #d97706; }
+    .dot-emerald { background: #059669; }
+    .dot-slate { background: #475569; }
+
+    /* Right Inspector Card */
+    .app-detail-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 1.85rem;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 4.85rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <a href="index.html" class="brand-link">
+          <div class="logo-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">MPSI SPBE &bull; Tim Analis Kominfo</span>
+            <span class="brand-subtitle">Matriks Portofolio 4 Kuadran McFarlan-Peppard</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Antrean Usulan OPD</a>
+        <a href="katalog-portofolio-pemkot.html" class="nav-link">Portofolio Pemkot</a>
+        <a href="kertas-kerja-fa02.html" class="nav-link">Kertas Kerja F.A02</a>
+        <a href="manajemen-hearing-opd.html" class="nav-link">Hearing OPD</a>
+        <a href="dashboard-kuadran-portofolio.html" class="nav-link active">Dashboard 4 Kuadran</a>
+        <a href="../2-standardisasi-metadata-kebutuhan/index.html" class="nav-link">Metadata SDI & Risiko (M.R01) &rarr;</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="kertas-kerja-fa02.html" class="btn btn-secondary btn-sm">
+          &larr; Kertas Kerja F.A02
+        </a>
+        <div class="user-badge">
+          <span class="user-badge-avatar">AN</span>
+          <div class="user-badge-text">
+            <span class="user-badge-name">Hendra Wijaya, S.Kom</span>
+            <span class="user-badge-role">Analis SPBE Diskominfo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="kuadran-container">
+
+    <!-- Alert Notifikasi Hasil Simpan Telaah Kertas Kerja F.A02 -->
+    <div id="saveSuccessAlert" style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:12px; padding:1.15rem 1.5rem; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1.25rem; box-shadow:0 4px 16px rgba(37,99,235,0.08);">
+      <div style="display:flex; align-items:flex-start; gap:0.85rem;">
+        <span style="font-size:1.8rem; line-height:1;">✨</span>
+        <div>
+          <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+            <strong style="font-size:0.95rem; color:#1e40af;">Hasil Telaah Form F.A02 Berhasil Disimpan & Diklasifikasikan!</strong>
+            <span class="chip chip-blue" style="font-size:0.72rem; font-weight:800;">SIP-RUJUK &bull; Kuadran STRATEGIC</span>
+          </div>
+          <p id="saveAlertBannerText" style="font-size:0.82rem; color:#1e3a8a; margin:0.35rem 0 0; line-height:1.45;">
+            Usulan dari <strong>Dinas Kesehatan</strong> telah resmi memperoleh skor kelayakan <strong>86.5 / 100 (Sangat Layak)</strong> dengan putusan <strong>JALUR A (In-House Diskominfo)</strong>. Titik aplikasi ditandai dengan lingkaran berdenyut (pulsing beacon dot) pada matriks di bawah.
+          </p>
+        </div>
+      </div>
+      <div style="display:flex; gap:0.5rem; align-items:center; flex-shrink:0;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('saveSuccessAlert').style.display='none'" style="font-size:0.75rem;">
+          Tutup
+        </button>
+      </div>
+    </div>
+
+    <!-- Page Header -->
+    <section class="page-header" style="margin-bottom:1.5rem;">
+      <div>
+        <div class="badge-row">
+          <span class="badge-soft blue">Dashboard Utama Analis SPBE</span>
+          <span class="badge-soft green">Matriks McFarlan-Peppard (Kepwal 108/2026)</span>
+        </div>
+        <h1 class="page-title">Dashboard Hasil Telaah & Portofolio 4 Kuadran SPBE</h1>
+        <p class="page-desc">
+          Pusat visualisasi agregat posisi strategis portofolio seluruh aplikasi se-Pemerintah Kota Yogyakarta hasil telaah Formulir F.A02. Menjadi rujukan utama penetapan prioritas pengadaan (In-House vs Vendor vs Replikasi) dan sinkronisasi menuju Metadata F.A03.
+        </p>
+      </div>
+
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline" id="btnOpenModalFA02Dashboard">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Preview Rekomtek F.A02 PDF
+        </button>
+        <a href="../2-standardisasi-metadata-kebutuhan/index.html" class="btn btn-primary">
+          Lanjut ke Metadata SDI & Risiko (M.R01) &rarr;
+        </a>
+      </div>
+    </section>
+
+    <!-- 4 Kuadran Stat Cards (Interactive Filter) -->
+    <div class="quadrant-stats-grid">
+      <div class="quad-stat-card strategic" onclick="filterByQuadrant('strategic')">
+        <div class="quad-stat-label" style="color:#1d4ed8;">1. Strategic (Strategis)</div>
+        <div class="quad-stat-val">4 <span style="font-size:0.95rem; font-weight:600; color:#64748b;">Aplikasi</span></div>
+        <p class="text-xs text-muted" style="margin-top:0.35rem;">Kritis masa depan & operasional saat ini. Prioritas In-House.</p>
+      </div>
+
+      <div class="quad-stat-card high-potential" onclick="filterByQuadrant('high_pot')">
+        <div class="quad-stat-label" style="color:#d97706;">2. High Potential (Inovasi)</div>
+        <div class="quad-stat-val">3 <span style="font-size:0.95rem; font-weight:600; color:#64748b;">Aplikasi</span></div>
+        <p class="text-xs text-muted" style="margin-top:0.35rem;">Peluang terobosan baru. Tahap pilot agile.</p>
+      </div>
+
+      <div class="quad-stat-card key-operational" onclick="filterByQuadrant('key_ops')">
+        <div class="quad-stat-label" style="color:#059669;">3. Key Operational (Vital)</div>
+        <div class="quad-stat-val">6 <span style="font-size:0.95rem; font-weight:600; color:#64748b;">Aplikasi</span></div>
+        <p class="text-xs text-muted" style="margin-top:0.35rem;">Fondasi operasional harian. Pemeliharaan ketat SLA 99.5%.</p>
+      </div>
+
+      <div class="quad-stat-card support" onclick="filterByQuadrant('support')">
+        <div class="quad-stat-label" style="color:#475569;">4. Support (Pendukung)</div>
+        <div class="quad-stat-val">5 <span style="font-size:0.95rem; font-weight:600; color:#64748b;">Aplikasi</span></div>
+        <p class="text-xs text-muted" style="margin-top:0.35rem;">Administrasi rutin. Disarankan modul terpadu JSS.</p>
+      </div>
+    </div>
+
+    <!-- Filter & Kontrol Toolbar Cepat -->
+    <div style="background:#ffffff; border:1px solid var(--border-medium); border-radius:12px; padding:0.85rem 1.25rem; margin-bottom:1.75rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; box-shadow:var(--shadow-xs);">
+      <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+        <span style="font-size:0.78rem; font-weight:700; color:#475569;">Filter Kuadran:</span>
+        <button type="button" class="btn btn-xs btn-primary filter-quad-btn active" onclick="filterByQuadrant('all', this)">Semua (18)</button>
+        <button type="button" class="btn btn-xs btn-outline filter-quad-btn" onclick="filterByQuadrant('strategic', this)">★ Strategic (4)</button>
+        <button type="button" class="btn btn-xs btn-outline filter-quad-btn" onclick="filterByQuadrant('high_pot', this)">⚡ High Potential (3)</button>
+        <button type="button" class="btn btn-xs btn-outline filter-quad-btn" onclick="filterByQuadrant('key_ops', this)">⚙️ Key Ops (6)</button>
+        <button type="button" class="btn btn-xs btn-outline filter-quad-btn" onclick="filterByQuadrant('support', this)">📁 Support (5)</button>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:0.75rem; flex-grow:1; max-width:450px;">
+        <select class="form-select form-select-sm" id="selectOpdFilter" onchange="filterByOpd(this.value)" style="font-size:0.78rem; padding:0.35rem 0.65rem;">
+          <option value="all">Semua Perangkat Daerah (OPD)</option>
+          <option value="Dinas Kesehatan">Dinas Kesehatan (2)</option>
+          <option value="Dinas Kominfosan">Dinas Kominfosan (3)</option>
+          <option value="RSUD Kota Yogyakarta">RSUD Wirosaban (1)</option>
+          <option value="BPKAD">BPKAD (1)</option>
+          <option value="Dinas Sosial">Dinsosnakertrans (1)</option>
+          <option value="DPMPTSP">DPMPTSP (1)</option>
+          <option value="Bagian Organisasi">Bagian Organisasi Setda (2)</option>
+        </select>
+        <input type="text" class="form-input form-input-sm" id="searchAppInput" placeholder="🔍 Cari aplikasi / singkatan..." oninput="searchAppDot(this.value)" style="font-size:0.78rem; padding:0.35rem 0.65rem;">
+      </div>
+    </div>
+
+    <!-- Main Split: 2x2 Interactive Matrix di Kiri, Detail Inspector di Kanan -->
+    <div class="matrix-layout-split">
+
+      <!-- SISI KIRI: MATRIKS 2x2 DENGAN TITIK-TITIK INTERAKTIF -->
+      <div class="matrix-board-wrapper">
+        <div class="matrix-axis-y-label">Dampak Operasional Saat Ini (Current Operational) &uarr;</div>
+
+        <div class="matrix-2x2-grid">
+
+          <!-- KUADRAN 1: STRATEGIC (KIRI ATAS: Operasional Tinggi, Nilai Strategis Tinggi) -->
+          <div class="quad-cell cell-strategic" id="cellStrategic">
+            <div class="quad-cell-header">
+              <span class="quad-cell-title" style="color:#1d4ed8;">★ STRATEGIC (STRATEGIS)</span>
+              <span class="badge badge-indigo">4 Sistem</span>
+            </div>
+            <div class="quad-cell-desc">Dampak operasional vital & arah strategis jangka panjang tinggi</div>
+
+            <!-- Titik 1: SIP-RUJUK (USULAN TERBARU HASIL TELAAN F.A02) -->
+            <div class="app-dot dot-blue pulse-new" style="top:95px; left:65px;" onclick="selectApp('sip_rujuk', this)" title="SIP-RUJUK (Dinkes) - Usulan Baru">
+              SR
+            </div>
+
+            <!-- Titik 2: JSS Core Super-App -->
+            <div class="app-dot dot-blue" style="top:150px; left:165px;" onclick="selectApp('jss_core', this)" title="JSS Core Super App (Kominfosan)">
+              JS
+            </div>
+
+            <!-- Titik 3: SI-BANSOS Terpadu -->
+            <div class="app-dot dot-blue" style="top:190px; left:80px;" onclick="selectApp('si_bansos', this)" title="SI-BANSOS (Dinsosnakertrans)">
+              SB
+            </div>
+
+            <!-- Titik 4: SPLP Gateway Daerah -->
+            <div class="app-dot dot-blue" style="top:120px; left:220px;" onclick="selectApp('splp_gateway', this)" title="SPLP Gateway Integrasi (Kominfosan)">
+              SP
+            </div>
+          </div>
+
+          <!-- KUADRAN 2: HIGH POTENTIAL (KANAN ATAS: Operasional Rendah, Nilai Strategis Tinggi) -->
+          <div class="quad-cell cell-high-pot" id="cellHighPot">
+            <div class="quad-cell-header">
+              <span class="quad-cell-title" style="color:#d97706;">⚡ HIGH POTENTIAL (INOVASI)</span>
+              <span class="badge badge-amber">3 Sistem</span>
+            </div>
+            <div class="quad-cell-desc">Eksplorasi inovasi baru, berpotensi mengubah lanskap layanan</div>
+
+            <!-- Titik 5: AI Aduan Warga Smart Bot -->
+            <div class="app-dot dot-amber" style="top:100px; left:60px;" onclick="selectApp('ai_bot', this)" title="AI Smart Bot Aduan Warga (Kominfosan)">
+              AI
+            </div>
+
+            <!-- Titik 6: IoT Sensor Malioboro -->
+            <div class="app-dot dot-amber" style="top:175px; left:140px;" onclick="selectApp('iot_malioboro', this)" title="IoT Sensor Udara Malioboro (DLH)">
+              IO
+            </div>
+
+            <!-- Titik 7: Digital Twin Pariwisata 3D -->
+            <div class="app-dot dot-amber" style="top:130px; left:210px;" onclick="selectApp('digital_twin', this)" title="Digital Twin Wisata Yogya (Dispar)">
+              DT
+            </div>
+          </div>
+
+          <!-- KUADRAN 3: KEY OPERATIONAL (KIRI BAWAH: Operasional Tinggi, Nilai Strategis Rendah) -->
+          <div class="quad-cell cell-key-ops" id="cellKeyOps">
+            <div class="quad-cell-header">
+              <span class="quad-cell-title" style="color:#059669;">⚙️ KEY OPERATIONAL (FONDASI)</span>
+              <span class="badge badge-emerald">6 Sistem</span>
+            </div>
+            <div class="quad-cell-desc">Kegagalan sistem melumpuhkan dinas, wajib SLA uptime 99.5%</div>
+
+            <!-- Titik 8: SIMPUS Puskesmas -->
+            <div class="app-dot dot-emerald" style="top:85px; left:70px;" onclick="selectApp('simpus', this)" title="SIMPUS Puskesmas (Dinkes)">
+              SM
+            </div>
+
+            <!-- Titik 9: SIMRS RSUD Jogja -->
+            <div class="app-dot dot-emerald" style="top:150px; left:60px;" onclick="selectApp('simrs', this)" title="SIMRS RSUD Wirosaban">
+              RS
+            </div>
+
+            <!-- Titik 10: e-Presensi ASN Pemkot -->
+            <div class="app-dot dot-emerald" style="top:110px; left:160px;" onclick="selectApp('e_presensi', this)" title="e-Presensi ASN Mobile (BKPSDM)">
+              EP
+            </div>
+
+            <!-- Titik 11: SIPKD Keuangan BPKAD -->
+            <div class="app-dot dot-emerald" style="top:190px; left:140px;" onclick="selectApp('sipkd', this)" title="SIPKD Penatausahaan (BPKAD)">
+              KD
+            </div>
+
+            <!-- Titik 12: SimPATIK Perizinan DPMPTSP -->
+            <div class="app-dot dot-emerald" style="top:90px; left:230px;" onclick="selectApp('simpatik', this)" title="SimPATIK Izin Usaha (DPMPTSP)">
+              PT
+            </div>
+
+            <!-- Titik 13: e-Disposisi Surat Setda -->
+            <div class="app-dot dot-emerald" style="top:195px; left:220px;" onclick="selectApp('e_disposisi', this)" title="E-Disposisi Surat (Bagian Ortala)">
+              ED
+            </div>
+          </div>
+
+          <!-- KUADRAN 4: SUPPORT (KANAN BAWAH: Operasional Rendah, Nilai Strategis Rendah) -->
+          <div class="quad-cell cell-support" id="cellSupport">
+            <div class="quad-cell-header">
+              <span class="quad-cell-title" style="color:#475569;">📁 SUPPORT (PENDUKUNG)</span>
+              <span class="badge badge-grey">5 Sistem</span>
+            </div>
+            <div class="quad-cell-desc">Membantu administrasi internal rutin, tidak berdampak SPM</div>
+
+            <!-- Titik 14: SI-Buku Tamu OPD -->
+            <div class="app-dot dot-slate" style="top:90px; left:75px;" onclick="selectApp('buku_tamu', this)" title="SI-Buku Tamu OPD (Inspektorat)">
+              BT
+            </div>
+
+            <!-- Titik 15: SI-Arsip Statis -->
+            <div class="app-dot dot-slate" style="top:165px; left:90px;" onclick="selectApp('arsip_statis', this)" title="SI-Arsip Statis (Dispusip)">
+              AS
+            </div>
+
+            <!-- Titik 16: Peminjaman Ruang Rapat -->
+            <div class="app-dot dot-slate" style="top:110px; left:170px;" onclick="selectApp('pinjam_ruang', this)" title="SI-Pinjam Ruang Balai Kota (Bag Umum)">
+              PR
+            </div>
+
+            <!-- Titik 17: SI-Survey Kepuasan SKM -->
+            <div class="app-dot dot-slate" style="top:190px; left:180px;" onclick="selectApp('skm_survey', this)" title="Aplikasi SKM Survey (Ortala)">
+              SK
+            </div>
+
+            <!-- Titik 18: Pengadaan Barang Habis Pakai -->
+            <div class="app-dot dot-slate" style="top:140px; left:240px;" onclick="selectApp('atk_opd', this)" title="SI-ATK Habis Pakai (Bag Umum)">
+              AT
+            </div>
+          </div>
+
+        </div>
+
+        <div class="matrix-axis-x-label">Nilai Strategis Masa Depan (Future Strategic Value) &rarr;</div>
+
+        <!-- Legenda Titik -->
+        <div style="display:flex; justify-content:center; gap:1.5rem; margin-top:1.5rem; font-size:0.78rem; color:#475569;">
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <span style="width:12px; height:12px; border-radius:50%; background:#2563eb; display:inline-block;"></span>
+            <strong>Strategic (Prioritas In-House)</strong>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <span style="width:12px; height:12px; border-radius:50%; background:#d97706; display:inline-block;"></span>
+            <strong>High Potential (Inovasi Agile)</strong>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <span style="width:12px; height:12px; border-radius:50%; background:#059669; display:inline-block;"></span>
+            <strong>Key Operational (SLA Uptime)</strong>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <span style="width:12px; height:12px; border-radius:50%; background:#475569; display:inline-block;"></span>
+            <strong>Support (Konsolidasi JSS)</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- SISI KANAN: DETAIL INSPECTOR APLIKASI YANG DIKLIK -->
+      <aside class="app-detail-card" id="appDetailInspector">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; padding-bottom:0.75rem; border-bottom:1px solid #f1f5f9;">
+          <div>
+            <span class="chip chip-blue" id="detailKuadranBadge">KUADRAN: STRATEGIC</span>
+            <h2 style="font-size:1.2rem; font-weight:800; color:#0f172a; margin-top:0.4rem;" id="detailAppName">
+              SIP-RUJUK &bull; Rujukan Terpadu
+            </h2>
+            <div class="text-xs text-muted" id="detailOpdName">Dinas Kesehatan Kota Yogyakarta</div>
+          </div>
+          <span class="chip chip-green" id="detailStatusBadge" style="font-size:0.75rem;">Lolos Rekomtek (86.5%)</span>
+        </div>
+
+        <div style="margin-bottom:1.25rem;">
+          <div class="text-xs text-muted" style="font-weight:700;">Deskripsi Peran Strategis SPBE:</div>
+          <p style="font-size:0.83rem; color:#334155; line-height:1.55; margin-top:0.25rem;" id="detailDescription">
+            Sistem Informasi Pelayanan Rujukan Kesehatan Terpadu yang menghubungkan 18 Puskesmas FKTP secara real-time ke IGD & Poli Spesialis RSUD Kota Yogyakarta. Memangkas antrean darurat dan menyediakan keterbukaan ranjang rawat inap.
+          </p>
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:1rem; margin-bottom:1.25rem; font-size:0.8rem;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div>
+              <span class="text-muted" style="display:block; font-size:0.72rem;">No. Registrasi F.A01:</span>
+              <strong class="mono-text" id="detailNoReg">REG-20261006-0042</strong>
+            </div>
+            <div>
+              <span class="text-muted" style="display:block; font-size:0.72rem;">Surat eOffice:</span>
+              <strong class="mono-text" id="detailSurat">000.8.3/1420/DINKES/2026</strong>
+            </div>
+            <div>
+              <span class="text-muted" style="display:block; font-size:0.72rem;">Keputusan Jalur Delivery:</span>
+              <strong style="color:var(--primary);" id="detailJalur">Jalur A: In-House Kominfo</strong>
+            </div>
+            <div>
+              <span class="text-muted" style="display:block; font-size:0.72rem;">Target Pelaksanaan:</span>
+              <strong id="detailTarget">Sprint Q4 2026 (6 Minggu)</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label class="form-label">Rekomendasi Kebijakan Tim Analis Diskominfo:</label>
+          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:0.75rem; font-size:0.8rem; line-height:1.45;" id="detailRekomendasi">
+            Disetujui untuk dialirkan ke tahap <strong>Standardisasi Metadata & Kebutuhan Teknis (Form F.A03)</strong> bersama Walidata Statistik guna penyusunan kamus data dan integrasi API SPLP Pemkot.
+          </div>
+        </div>
+
+        <!-- Action Links -->
+        <div style="display:flex; flex-direction:column; gap:0.6rem;">
+          <a href="../2-standardisasi-metadata-kebutuhan/index.html" class="btn btn-primary" style="justify-content:center; width:100%;" id="btnGoToMetadata">
+            Lanjut ke Metadata SDI & Risiko (Form M.R01) &rarr;
+          </a>
+          <button type="button" class="btn btn-outline" style="justify-content:center; width:100%;" id="btnPreviewFA02FromDetail">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Preview Lembar Rekomtek F.A02 PDF
+          </button>
+          <a href="kertas-kerja-fa02.html" class="btn btn-secondary btn-sm" style="justify-content:center; width:100%;">
+            ✏️ Buka Kembali Kertas Kerja F.A02
+          </a>
+        </div>
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- ================= MODAL PREVIEW LEMBAR RESMI F.A02 PDF ================= -->
+  <div class="modal-overlay" id="modalFA02Dashboard">
+    <div class="modal-window">
+      <div class="modal-head">
+        <div>
+          <span class="chip chip-blue">Format Kepwal 108/2026 Lampiran II Hal 59</span>
+          <h3 style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-top:0.25rem;">Lembar Formulir F.A02: Hasil Analisis Kelayakan Aplikasi SPBE</h3>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseModalFA02Dash" style="background:none; border:none; font-size:1.6rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="background:#fff; padding:2.5rem; font-family:'Times New Roman', serif; color:#000; line-height:1.4; border-radius:4px; box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+          <!-- KOP Dinas Resmi -->
+          <div style="text-align:center; border-bottom:3px double #000; padding-bottom:0.75rem; margin-bottom:1.25rem;">
+            <h4 style="font-size:1.1rem; margin:0; font-weight:bold;">PEMERINTAH KOTA YOGYAKARTA</h4>
+            <h3 style="font-size:1.25rem; margin:0; font-weight:900;">DINAS KOMUNIKASI INFORMATIKA DAN PERSANDIAN</h3>
+            <p style="font-size:0.85rem; margin:0;">Jalan Kenari No. 56 Kompleks Balai Kota Yogyakarta 55165</p>
+          </div>
+
+          <div style="text-align:center; margin-bottom:1.5rem;">
+            <h5 style="margin:0; font-size:1rem; font-weight:bold;">FORMULIR F.A02</h5>
+            <h4 style="margin:0; text-decoration:underline; font-size:1.15rem; font-weight:bold;">SURAT REKOMENDASI HASIL ANALISIS KELAYAKAN TEKNIS APLIKASI SPBE</h4>
+            <p style="font-size:0.85rem; margin:0; font-style:italic;">Nomor: 000.8.3 / 0842 / REKOMTEK / 2026</p>
+          </div>
+
+          <table style="width:100%; border-collapse:collapse; font-size:0.85rem; margin-bottom:1.5rem;" border="1">
+            <tr style="background:#f1f5f9;">
+              <th colspan="2" style="text-align:left; padding:0.4rem 0.6rem;">I. DATA DASAR PERMOHONAN</th>
+            </tr>
+            <tr>
+              <td style="width:35%; padding:0.4rem 0.6rem;">Nomor Registrasi & Surat</td>
+              <td style="padding:0.4rem 0.6rem;" id="modalPdfRegSurat">REG-20261006-0042 &bull; Surat eOffice: 000.8.3/1420/DINKES/2026</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Perangkat Daerah Pemohon</td>
+              <td style="padding:0.4rem 0.6rem;" id="modalPdfOpd">Dinas Kesehatan Kota Yogyakarta</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Nama Usulan Sistem</td>
+              <td style="padding:0.4rem 0.6rem;" id="modalPdfAppName">Sistem Informasi Pelayanan Rujukan Kesehatan Terpadu (SIP-RUJUK)</td>
+            </tr>
+
+            <tr style="background:#f1f5f9;">
+              <th colspan="2" style="text-align:left; padding:0.4rem 0.6rem;">II. KESIMPULAN PENYARINGAN GATEKEEPER (3 PILAR ASESMEN F.A02)</th>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Pilar 1: Urgensi & Proses Bisnis</td>
+              <td style="padding:0.4rem 0.6rem;"><strong>MEMENUHI SYARAT MUTLAK</strong> &bull; Masalah riil peningkatan mutu layanan publik & efisiensi kerja operasional. SOP Baku disahkan Bagian Ortala Setda (Gate 1).</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Pilar 2: Redundansi Dini</td>
+              <td style="padding:0.4rem 0.6rem;"><strong>LOLOS (Diferensiasi Unik)</strong> &bull; Mengisi celah alur kerja spesifik daerah, tidak menduplikasi portofolio eksisting. Wajib interoperabilitas REST API & SSO Pemkot.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Pilar 3: Kelayakan Konseptual</td>
+              <td style="padding:0.4rem 0.6rem;"><strong>LAYAK DIBANGUN IN-HOUSE</strong> &bull; Kesiapan REST API OpenAPI & kamus data SDI terstruktur. Penanggung jawab teknis definitif Pranata Komputer internal OPD.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Skor Rubrik Kelayakan</td>
+              <td style="padding:0.4rem 0.6rem;"><strong id="modalPdfScore">86.5 / 100</strong> (Kategori: Sangat Layak Memperoleh Rekomtek).</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Kuadran McFarlan-Peppard</td>
+              <td style="padding:0.4rem 0.6rem;"><strong id="modalPdfKuadran">STRATEGIC (Strategis)</strong> &bull; Prioritas tinggi belanja sistem in-house daerah.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Keputusan Jalur Delivery</td>
+              <td style="padding:0.4rem 0.6rem;"><strong id="modalPdfJalur">JALUR A: In-House Programmer Kominfo</strong> (Kapasitas internal mencukupi selama 6 sprint, 0 biaya vendor).</td>
+            </tr>
+          </table>
+
+          <!-- TTD Kabid -->
+          <div style="display:flex; justify-content:space-between; margin-top:2rem; text-align:center; font-size:0.85rem;">
+            <div style="width:40%;">
+              <p>Tim Analis Kebijakan SPBE,</p>
+              <div style="height:60px; display:flex; align-items:center; justify-content:center;">
+                <span style="border:1px dashed #0284c7; background:#f0f9ff; color:#0369a1; padding:0.25rem 0.5rem; font-size:0.7rem;">Terverifikasi Kertas Kerja</span>
+              </div>
+              <p style="font-weight:bold; text-decoration:underline;">Hendra Wijaya, S.Kom</p>
+              <p>NIP. 19890815 201402 1 002</p>
+            </div>
+
+            <div style="width:45%;">
+              <p>Yogyakarta, 06 Oktober 2026</p>
+              <p style="font-weight:bold;">Kepala Bidang Pengembangan Aplikasi,</p>
+              <div style="height:60px; display:flex; align-items:center; justify-content:center;">
+                <span style="border:1px dashed #059669; background:#ecfdf5; color:#047857; padding:0.35rem 0.65rem; font-size:0.72rem; font-weight:bold;">
+                  Ditandatangani secara Elektronik<br>via TTE BSrE BSSN
+                </span>
+              </div>
+              <p style="font-weight:bold; text-decoration:underline;">Drs. Tri Haryanto, M.Eng</p>
+              <p>NIP. 19740520 199903 1 004</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" id="btnModalCloseFA02Dash">Tutup</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Cetak Dokumen F.A02 PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <span>MPSI SPBE Kota Yogyakarta &bull; Dashboard Pemetaan Matriks 4 Kuadran</span>
+      <span class="footer-links">
+        <a href="index.html">Antrean Analis</a> &bull;
+        <a href="kertas-kerja-fa02.html">Kertas Kerja F.A02</a> &bull;
+        <a href="../2-standardisasi-metadata-kebutuhan/index.html">Modul 2: Metadata SDI</a> &bull;
+        <a href="../../../Blueprint.md" target="_blank">Cetak Biru SPBE</a>
+      </span>
+    </div>
+  </footer>
+
+  <script src="../tengah.js"></script>
+  <script>
+    // Data Aplikasi dalam 4 Kuadran
+    const appData = {
+      sip_rujuk: {
+        name: "SIP-RUJUK • Rujukan Terpadu",
+        opd: "Dinas Kesehatan Kota Yogyakarta",
+        kuadran: "STRATEGIC",
+        kuadranClass: "chip-blue",
+        score: "Lolos Rekomtek (86.5%)",
+        desc: "Sistem Informasi Pelayanan Rujukan Kesehatan Terpadu yang menghubungkan 18 Puskesmas FKTP secara real-time ke IGD & Poli Spesialis RSUD Kota Yogyakarta. Memangkas antrean darurat dan menyediakan keterbukaan ranjang rawat inap.",
+        noReg: "REG-20261006-0042",
+        surat: "000.8.3/1420/DINKES/2026",
+        jalur: "Jalur A: In-House Kominfo",
+        target: "Sprint Q4 2026 (6 Minggu)",
+        rekomendasi: "Disetujui untuk dialirkan ke tahap Standardisasi Metadata & Kebutuhan Teknis (Form F.A03) bersama Walidata Statistik guna penyusunan kamus data dan integrasi API SPLP Pemkot.",
+        allowNext: true
+      },
+      jss_core: {
+        name: "Jogja Smart Service (JSS Core)",
+        opd: "Dinas Kominfosan Kota Yogyakarta",
+        kuadran: "STRATEGIC",
+        kuadranClass: "chip-blue",
+        score: "Operasional Induk (96.0%)",
+        desc: "Super-App Terpadu Layanan Publik Pemerintah Kota Yogyakarta. Pusat autentikasi Single Sign-On (SSO), satu akun warga, dan agregator lebih dari 120 layanan digital daerah.",
+        noReg: "MASTER-SPBE-0001",
+        surat: "555/001/KOMINFO/2022",
+        jalur: "Jalur A: In-House Core Team",
+        target: "Continuous Evolution",
+        rekomendasi: "Sistem utama daerah. Seluruh usulan baru wajib mengintegrasikan SSO dan akun warga ke JSS.",
+        allowNext: false
+      },
+      si_bansos: {
+        name: "SI-BANSOS • Bansos Terpadu",
+        opd: "Dinas Sosial Tenaga Kerja & Transmigrasi",
+        kuadran: "STRATEGIC",
+        kuadranClass: "chip-blue",
+        score: "Lolos Rekomtek (84.2%)",
+        desc: "Sistem Penyaluran & Verifikasi Bantuan Sosial Terpadu Warga Miskin Kota Yogyakarta berbasis Data Terpadu Kesejahteraan Sosial (DTKS) dan kuota APBD.",
+        noReg: "REG-20261004-0038",
+        surat: "460/0912/DINSOS/2026",
+        jalur: "Jalur A: In-House Kominfo",
+        target: "Sprint Q4 2026",
+        rekomendasi: "Integrasi mutlak dengan data kependudukan Dukcapil untuk memvalidasi NIK penerima manfaat.",
+        allowNext: true
+      },
+      splp_gateway: {
+        name: "SPLP Gateway Integrasi",
+        opd: "Dinas Kominfosan Kota Yogyakarta",
+        kuadran: "STRATEGIC",
+        kuadranClass: "chip-blue",
+        score: "Infrastruktur Inti (92.0%)",
+        desc: "Sistem Penghubung Layanan Pemerintah untuk orkestrasi pertukaran data antar-OPD dan bridging ke kementerian pusat.",
+        noReg: "MASTER-SPBE-0004",
+        surat: "555/042/KOMINFO/2023",
+        jalur: "Jalur A: In-House Kominfo",
+        target: "Continuous Maintenance",
+        rekomendasi: "Menjadi pipa transmisi data tunggal bagi seluruh API baru Pemkot Yogyakarta.",
+        allowNext: false
+      },
+      ai_bot: {
+        name: "AI Smart Bot Aduan Warga",
+        opd: "Dinas Kominfosan Kota Yogyakarta",
+        kuadran: "HIGH POTENTIAL",
+        kuadranClass: "chip-amber",
+        score: "Inovasi Pilot (78.0%)",
+        desc: "Eksperimen Generative AI untuk triase dan klasifikasi otomatis pesan aduan warga di kanal JSS dan WhatsApp Pemkot secara kontekstual.",
+        noReg: "REG-20260920-0021",
+        surat: "555/0812/KOMINFO/2026",
+        jalur: "Jalur B: Kolaborasi Kampus / Vendor",
+        target: "Proof of Concept (PoC) Q1 2027",
+        rekomendasi: "Tahap evaluasi akurasi respon dan pemenuhan etika AI sebelum dioperasikan penuh.",
+        allowNext: false
+      },
+      iot_malioboro: {
+        name: "IoT Sensor Udara Malioboro",
+        opd: "Dinas Lingkungan Hidup Kota Yogyakarta",
+        kuadran: "HIGH POTENTIAL",
+        kuadranClass: "chip-amber",
+        score: "Pilot Project (74.5%)",
+        desc: "Jaringan sensor kualitas udara realtime dan kebisingan di sepanjang kawasan pedestrian Malioboro terhubung ke dashboard pimpinan.",
+        noReg: "REG-20260815-0019",
+        surat: "660/0540/DLH/2026",
+        jalur: "Jalur B: Pengadaan Perangkat Vendor",
+        target: "Uji Coba 3 Titik",
+        rekomendasi: "Perlu integrasi API MQTT ke portal Satu Data Indonesia.",
+        allowNext: false
+      },
+      digital_twin: {
+        name: "Digital Twin Wisata 3D Yogya",
+        opd: "Dinas Pariwisata Kota Yogyakarta",
+        kuadran: "HIGH POTENTIAL",
+        kuadranClass: "chip-amber",
+        score: "Kajian Awal (71.0%)",
+        desc: "Pemodelan 3 dimensi interaktif cagar budaya kawasan Kotagede dan Kraton untuk promosi pariwisata virtual.",
+        noReg: "REG-20260710-0012",
+        surat: "556/0312/DISPAR/2026",
+        jalur: "Jalur B: Vendor Spesialis 3D",
+        target: "Kajian Teknis 2027",
+        rekomendasi: "Menunggu harmonisasi anggaran Bappeda.",
+        allowNext: false
+      },
+      simpus: {
+        name: "SIMPUS (Puskesmas)",
+        opd: "Dinas Kesehatan Kota Yogyakarta",
+        kuadran: "KEY OPERATIONAL",
+        kuadranClass: "chip-green",
+        score: "Operasional Aktif (91.5%)",
+        desc: "Sistem Manajemen Puskesmas untuk rekam medis elektronik, antrean loket, dan billing obat pada 18 Puskesmas induk se-Kota Yogyakarta.",
+        noReg: "MASTER-SPBE-0002",
+        surat: "000.8.3/0200/DINKES/2020",
+        jalur: "Jalur A: Pemeliharaan Rutin",
+        target: "SLA Uptime 99.8%",
+        rekomendasi: "Kunci operasional harian. SIP-RUJUK akan terhubung via API ke SIMPUS.",
+        allowNext: false
+      },
+      simrs: {
+        name: "SIMRS RSUD Kota Yogyakarta",
+        opd: "RSUD Kota Yogyakarta (Wirosaban)",
+        kuadran: "KEY OPERATIONAL",
+        kuadranClass: "chip-green",
+        score: "Operasional Rumah Sakit (94.0%)",
+        desc: "Sistem Informasi Manajemen Rumah Sakit untuk rawat jalan, rawat inap, farmasi, kasir, dan penunjang medis RSUD Jogja.",
+        noReg: "MASTER-SPBE-0003",
+        surat: "445/0110/RSUD/2019",
+        jalur: "Jalur B: Vendor SIMRS Bridging",
+        target: "Operasional 24/7",
+        rekomendasi: "Membuka endpoint REST API ketersediaan bed untuk dibaca oleh SIP-RUJUK.",
+        allowNext: false
+      },
+      e_presensi: {
+        name: "e-Presensi ASN Mobile",
+        opd: "Badan Kepegawaian & Pengembangan SDM",
+        kuadran: "KEY OPERATIONAL",
+        kuadranClass: "chip-green",
+        score: "Mandatori Pegawai (95.0%)",
+        desc: "Presensi digital ASN dan Non-ASN berbasis geotagging GPS dan verifikasi wajah biometrik.",
+        noReg: "MASTER-SPBE-0005",
+        surat: "800/0410/BKPSDM/2021",
+        jalur: "Jalur A: In-House Kominfo",
+        target: "Pemeliharaan Ketat",
+        rekomendasi: "Sangat vital bagi penghitungan TPP pegawai daerah.",
+        allowNext: false
+      },
+      sipkd: {
+        name: "SIPKD Keuangan BPKAD",
+        opd: "Badan Pengelolaan Keuangan & Aset Daerah",
+        kuadran: "KEY OPERATIONAL",
+        kuadranClass: "chip-green",
+        score: "Vital Keuangan (98.0%)",
+        desc: "Sistem Pengelolaan Keuangan Daerah untuk penatausahaan SP2D, SPJ, dan kas daerah.",
+        noReg: "MASTER-SPBE-0006",
+        surat: "900/0120/BPKAD/2018",
+        jalur: "Jalur B: Sistem Keuangan Terpusat",
+        target: "Audit BPK Berkala",
+        rekomendasi: "Terintegrasi dengan CMS BPD DIY.",
+        allowNext: false
+      },
+      simpatik: {
+        name: "SimPATIK Perizinan DPMPTSP",
+        opd: "Dinas Penanaman Modal & PTSP",
+        kuadran: "KEY OPERATIONAL",
+        kuadranClass: "chip-green",
+        score: "Pelayanan Publik (90.0%)",
+        desc: "Sistem pelayanan perizinan non-berusaha dan izin reklame bagi warga Kota Yogyakarta.",
+        noReg: "MASTER-SPBE-0007",
+        surat: "503/0215/DPMPTSP/2021",
+        jalur: "Jalur A: In-House Kominfo",
+        target: "Standar Layanan Maks. 3 Hari",
+        rekomendasi: "Telah terintegrasi dengan TTE Balai Sertifikasi Elektronik.",
+        allowNext: false
+      },
+      e_disposisi: {
+        name: "E-Disposisi Surat Setda",
+        opd: "Bagian Organisasi Sekretariat Daerah",
+        kuadran: "KEY OPERATIONAL",
+        kuadranClass: "chip-green",
+        score: "Tata Naskah Dinas (88.5%)",
+        desc: "Aplikasi lembar disposisi digital pimpinan Wali Kota, Sekda, dan Asisten Setda.",
+        noReg: "REG-20261002-0029",
+        surat: "000.1.2/0811/SETDA/2026",
+        jalur: "Jalur A: In-House Kominfo",
+        target: "Rilis Q4 2026",
+        rekomendasi: "Menunggu finalisasi integrasi ke aplikasi SRIKANDI Nasional.",
+        allowNext: false
+      },
+      buku_tamu: {
+        name: "SI-Buku Tamu OPD",
+        opd: "Inspektorat Kota Yogyakarta",
+        kuadran: "SUPPORT",
+        kuadranClass: "chip-grey",
+        score: "Layanan Dukung (65.0%)",
+        desc: "Pencatatan tamu kedinasan internal kantor inspektorat.",
+        noReg: "REG-20260601-0005",
+        surat: "700/0122/INSP/2026",
+        jalur: "Konsolidasi Modul JSS",
+        target: "Gunakan Modul Umum",
+        rekomendasi: "Dilarang pengadaan server khusus; disarankan menggunakan form buku tamu generik JSS.",
+        allowNext: false
+      },
+      arsip_statis: {
+        name: "SI-Arsip Statis",
+        opd: "Dinas Perpustakaan & Kearsipan",
+        kuadran: "SUPPORT",
+        kuadranClass: "chip-grey",
+        score: "Pencatatan Lokal (62.0%)",
+        desc: "Kataloging arsip bersejarah Kota Yogyakarta sebelum 1945.",
+        noReg: "REG-20260910-0015",
+        surat: "041/0719/DISPUSIP/2026",
+        jalur: "Replikasi SRIKANDI",
+        target: "Alihkan ke Cloud Nasional",
+        rekomendasi: "Dialihkan ke Sistem SRIKANDI Nasional ANRI.",
+        allowNext: false
+      },
+      pinjam_ruang: {
+        name: "SI-Pinjam Ruang Rapat Balai Kota",
+        opd: "Bagian Umum Protokol Setda",
+        kuadran: "SUPPORT",
+        kuadranClass: "chip-grey",
+        score: "Administrasi Internal (68.0%)",
+        desc: "Jadwal peminjaman ruang rapat Grha Pandawa dan Ruang Yudhistira.",
+        noReg: "REG-20260515-0008",
+        surat: "027/0410/UMUM/2026",
+        jalur: "Modul Intranet Pemkot",
+        target: "Intranet ASN",
+        rekomendasi: "Cukup diintegrasikan ke modul kalender intranet ASN.",
+        allowNext: false
+      },
+      skm_survey: {
+        name: "Aplikasi Survey SKM Warga",
+        opd: "Bagian Organisasi Setda",
+        kuadran: "SUPPORT",
+        kuadranClass: "chip-grey",
+        score: "Dukungan Rutin (70.0%)",
+        desc: "Survey Indeks Kepuasan Masyarakat (IKM) berkala per semester.",
+        noReg: "REG-20260410-0003",
+        surat: "060/0212/ORTALA/2026",
+        jalur: "Widget JSS Survey",
+        target: "Widget Portal",
+        rekomendasi: "Gunakan widget survey terpadu JSS.",
+        allowNext: false
+      },
+      atk_opd: {
+        name: "SI-ATK Barang Habis Pakai",
+        opd: "Bagian Umum Protokol Setda",
+        kuadran: "SUPPORT",
+        kuadranClass: "chip-grey",
+        score: "Inventaris Rutin (58.0%)",
+        desc: "Pencatatan stok kertas dan tinta printer internal.",
+        noReg: "REG-20260305-0001",
+        surat: "027/0115/UMUM/2026",
+        jalur: "Modul SIMDA Barang",
+        target: "Selesai",
+        rekomendasi: "Disarankan integrasi ke sistem persediaan BPKAD.",
+        allowNext: false
+      }
+    };
+
+    let currentSelectedAppKey = 'sip_rujuk';
+
+    function selectApp(key, dotEl) {
+      const app = appData[key];
+      if (!app) return;
+      currentSelectedAppKey = key;
+
+      // Update Inspector Panel
+      document.getElementById('detailAppName').innerText = app.name;
+      document.getElementById('detailOpdName').innerText = app.opd;
+      document.getElementById('detailKuadranBadge').innerText = `KUADRAN: ${app.kuadran}`;
+      document.getElementById('detailKuadranBadge').className = `chip ${app.kuadranClass}`;
+      document.getElementById('detailStatusBadge').innerText = app.score;
+      document.getElementById('detailDescription').innerText = app.desc;
+      document.getElementById('detailNoReg').innerText = app.noReg;
+      document.getElementById('detailSurat').innerText = app.surat;
+      document.getElementById('detailJalur').innerText = app.jalur;
+      document.getElementById('detailTarget').innerText = app.target;
+      document.getElementById('detailRekomendasi').innerHTML = app.rekomendasi;
+
+      // Update PDF Modal Content
+      const pdfReg = document.getElementById('modalPdfRegSurat');
+      if (pdfReg) pdfReg.innerHTML = `${app.noReg} &bull; Surat: ${app.surat}`;
+      const pdfOpd = document.getElementById('modalPdfOpd');
+      if (pdfOpd) pdfOpd.innerText = app.opd;
+      const pdfAppName = document.getElementById('modalPdfAppName');
+      if (pdfAppName) pdfAppName.innerText = app.name;
+      const pdfScore = document.getElementById('modalPdfScore');
+      if (pdfScore) pdfScore.innerText = `${app.score}`;
+      const pdfKuadran = document.getElementById('modalPdfKuadran');
+      if (pdfKuadran) pdfKuadran.innerText = `${app.kuadran}`;
+      const pdfJalur = document.getElementById('modalPdfJalur');
+      if (pdfJalur) pdfJalur.innerText = `${app.jalur}`;
+
+      const btnGo = document.getElementById('btnGoToMetadata');
+      if (app.allowNext) {
+        btnGo.style.display = 'flex';
+        btnGo.innerText = `Lanjut ke Metadata SDI & Risiko (Form M.R01) untuk ${app.name.split('•')[0]} →`;
+      } else {
+        btnGo.style.display = 'none';
+      }
+
+      // Highlight dot
+      document.querySelectorAll('.app-dot').forEach(d => d.classList.remove('active-selected'));
+      if (dotEl) {
+        dotEl.classList.add('active-selected');
+      } else {
+        const matchingDot = document.querySelector(`.app-dot[onclick*="'${key}'"]`);
+        if (matchingDot) matchingDot.classList.add('active-selected');
+      }
+    }
+
+    function filterByQuadrant(quadKey, btnEl) {
+      // Update Button state
+      if (btnEl) {
+        document.querySelectorAll('.filter-quad-btn').forEach(b => {
+          b.classList.remove('active', 'btn-primary');
+          b.classList.add('btn-outline');
+        });
+        btnEl.classList.add('active', 'btn-primary');
+        btnEl.classList.remove('btn-outline');
+      }
+
+      const cells = {
+        strategic: document.getElementById('cellStrategic'),
+        high_pot: document.getElementById('cellHighPot'),
+        key_ops: document.getElementById('cellKeyOps'),
+        support: document.getElementById('cellSupport')
+      };
+
+      if (quadKey === 'all') {
+        Object.values(cells).forEach(c => {
+          if (c) {
+            c.style.opacity = '1';
+            c.style.transform = 'scale(1)';
+          }
+        });
+      } else {
+        Object.entries(cells).forEach(([k, c]) => {
+          if (!c) return;
+          if (k === quadKey) {
+            c.style.opacity = '1';
+            c.style.transform = 'scale(1.01)';
+          } else {
+            c.style.opacity = '0.28';
+            c.style.transform = 'scale(0.99)';
+          }
+        });
+      }
+    }
+
+    function filterByOpd(opdName) {
+      document.querySelectorAll('.app-dot').forEach(dot => {
+        const onclickAttr = dot.getAttribute('onclick') || '';
+        const match = onclickAttr.match(/selectApp\('([^']+)'/);
+        if (match && match[1]) {
+          const appKey = match[1];
+          const app = appData[appKey];
+          if (!app) return;
+
+          if (opdName === 'all' || app.opd.toLowerCase().includes(opdName.toLowerCase())) {
+            dot.style.display = 'flex';
+            dot.style.opacity = '1';
+          } else {
+            dot.style.opacity = '0.2';
+          }
+        }
+      });
+    }
+
+    function searchAppDot(query) {
+      const q = query.toLowerCase().trim();
+      document.querySelectorAll('.app-dot').forEach(dot => {
+        const title = (dot.getAttribute('title') || '').toLowerCase();
+        const text = dot.textContent.toLowerCase();
+        if (!q || title.includes(q) || text.includes(q)) {
+          dot.style.display = 'flex';
+          dot.style.opacity = '1';
+        } else {
+          dot.style.opacity = '0.2';
+        }
+      });
+    }
+
+    // Modal PDF Logic
+    const modalFA02Dash = document.getElementById('modalFA02Dashboard');
+    const btnOpenDash = document.getElementById('btnOpenModalFA02Dashboard');
+    const btnPreviewDetail = document.getElementById('btnPreviewFA02FromDetail');
+    const btnCloseDash1 = document.getElementById('btnCloseModalFA02Dash');
+    const btnCloseDash2 = document.getElementById('btnModalCloseFA02Dash');
+
+    function openPdfModal() {
+      if (modalFA02Dash) modalFA02Dash.classList.add('active');
+    }
+    function closePdfModal() {
+      if (modalFA02Dash) modalFA02Dash.classList.remove('active');
+    }
+
+    if (btnOpenDash) btnOpenDash.addEventListener('click', openPdfModal);
+    if (btnPreviewDetail) btnPreviewDetail.addEventListener('click', openPdfModal);
+    if (btnCloseDash1) btnCloseDash1.addEventListener('click', closePdfModal);
+    if (btnCloseDash2) btnCloseDash2.addEventListener('click', closePdfModal);
+
+    // Initial setup on Load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check query parameter ?saved=
+      const urlParams = new URLSearchParams(window.location.search);
+      const isSaved = urlParams.get('saved');
+      const scoreParam = urlParams.get('score');
+      const kuadranParam = urlParams.get('kuadran');
+
+      const alertEl = document.getElementById('saveSuccessAlert');
+      if (alertEl) {
+        if (isSaved) {
+          alertEl.style.display = 'flex';
+          if (scoreParam && kuadranParam) {
+            const bannerText = document.getElementById('saveAlertBannerText');
+            if (bannerText) {
+              bannerText.innerHTML = `Hasil asesmen 3 Pilar untuk usulan <strong>[REG-20261006-0042]</strong> memperoleh skor kelayakan <strong>${scoreParam} / 100</strong> dan telah diproses secara otomatis ke dalam <strong>KUADRAN ${kuadranParam.toUpperCase()}</strong>. Titik usulan aktif ditandai dengan lingkaran berdenyut pada matriks.`;
+            }
+          }
+        }
+      }
+
+      // Default selection: SIP-RUJUK
+      selectApp('sip_rujuk', document.querySelector('.app-dot.pulse-new'));
+    });
+  </script>
+</body>
+</html>

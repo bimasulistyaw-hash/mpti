@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Pengampu SPBE - Dinas Kesehatan Kota Yogyakarta</title>
+  <meta name="description" content="Dashboard Minimalis Status Permohonan & Portofolio Aplikasi Rilis SPBE Dinas Kesehatan Kota Yogyakarta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <!-- Header Minimalis & Bersih -->
+  <header class="top-nav" id="topNav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <a href="dashboard-opd.html" class="brand-link">
+          <div class="logo-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">MPSI SPBE &bull; Pemkot Yogyakarta</span>
+            <span class="brand-subtitle">Dinas Kesehatan (Pengampu Sistem)</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Profile Chip -->
+        <div class="user-chip">
+          <span class="user-chip-avatar">DK</span>
+          <div class="user-chip-text">
+            <span class="user-chip-name">Budi Santoso, S.Kom</span>
+            <span class="user-chip-role">PIC Pengampu OPD</span>
+          </div>
+        </div>
+
+        <!-- 1 Single Prominent CTA Button -->
+        <a href="index.html" class="btn btn-primary" id="btnSingleAjukan">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Ajukan Permohonan Aplikasi Baru
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="page-container">
+
+    <!-- Header Section Ringkas & Langsung ke Poin -->
+    <section class="dash-headline">
+      <div>
+        <h1 class="dash-title">Status Portofolio & Pengajuan Aplikasi</h1>
+        <p class="dash-desc">Pantau status usulan yang sedang diajukan beserta tahapannya, dan daftar sistem yang sudah aktif beroperasi.</p>
+      </div>
+    </section>
+
+    <!-- 3 Angka Metrik Kunci (Langsung to the point) -->
+    <section class="stats-summary-row">
+      <div class="stat-box active-tab-box" data-target="tab-diajukan" id="statCardDiajukan">
+        <div class="stat-box-left">
+          <span class="stat-box-label">Permohonan Sedang Diajukan</span>
+          <div class="stat-box-num text-accent">2 <span class="stat-box-unit">Usulan</span></div>
+          <span class="stat-box-hint text-warning">&bull; 1 F.A02 Telaah &bull; 1 F.U06 QA Pentest</span>
+        </div>
+        <div class="stat-box-icon amber-bg">⏳</div>
+      </div>
+
+      <div class="stat-box" data-target="tab-rilis" id="statCardRilis">
+        <div class="stat-box-left">
+          <span class="stat-box-label">Aplikasi Sudah Rilis</span>
+          <div class="stat-box-num text-success">5 <span class="stat-box-unit">Sistem</span></div>
+          <span class="stat-box-hint text-success">✓ Aktif Beroperasi & BAST F.SR01 Sah</span>
+        </div>
+        <div class="stat-box-icon green-bg">🚀</div>
+      </div>
+
+      <div class="stat-box" data-target="tab-semua" id="statCardSemua">
+        <div class="stat-box-left">
+          <span class="stat-box-label">Total Portofolio OPD</span>
+          <div class="stat-box-num">7 <span class="stat-box-unit">Aplikasi</span></div>
+          <span class="stat-box-hint text-muted">Seluruh Usulan Historis Dinkes</span>
+        </div>
+        <div class="stat-box-icon blue-bg">📊</div>
+      </div>
+    </section>
+
+    <!-- Tab Filter Navigasi Minimalis -->
+    <div class="filter-tabs-bar">
+      <div class="tab-btn-group">
+        <button type="button" class="tab-btn active" data-tab="tab-diajukan">
+          Sedang Diajukan & Tahapannya <span class="tab-count-badge">2</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-rilis">
+          Sudah Rilis (Aktif Beroperasi) <span class="tab-count-badge green-badge">5</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-semua">
+          Semua Sistem & Usulan <span class="tab-count-badge grey-badge">7</span>
+        </button>
+      </div>
+
+      <div class="quick-search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Cari aplikasi atau nomor registrasi...">
+      </div>
+    </div>
+
+    <!-- ================= TAB 1: PERMOHONAN SEDANG DIAJUKAN & TAHAPANNYA ================= -->
+    <section class="tab-pane active" id="tab-diajukan">
+      
+      <!-- Card Usulan 1: SIP-RUJUK (Tahap 2: F.A02) -->
+      <article class="pipeline-card" data-search="sip-rujuk rujukan dinkes reg-20261006-0042">
+        <div class="pipeline-card-top">
+          <div class="pipeline-app-header">
+            <div class="app-avatar-box">🏥</div>
+            <div>
+              <div class="app-title-row">
+                <h2 class="pipeline-app-name">Sistem Informasi Pelayanan Rujukan Kesehatan Terpadu (SIP-RUJUK)</h2>
+                <span class="status-chip amber">Fase 2: Telaah Kelayakan (F.A02)</span>
+              </div>
+              <div class="pipeline-meta-info">
+                <span>No. Reg: <strong class="text-mono text-accent">REG-20261006-0042</strong></span> &bull;
+                <span>Surat eOffice: <strong class="text-mono">000.8.3/1420/DINKES/2026</strong></span> &bull;
+                <span>Diajukan: 06 Oktober 2026</span> &bull;
+                <span>PIC: Budi Santoso, S.Kom</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pipeline-card-cta">
+            <a href="index.html" class="btn btn-outline btn-sm">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Lihat Berkas F.A01
+            </a>
+          </div>
+        </div>
+
+        <!-- Visual Stepper "Sampai Mana Tahapannya" -->
+        <div class="stage-stepper-container">
+          <div class="stepper-track-label">
+            <span class="track-title">Visualisasi Tahapan SPBE (Sampai Mana Pengajuan Ini?):</span>
+            <span class="track-sla text-warning">Target SLA Verifikasi: &le; 3 Hari Kerja</span>
+          </div>
+
+          <div class="horizontal-stepper">
+            <!-- Step 1 -->
+            <div class="h-step done">
+              <div class="h-step-dot">✓</div>
+              <div class="h-step-label">
+                <span class="h-step-title">1. Intake F.A01</span>
+                <span class="h-step-sub">Selesai diajukan OPD</span>
+              </div>
+            </div>
+            <div class="h-step-line done"></div>
+
+            <!-- Step 2 (ACTIVE) -->
+            <div class="h-step current">
+              <div class="h-step-dot">2</div>
+              <div class="h-step-label">
+                <span class="h-step-title">2. Telaah F.A02</span>
+                <span class="h-step-sub">Kertas Kerja Kominfo</span>
+              </div>
+            </div>
+            <div class="h-step-line"></div>
+
+            <!-- Step 3 -->
+            <div class="h-step pending">
+              <div class="h-step-dot">3</div>
+              <div class="h-step-label">
+                <span class="h-step-title">3. Metadata F.A03</span>
+                <span class="h-step-sub">Kamus Data SDI</span>
+              </div>
+            </div>
+            <div class="h-step-line"></div>
+
+            <!-- Step 4 -->
+            <div class="h-step pending">
+              <div class="h-step-dot">4</div>
+              <div class="h-step-label">
+                <span class="h-step-title">4. Coding Dev</span>
+                <span class="h-step-sub">FI.01 In-House/KAK</span>
+              </div>
+            </div>
+            <div class="h-step-line"></div>
+
+            <!-- Step 5 -->
+            <div class="h-step pending">
+              <div class="h-step-dot">5</div>
+              <div class="h-step-label">
+                <span class="h-step-title">5. QA 5 Pilar</span>
+                <span class="h-step-sub">UAT & Pentest CSIRT</span>
+              </div>
+            </div>
+            <div class="h-step-line"></div>
+
+            <!-- Step 6 -->
+            <div class="h-step pending">
+              <div class="h-step-dot">6</div>
+              <div class="h-step-label">
+                <span class="h-step-title">6. Rilis BAST</span>
+                <span class="h-step-sub">F.SR01 & JSS Live</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-live-alert">
+            <span class="alert-icon">📍</span>
+            <div class="alert-text">
+              <strong>Posisi Berkas Saat Ini:</strong> Dalam antrean telaah Seksi Perencanaan Kominfo. Analis sedang menguji potensi duplikasi sistem terhadap katalog aplikasi eksisting dan kalkulasi rubrik kelayakan SPBE.
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card Usulan 2: E-STUNTING (Tahap 5: QA Pentest F.U06) -->
+      <article class="pipeline-card" data-search="e-stunting stunting gizi balita reg-20260914-0812">
+        <div class="pipeline-card-top">
+          <div class="pipeline-app-header">
+            <div class="app-avatar-box">👶</div>
+            <div>
+              <div class="app-title-row">
+                <h2 class="pipeline-app-name">Sistem Monitoring Gizi & Pencegahan Stunting (E-STUNTING)</h2>
+                <span class="status-chip blue">Fase 5: QA 5 Pilar (Pentest CSIRT)</span>
+              </div>
+              <div class="pipeline-meta-info">
+                <span>No. Reg: <strong class="text-mono text-accent">REG-20260914-0812</strong></span> &bull;
+                <span>Surat eOffice: <strong class="text-mono">000.8.3/1218/DINKES/2026</strong></span> &bull;
+                <span>Diajukan: 14 September 2026</span> &bull;
+                <span>PIC: Siti Rahma, S.ST</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pipeline-card-cta">
+            <button type="button" class="btn btn-outline btn-sm" onclick="alert('Hasil Pentest CSIRT: 0 Critical, 0 High, 2 Low vulnerability. Jadwal UAT bersama Puskesmas: Kamis ini.');">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Cek Hasil Pentest CSIRT
+            </button>
+          </div>
+        </div>
+
+        <!-- Visual Stepper "Sampai Mana Tahapannya" -->
+        <div class="stage-stepper-container">
+          <div class="stepper-track-label">
+            <span class="track-title">Visualisasi Tahapan SPBE (Sampai Mana Pengajuan Ini?):</span>
+            <span class="track-sla text-success">Progress Pengerjaan: 75% Selesai</span>
+          </div>
+
+          <div class="horizontal-stepper">
+            <div class="h-step done">
+              <div class="h-step-dot">✓</div>
+              <div class="h-step-label"><span class="h-step-title">1. Intake F.A01</span><span class="h-step-sub">Selesai</span></div>
+            </div>
+            <div class="h-step-line done"></div>
+
+            <div class="h-step done">
+              <div class="h-step-dot">✓</div>
+              <div class="h-step-label"><span class="h-step-title">2. Telaah F.A02</span><span class="h-step-sub">Skor: 88 (Layak)</span></div>
+            </div>
+            <div class="h-step-line done"></div>
+
+            <div class="h-step done">
+              <div class="h-step-dot">✓</div>
+              <div class="h-step-label"><span class="h-step-title">3. Metadata F.A03</span><span class="h-step-sub">Kamus SDI Sah</span></div>
+            </div>
+            <div class="h-step-line done"></div>
+
+            <div class="h-step done">
+              <div class="h-step-dot">✓</div>
+              <div class="h-step-label"><span class="h-step-title">4. Coding Dev</span><span class="h-step-sub">In-House Kominfo</span></div>
+            </div>
+            <div class="h-step-line done"></div>
+
+            <!-- Step 5 (ACTIVE) -->
+            <div class="h-step current">
+              <div class="h-step-dot">5</div>
+              <div class="h-step-label"><span class="h-step-title">5. QA 5 Pilar</span><span class="h-step-sub">Pentest CSIRT (U06)</span></div>
+            </div>
+            <div class="h-step-line"></div>
+
+            <div class="h-step pending">
+              <div class="h-step-dot">6</div>
+              <div class="h-step-label"><span class="h-step-title">6. Rilis BAST</span><span class="h-step-sub">F.SR01 Belum</span></div>
+            </div>
+          </div>
+
+          <div class="step-live-alert">
+            <span class="alert-icon">📍</span>
+            <div class="alert-text">
+              <strong>Posisi Berkas Saat Ini:</strong> Tahap Pengujian Keamanan Siber oleh Tim CSIRT Diskominfo. Setelah celah minor diperbaiki dan UAT F.UO4 ditandatangani, sistem langsung diajukan penandatanganan BAST F.SR01 untuk rilis produksi.
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ================= TAB 2: APLIKASI SUDAH RILIS (KATALOG AKTIF) ================= -->
+    <section class="tab-pane" id="tab-rilis">
+      <div class="released-table-card">
+        <div class="table-sub-header">
+          <div>
+            <h3 class="table-sub-title">Daftar Aplikasi yang Sudah Rilis & Aktif Beroperasi</h3>
+            <p class="table-sub-desc">Sistem informasi yang telah mengantongi BAST resmi (F.SR01), lolos uji SLA 90%, dan melayani masyarakat Kota Yogyakarta.</p>
+          </div>
+          <span class="badge-soft green">5 Aplikasi Aktif &bull; Terpantau Monev 3 Bulan</span>
+        </div>
+
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>Aplikasi & Subdomain</th>
+              <th>Domain SPBE</th>
+              <th>Tanggal Rilis BAST</th>
+              <th>Kepatuhan SLA (F.E01)</th>
+              <th>Status Live</th>
+              <th>Aksi Pengampu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="rel-app-info">
+                  <span class="rel-name">SIMPUS (Manajemen Puskesmas Kota Jogja)</span>
+                  <a href="https://simpus.jogjakota.go.id" target="_blank" class="rel-url">simpus.jogjakota.go.id</a>
+                </div>
+              </td>
+              <td><span class="table-tag">Layanan Publik (Kritikal)</span></td>
+              <td><span class="text-mono">12 Jan 2024 &bull; F.SR01/014</span></td>
+              <td><span class="badge-sla good">99.8% (Target &ge; 90%)</span></td>
+              <td><span class="live-pill active">🟢 Aktif Normal</span></td>
+              <td>
+                <button type="button" class="btn-table-action" onclick="alert('Kelola SIMPUS: Ajukan Change Request (F.P03) atau Rekap Transaksi.');">Kelola &rarr;</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="rel-app-info">
+                  <span class="rel-name">PSC 119 YES (Yogya Emergency Service)</span>
+                  <a href="https://yes119.jogjakota.go.id" target="_blank" class="rel-url">yes119.jogjakota.go.id</a>
+                </div>
+              </td>
+              <td><span class="table-tag">Darurat Medis 24 Jam</span></td>
+              <td><span class="text-mono">05 Mei 2024 &bull; F.SR01/089</span></td>
+              <td><span class="badge-sla good">99.9% (Target &ge; 90%)</span></td>
+              <td><span class="live-pill active">🟢 Aktif Normal</span></td>
+              <td>
+                <button type="button" class="btn-table-action" onclick="alert('Kelola PSC 119 YES.');">Kelola &rarr;</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="rel-app-info">
+                  <span class="rel-name">SI-CANTIK (Kesehatan Ibu Hamil Berisiko)</span>
+                  <a href="https://sicantik-dinkes.jogjakota.go.id" target="_blank" class="rel-url">sicantik-dinkes.jogjakota.go.id</a>
+                </div>
+              </td>
+              <td><span class="table-tag">Satu Data Daerah (SDI)</span></td>
+              <td><span class="text-mono">20 Nov 2024 &bull; F.SR01/142</span></td>
+              <td><span class="badge-sla good">98.2% (Target &ge; 90%)</span></td>
+              <td><span class="live-pill active">🟢 Aktif Normal</span></td>
+              <td>
+                <button type="button" class="btn-table-action" onclick="alert('Kelola SI-CANTIK.');">Kelola &rarr;</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="rel-app-info">
+                  <span class="rel-name">SI-LABKESDA (Laboratorium Kesehatan Daerah)</span>
+                  <a href="https://labkesda.jogjakota.go.id" target="_blank" class="rel-url">labkesda.jogjakota.go.id</a>
+                </div>
+              </td>
+              <td><span class="table-tag">Layanan Penunjang Medis</span></td>
+              <td><span class="text-mono">10 Feb 2025 &bull; F.SR01/021</span></td>
+              <td><span class="badge-sla good">97.5% (Target &ge; 90%)</span></td>
+              <td><span class="live-pill active">🟢 Aktif Normal</span></td>
+              <td>
+                <button type="button" class="btn-table-action" onclick="alert('Kelola SI-LABKESDA.');">Kelola &rarr;</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="rel-app-info">
+                  <span class="rel-name">E-FASKES (Monitoring Mutu Klinik & Praktik Mandiri)</span>
+                  <a href="https://faskes.jogjakota.go.id" target="_blank" class="rel-url">faskes.jogjakota.go.id</a>
+                </div>
+              </td>
+              <td><span class="table-tag">Administrasi Pemerintahan</span></td>
+              <td><span class="text-mono">08 Agu 2025 &bull; F.SR01/105</span></td>
+              <td><span class="badge-sla good">96.8% (Target &ge; 90%)</span></td>
+              <td><span class="live-pill active">🟢 Aktif Normal</span></td>
+              <td>
+                <button type="button" class="btn-table-action" onclick="alert('Kelola E-FASKES.');">Kelola &rarr;</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: SEMUA SISTEM & USULAN HISTORIS ================= -->
+    <section class="tab-pane" id="tab-semua">
+      <div class="released-table-card">
+        <div class="table-sub-header">
+          <div>
+            <h3 class="table-sub-title">Semua Riwayat Sistem & Pengajuan (Total 7)</h3>
+            <p class="table-sub-desc">Rekapitulasi seluruh aplikasi yang pernah diajukan oleh Dinas Kesehatan Kota Yogyakarta.</p>
+          </div>
+        </div>
+
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>Nama Aplikasi</th>
+              <th>Tipe</th>
+              <th>No. Registrasi / ID</th>
+              <th>Status Saat Ini</th>
+              <th>Keterangan / Tahapan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>SIP-RUJUK</strong></td>
+              <td>Usulan Baru</td>
+              <td class="text-mono text-accent">REG-20261006-0042</td>
+              <td><span class="status-chip amber">Dalam Proses</span></td>
+              <td>Tahap 2: Menunggu Telaah Kelayakan F.A02 (Kominfo)</td>
+            </tr>
+            <tr>
+              <td><strong>E-STUNTING</strong></td>
+              <td>Usulan Baru</td>
+              <td class="text-mono text-accent">REG-20260914-0812</td>
+              <td><span class="status-chip blue">Dalam Proses</span></td>
+              <td>Tahap 5: QA Pentest Keamanan CSIRT (F.U06)</td>
+            </tr>
+            <tr>
+              <td><strong>SIMPUS</strong></td>
+              <td>Eksisting</td>
+              <td class="text-mono">REG-20231102-0012</td>
+              <td><span class="status-chip green">Sudah Rilis</span></td>
+              <td>Aktif Beroperasi di 18 Puskesmas &bull; SLA 99.8%</td>
+            </tr>
+            <tr>
+              <td><strong>PSC 119 YES</strong></td>
+              <td>Eksisting</td>
+              <td class="text-mono">REG-20240310-0045</td>
+              <td><span class="status-chip green">Sudah Rilis</span></td>
+              <td>Aktif Beroperasi Darurat Medis &bull; SLA 99.9%</td>
+            </tr>
+            <tr>
+              <td><strong>SI-CANTIK</strong></td>
+              <td>Eksisting</td>
+              <td class="text-mono">REG-20240915-0078</td>
+              <td><span class="status-chip green">Sudah Rilis</span></td>
+              <td>Aktif Beroperasi Kesehatan Ibu Hamil &bull; SLA 98.2%</td>
+            </tr>
+            <tr>
+              <td><strong>SI-LABKESDA</strong></td>
+              <td>Eksisting</td>
+              <td class="text-mono">REG-20241201-0099</td>
+              <td><span class="status-chip green">Sudah Rilis</span></td>
+              <td>Aktif Beroperasi Lab Dinkes &bull; SLA 97.5%</td>
+            </tr>
+            <tr>
+              <td><strong>E-FASKES</strong></td>
+              <td>Eksisting</td>
+              <td class="text-mono">REG-20250614-0120</td>
+              <td><span class="status-chip green">Sudah Rilis</span></td>
+              <td>Aktif Beroperasi Pengawasan Klinik &bull; SLA 96.8%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer Minimalis -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <span>MPSI SPBE Kota Yogyakarta &bull; Portal Pengampu Aplikasi OPD (Kepwal 108/2026)</span>
+      <span class="footer-links">
+        <a href="index.html">Formulir F.A01</a> &bull;
+        <a href="../../Blueprint.md" target="_blank">Cetak Biru Arsitektur SPBE</a>
+      </span>
+    </div>
+  </footer>
+
+  <!-- Interaktivitas Tab & Search Sederhana -->
+  <script>
+    // Tab Switching Logic
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    const statCards = document.querySelectorAll('.stat-box');
+
+    function switchTab(targetId) {
+      tabBtns.forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-tab') === targetId);
+      });
+      tabPanes.forEach(p => {
+        p.classList.toggle('active', p.id === targetId);
+      });
+      statCards.forEach(c => {
+        c.classList.toggle('active-tab-box', c.getAttribute('data-target') === targetId);
+      });
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchTab(btn.getAttribute('data-tab'));
+      });
+    });
+
+    statCards.forEach(card => {
+      card.addEventListener('click', () => {
+        switchTab(card.getAttribute('data-target'));
+      });
+    });
+
+    // Real-time Search Filter
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const pipelineCards = document.querySelectorAll('.pipeline-card');
+        const tableRows = document.querySelectorAll('.clean-table tbody tr');
+
+        pipelineCards.forEach(card => {
+          const text = (card.getAttribute('data-search') || '' + card.textContent).toLowerCase();
+          card.style.display = text.includes(query) ? 'block' : 'none';
+        });
+
+        tableRows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(query) ? '' : 'none';
+        });
+      });
+    }
+  </script>
+</body>
+</html>

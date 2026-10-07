@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPSI SPBE Kota Yogyakarta - Prototype Fase Hulu (Form F.A01)</title>
+  <meta name="description" content="Prototype Interaktif Fase Hulu: Intake Permohonan Pengembangan Aplikasi SPBE, Upload Persyaratan, dan Integrasi eOffice (Form F.A01) Pemerintah Kota Yogyakarta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="top-nav" id="topNav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <div class="logo-shield">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">MPSI SPBE</span>
+          <span class="brand-subtitle">Pemerintah Kota Yogyakarta &bull; Kepwal 108/2026</span>
+        </div>
+      </div>
+
+      <div class="nav-center-badge">
+        <span class="phase-tag">FASE 1: HULU</span>
+        <span class="form-badge">Formulir F.A01 (Intake Digital)</span>
+      </div>
+
+      <div class="nav-actions">
+        <a href="dashboard-opd.html" class="btn-ghost-sm" title="Kembali ke Dashboard Admin OPD">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Dashboard OPD
+        </a>
+        <div class="sso-badge" id="ssoBadge" title="Terotentikasi via Jogja Smart Service (JSS)">
+          <div class="sso-avatar">JSS</div>
+          <div class="sso-info">
+            <span class="sso-name">Budi Santoso, S.Kom</span>
+            <span class="sso-opd">Dinas Kesehatan (PIC OPD)</span>
+          </div>
+          <span class="sso-status-dot"></span>
+        </div>
+        <button type="button" class="btn-ghost-sm" id="btnResetForm" title="Reset Simulasi">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+          Reset Demo
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="page-container" id="mainContainer">
+    <!-- Breadcrumb & Page Title -->
+    <section class="page-header">
+      <div class="page-title-wrap">
+        <div class="badge-row">
+          <span class="badge-soft blue">Sistem Informasi Manajemen Proyek TI</span>
+          <span class="badge-soft green">Gate 1: Verifikasi SOP Ortala &bull; Terpenuhi</span>
+        </div>
+        <h1 class="page-title">Permohonan Pengembangan Aplikasi SPBE</h1>
+        <p class="page-desc">
+          Instrumen intake digital bagi OPD untuk mengajukan usulan sistem aplikasi baru atau pengembangan sistem eksisting sesuai standar regulasi SPBE dan integrasi naskah dinas eOffice.
+        </p>
+      </div>
+      <div class="quick-meta-card">
+        <div class="meta-item">
+          <span class="meta-label">ID Registrasi Otomatis</span>
+          <span class="meta-value text-mono text-accent" id="previewRegNumber">REG-20261006-0042</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Target SLA Verifikasi</span>
+          <span class="meta-value">&le; 3 Hari Kerja</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stepper Navigation (Dinamis 100% Fit & Tanpa Scroll Horizontal) -->
+    <nav class="stepper-bar" aria-label="Progress Permohonan">
+      <div class="step-item active" data-step="1" id="stepIndicator1">
+        <div class="step-num">1</div>
+        <div class="step-labels">
+          <span class="step-title">1. Identitas PIC</span>
+          <span class="step-sub">Pemohon JSS</span>
+        </div>
+      </div>
+
+      <div class="step-item" data-step="2" id="stepIndicator2">
+        <div class="step-num">2</div>
+        <div class="step-labels">
+          <span class="step-title">2. Profil Sistem</span>
+          <span class="step-sub">Urusan SPBE</span>
+        </div>
+      </div>
+
+      <div class="step-item" data-step="3" id="stepIndicator3">
+        <div class="step-num">3</div>
+        <div class="step-labels">
+          <span class="step-title">3. Dokumen</span>
+          <span class="step-sub">4 Berkas MinIO</span>
+        </div>
+      </div>
+
+      <div class="step-item" data-step="4" id="stepIndicator4">
+        <div class="step-num">4</div>
+        <div class="step-labels">
+          <span class="step-title">4. Surat eOffice</span>
+          <span class="step-sub">Validasi Dinas</span>
+        </div>
+      </div>
+
+      <div class="step-item" data-step="5" id="stepIndicator5">
+        <div class="step-num">5</div>
+        <div class="step-labels">
+          <span class="step-title">5. Tanda Terima</span>
+          <span class="step-sub">Pipeline Status</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Form Content Container -->
+    <div class="card-glass form-card">
+      <form id="formFA01" novalidate>
+        
+        <!-- ================= STEP 1: IDENTITAS PEMOHON ================= -->
+        <fieldset class="step-content active" id="stepPanel1">
+          <div class="step-panel-header">
+            <div>
+              <h2 class="section-title">Bagian I: Identitas Pemohon & Perangkat Daerah</h2>
+              <p class="section-sub">Informasi penanggung jawab teknis (PIC) permohonan yang terotentikasi melalui SSO JSS Kota Yogyakarta.</p>
+            </div>
+            <div class="section-tag">Tahap 1 dari 4</div>
+          </div>
+
+          <div class="info-banner blue-banner">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div>
+              <strong>Sinkronisasi SSO JSS Aktif:</strong> Data NIP, Nama, dan Jabatan telah ditarik otomatis dari master kepegawaian Simpeg / JSS Pemkot Yogyakarta.
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group col-span-6">
+              <label for="picName" class="form-label required">Nama Lengkap PIC</label>
+              <input type="text" id="picName" class="form-control" value="Budi Santoso, S.Kom" required readonly>
+              <span class="form-hint">Ditarik dari profil akun SSO JSS.</span>
+            </div>
+
+            <div class="form-group col-span-6">
+              <label for="picNip" class="form-label required">NIP / Nomor Pegawai</label>
+              <input type="text" id="picNip" class="form-control text-mono" value="19870512 201101 1 003" required readonly>
+              <span class="form-hint">Nomor Induk Pegawai ASN Pemkot Yogyakarta.</span>
+            </div>
+
+            <div class="form-group col-span-6">
+              <label for="picJabatan" class="form-label required">Jabatan Fungsional / Struktural</label>
+              <input type="text" id="picJabatan" class="form-control" value="Pranata Komputer Ahli Muda" required>
+              <span class="form-hint">Jabatan definitif saat pengajuan permohonan.</span>
+            </div>
+
+            <div class="form-group col-span-6">
+              <label for="picOpd" class="form-label required">Perangkat Daerah (OPD Pemohon)</label>
+              <select id="picOpd" class="form-select" required>
+                <option value="Dinas Kesehatan" selected>Dinas Kesehatan Kota Yogyakarta</option>
+                <option value="Dinas Pendidikan Pemuda dan Olahraga">Dinas Pendidikan Pemuda dan Olahraga</option>
+                <option value="Dinas Penanaman Modal dan PTSP">Dinas Penanaman Modal dan PTSP</option>
+                <option value="Dinas Kependudukan dan Pencatatan Sipil">Dinas Kependudukan dan Pencatatan Sipil</option>
+                <option value="Dinas Sosial Tenaga Kerja dan Transmigrasi">Dinas Sosial Tenaga Kerja dan Transmigrasi</option>
+                <option value="Badan Pengelolaan Keuangan dan Aset Daerah">Badan Pengelolaan Keuangan dan Aset Daerah (BPKAD)</option>
+                <option value="Badan Perencanaan Pembangunan Daerah">Badan Perencanaan Pembangunan Daerah (Bappeda)</option>
+                <option value="Bagian Organisasi Setda">Bagian Organisasi Sekretariat Daerah</option>
+              </select>
+              <span class="form-hint">Instansi/Dinas pengusul sistem informasi.</span>
+            </div>
+
+            <div class="form-group col-span-6">
+              <label for="picPhone" class="form-label required">No. WhatsApp / Kontak Darurat</label>
+              <input type="tel" id="picPhone" class="form-control" placeholder="Contoh: 081234567890" value="081227182930" required>
+              <span class="form-hint">Digunakan untuk notifikasi status tiket via WhatsApp Gateway SPBE.</span>
+            </div>
+
+            <div class="form-group col-span-6">
+              <label for="picEmail" class="form-label required">Email Kedinasan (@jogjakota.go.id)</label>
+              <input type="email" id="picEmail" class="form-control" value="budi.santoso@jogjakota.go.id" required>
+              <span class="form-hint">Wajib menggunakan domain resmi Pemkot Yogyakarta.</span>
+            </div>
+          </div>
+
+          <div class="form-footer-actions">
+            <div></div>
+            <button type="button" class="btn btn-primary btn-next" data-next="2">
+              Lanjut: Profil Sistem & Urusan
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </fieldset>
+
+        <!-- ================= STEP 2: PROFIL SISTEM & PROBIS ================= -->
+        <fieldset class="step-content" id="stepPanel2">
+          <div class="step-panel-header">
+            <div>
+              <h2 class="section-title">Bagian II: Informasi Umum & Profil Aplikasi</h2>
+              <p class="section-sub">Spesifikasi ruang lingkup, urusan layanan SPBE, dan latar belakang kebutuhan usulan.</p>
+            </div>
+            <div class="section-tag">Tahap 2 dari 4</div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group col-span-8">
+              <label for="appName" class="form-label required">Nama Lengkap Aplikasi</label>
+              <input type="text" id="appName" class="form-control" placeholder="Contoh: Sistem Informasi Monitoring Gizi dan Pencegahan Stunting Terpadu" value="Sistem Informasi Pelayanan Rujukan Kesehatan Terpadu" required>
+            </div>
+
+            <div class="form-group col-span-4">
+              <label for="appAcronym" class="form-label required">Usulan Akronim / Singkatan</label>
+              <input type="text" id="appAcronym" class="form-control text-mono uppercase" placeholder="Contoh: SIM-GIZI" value="SIP-RUJUK" maxlength="12" required>
+            </div>
+
+            <div class="form-group col-span-6">
+              <label for="appScope" class="form-label required">Tipe Permohonan</label>
+              <select id="appScope" class="form-select" required>
+                <option value="BARU" selected>Pembangunan Aplikasi Baru (Belum Pernah Ada)</option>
+                <option value="PENGEMBANGAN_BESAR">Pengembangan Fitur Mayor / Re-Arsitektur Sistem Eksisting</option>
+                <option value="INTEGRASI_API">Integrasi Interoperabilitas / Modul API Baru</option>
+              </select>
+            </div>
+
+            <div class="form-group col-span-6">
+              <label for="appDomain" class="form-label required">Domain Arsitektur SPBE</label>
+              <select id="appDomain" class="form-select" required>
+                <option value="LAYANAN_PUBLIK" selected>Domain Layanan Publik (Masyarakat / Pasien / Faskes)</option>
+                <option value="ADMINISTRASI_PEMERINTAHAN">Domain Administrasi Pemerintahan (Internal G2G)</option>
+                <option value="SATU_DATA_DAERAH">Domain Tata Kelola Satu Data Daerah</option>
+              </select>
+            </div>
+
+            <div class="form-group col-span-12">
+              <label for="appBackground" class="form-label required">Latar Belakang & Urgensi Kebutuhan</label>
+              <textarea id="appBackground" class="form-control" rows="5" placeholder="Uraikan kendala operasional yang dihadapi saat ini dan mengapa sistem ini mendesak untuk dibangun..." required>Saat ini koordinasi rujukan pasien antar 18 Puskesmas dan RSUD Kota Yogyakarta masih menggunakan formulir kertas dan pesan instan manual. Hal ini memperlambat penanganan gawat darurat dan menyulitkan pelacakan ketersediaan tempat tidur (bed occupancy rate) secara real-time.</textarea>
+            </div>
+
+            <div class="form-group col-span-12">
+              <label for="appObjective" class="form-label required">Tujuan & Manfaat Terukur</label>
+              <textarea id="appObjective" class="form-control" rows="4" placeholder="Sebutkan output dan KPI dampak layanan yang diharapkan..." required>Mempercepat waktu tanggap konfirmasi rujukan faskes dari rata-rata 45 menit menjadi &le; 10 menit, serta mengintegrasikan riwayat rekam medis dasar ke Super-App JSS.</textarea>
+            </div>
+
+            <div class="form-group col-span-4">
+              <label for="targetAudience" class="form-label required">Target Pengguna Utama</label>
+              <select id="targetAudience" class="form-select" required>
+                <option value="Campuran ASN & Masyarakat" selected>Campuran ASN Nakes & Warga JSS</option>
+                <option value="Masyarakat Umum">Masyarakat Umum Kota Yogyakarta</option>
+                <option value="Internal ASN Pemkot">Khusus ASN / Pegawai Pemkot</option>
+              </select>
+            </div>
+
+            <div class="form-group col-span-4">
+              <label for="userEstimate" class="form-label required">Estimasi Beban Pengguna</label>
+              <select id="userEstimate" class="form-select" required>
+                <option value="Sedang (1.000 - 10.000 transaksi/bln)" selected>Sedang (1.000 - 10.000 trx/bln)</option>
+                <option value="Tinggi (> 10.000 transaksi/bln)">Tinggi (&gt; 10.000 trx/bln)</option>
+                <option value="Rendah (< 1.000 transaksi/bln)">Rendah (&lt; 1.000 trx/bln)</option>
+              </select>
+            </div>
+
+            <div class="form-group col-span-4">
+              <label for="platformType" class="form-label required">Target Platform</label>
+              <select id="platformType" class="form-select" required>
+                <option value="Web & JSS Mobile Integration" selected>Web Portal & Modul JSS Mobile</option>
+                <option value="Web Application Only">Web Portal Saja (Responsive)</option>
+                <option value="API Service / Middleware">Layanan API / Service Bus Saja</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-footer-actions">
+            <button type="button" class="btn btn-secondary btn-prev" data-prev="1">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Kembali
+            </button>
+            <button type="button" class="btn btn-primary btn-next" data-next="3">
+              Lanjut: Dokumen Persyaratan
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </fieldset>
+
+        <!-- ================= STEP 3: DOKUMEN PERSYARATAN ================= -->
+        <fieldset class="step-content" id="stepPanel3">
+          <div class="step-panel-header">
+            <div>
+              <h2 class="section-title">Bagian III: Pengunggahan 4 Dokumen Persyaratan</h2>
+              <p class="section-sub">Lampiran wajib berformat PDF asli (diverifikasi magic bytes %PDF-) dan disimpan pada repositori MinIO terenkripsi.</p>
+            </div>
+            <div class="section-tag">Tahap 3 dari 4</div>
+          </div>
+
+          <div class="info-banner amber-banner">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div>
+              <strong>Kepatuhan Gate 1 (Bagian Organisasi):</strong> Lampiran Draf SOP Layanan wajib telah dikonsultasikan dengan Bagian Organisasi Setda untuk menghindari penolakan pada tahapan telaah F.A02.
+            </div>
+          </div>
+
+          <!-- Document Upload Slots Grid -->
+          <div class="doc-upload-grid">
+            
+            <!-- Doc 1 -->
+            <div class="doc-card" id="docCard1">
+              <div class="doc-card-top">
+                <div class="doc-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </div>
+                <div>
+                  <h3 class="doc-title">1. Draf SOP Layanan / Probismis</h3>
+                  <span class="doc-badge required-badge">Wajib &bull; SOP Ortala</span>
+                </div>
+              </div>
+              <p class="doc-desc">Standar Operasional Prosedur pelayanan yang disetujui pimpinan OPD dan draf konsolidasi Ortala.</p>
+              
+              <div class="upload-dropzone" data-target="fileSop" id="dropzoneSop">
+                <input type="file" id="fileSop" class="file-input-hidden" accept=".pdf" data-doc-title="SOP_Layanan_Rujukan_2026.pdf" data-size="1.4 MB">
+                <div class="drop-prompt">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>Klik atau Drag & Drop PDF</span>
+                </div>
+              </div>
+              <div class="file-preview-pill active" id="pillSop">
+                <span class="file-pill-name">SOP_Layanan_Rujukan_2026.pdf</span>
+                <span class="file-pill-size">1.4 MB</span>
+                <span class="file-pill-status">✅ Siap Upload</span>
+              </div>
+            </div>
+
+            <!-- Doc 2 -->
+            <div class="doc-card" id="docCard2">
+              <div class="doc-card-top">
+                <div class="doc-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div>
+                  <h3 class="doc-title">2. Dasar Hukum & Tupoksi</h3>
+                  <span class="doc-badge required-badge">Wajib &bull; Legalitas</span>
+                </div>
+              </div>
+              <p class="doc-desc">Perbup/Perwal SOTK, SK Kepala Dinas, atau regulasi kementerian terkait penugasan layanan.</p>
+              
+              <div class="upload-dropzone" data-target="fileLegal" id="dropzoneLegal">
+                <input type="file" id="fileLegal" class="file-input-hidden" accept=".pdf" data-doc-title="Perwal_SOTK_Dinkes_Pasal14.pdf" data-size="890 KB">
+                <div class="drop-prompt">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>Klik atau Drag & Drop PDF</span>
+                </div>
+              </div>
+              <div class="file-preview-pill active" id="pillLegal">
+                <span class="file-pill-name">Perwal_SOTK_Dinkes_Pasal14.pdf</span>
+                <span class="file-pill-size">890 KB</span>
+                <span class="file-pill-status">✅ Siap Upload</span>
+              </div>
+            </div>
+
+            <!-- Doc 3 -->
+            <div class="doc-card" id="docCard3">
+              <div class="doc-card-top">
+                <div class="doc-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </div>
+                <div>
+                  <h3 class="doc-title">3. Peta Proses Bisnis Layanan</h3>
+                  <span class="doc-badge required-badge">Wajib &bull; Diagram Alir</span>
+                </div>
+              </div>
+              <p class="doc-desc">Diagram flowchart alur kerja pemohon, petugas loket, verifikator, hingga output terbit.</p>
+              
+              <div class="upload-dropzone" data-target="fileFlowchart" id="dropzoneFlowchart">
+                <input type="file" id="fileFlowchart" class="file-input-hidden" accept=".pdf" data-doc-title="Peta_Probis_Alur_Rujukan_Faskes.pdf" data-size="2.1 MB">
+                <div class="drop-prompt">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>Klik atau Drag & Drop PDF</span>
+                </div>
+              </div>
+              <div class="file-preview-pill active" id="pillFlowchart">
+                <span class="file-pill-name">Peta_Probis_Alur_Rujukan_Faskes.pdf</span>
+                <span class="file-pill-size">2.1 MB</span>
+                <span class="file-pill-status">✅ Siap Upload</span>
+              </div>
+            </div>
+
+            <!-- Doc 4 -->
+            <div class="doc-card" id="docCard4">
+              <div class="doc-card-top">
+                <div class="doc-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                </div>
+                <div>
+                  <h3 class="doc-title">4. Usulan Kamus Data & Output</h3>
+                  <span class="doc-badge optional-badge">Dianjurkan &bull; Satu Data</span>
+                </div>
+              </div>
+              <p class="doc-desc">Daftar variabel input-output atau format laporan yang dibutuhkan untuk integrasi SDI.</p>
+              
+              <div class="upload-dropzone" data-target="fileData" id="dropzoneData">
+                <input type="file" id="fileData" class="file-input-hidden" accept=".pdf" data-doc-title="Draf_Variabel_Data_Rujukan.pdf" data-size="650 KB">
+                <div class="drop-prompt">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>Klik atau Drag & Drop PDF</span>
+                </div>
+              </div>
+              <div class="file-preview-pill active" id="pillData">
+                <span class="file-pill-name">Draf_Variabel_Data_Rujukan.pdf</span>
+                <span class="file-pill-size">650 KB</span>
+                <span class="file-pill-status">✅ Siap Upload</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-footer-actions">
+            <button type="button" class="btn btn-secondary btn-prev" data-prev="2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Kembali
+            </button>
+            <button type="button" class="btn btn-primary btn-next" data-next="4">
+              Lanjut: Integrasi Surat eOffice
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </fieldset>
+
+        <!-- ================= STEP 4: INTEGRASI EOFFICE & FINALISASI ================= -->
+        <fieldset class="step-content" id="stepPanel4">
+          <div class="step-panel-header">
+            <div>
+              <h2 class="section-title">Bagian IV: Validasi Surat Dinas eOffice & Tanda Tangan</h2>
+              <p class="section-sub">Permohonan resmi wajib mengacu pada Surat Pengantar Dinas yang tercatat dalam sistem eOffice Pemkot Yogyakarta.</p>
+            </div>
+            <div class="section-tag">Tahap 4 dari 4</div>
+          </div>
+
+          <div class="eoffice-card">
+            <div class="eoffice-header">
+              <div class="eoffice-logo">eOffice</div>
+              <div class="eoffice-title">
+                <h3>Integrasi API Tata Naskah Dinas Elektronik</h3>
+                <span>Pemerintah Kota Yogyakarta &bull; TTE BSrE BSSN</span>
+              </div>
+              <span class="status-pill active-pill">Koneksi Aktif</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group col-span-8">
+                <label for="eofficeLetterNumber" class="form-label required">Nomor Surat Dinas eOffice</label>
+                <div class="input-with-button">
+                  <input type="text" id="eofficeLetterNumber" class="form-control text-mono" placeholder="Contoh: 000.8.3/1420/2026" value="000.8.3/1420/DINKES/2026" required>
+                  <button type="button" class="btn btn-secondary" id="btnValidateEOffice">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    Verifikasi
+                  </button>
+                </div>
+                <span class="form-hint">Nomor surat dinas pengantar resmi dari Kepala OPD ke Kepala Dinas Kominfosan.</span>
+              </div>
+
+              <div class="form-group col-span-4">
+                <label for="eofficeLetterDate" class="form-label required">Tanggal Surat Dinas</label>
+                <input type="date" id="eofficeLetterDate" class="form-control" value="2026-10-06" required>
+              </div>
+
+              <div class="form-group col-span-12">
+                <div class="validation-result-box" id="eofficeValidationBox">
+                  <div class="val-icon">✅</div>
+                  <div class="val-detail">
+                    <strong>Surat eOffice Terverifikasi Sah:</strong>
+                    <span>Perihal: <em>"Permohonan Pengembangan Sistem Pelayanan Rujukan Kesehatan Terpadu (SIP-RUJUK)"</em> &bull; Ditandatangani elektronik oleh Kepala Dinas Kesehatan Kota Yogyakarta.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ringkasan Draf Permohonan Sebelum Kirim -->
+          <div class="summary-box">
+            <h3 class="summary-title">Ringkasan Berkas Permohonan Form F.A01</h3>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <span class="sum-label">Nomor Registrasi Sistem</span>
+                <span class="sum-val text-mono text-accent" id="sumRegId">REG-20261006-0042</span>
+              </div>
+              <div class="summary-item">
+                <span class="sum-label">Nama Aplikasi / Akronim</span>
+                <span class="sum-val" id="sumAppName">SIP-RUJUK &bull; Sistem Informasi Pelayanan Rujukan</span>
+              </div>
+              <div class="summary-item">
+                <span class="sum-label">OPD Pemohon</span>
+                <span class="sum-val" id="sumOpd">Dinas Kesehatan</span>
+              </div>
+              <div class="summary-item">
+                <span class="sum-label">Status Kelengkapan Dokumen</span>
+                <span class="sum-val text-success">4 dari 4 Dokumen PDF Terlampir</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="declaration-box">
+            <label class="checkbox-container">
+              <input type="checkbox" id="chkDeclaration" checked required>
+              <span class="checkmark"></span>
+              <span class="chk-text">
+                Saya menyatakan dengan sadar bahwa seluruh data, lampiran SOP, dan referensi surat dinas yang diisikan adalah benar serta telah dikoordinasikan secara internal pada instansi pemohon.
+              </span>
+            </label>
+          </div>
+
+          <div class="form-footer-actions">
+            <button type="button" class="btn btn-secondary btn-prev" data-prev="3">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Kembali
+            </button>
+            <div class="btn-group-right">
+              <button type="button" class="btn btn-outline" id="btnPreviewFA01">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Preview Lembar F.A01 PDF
+              </button>
+              <button type="submit" class="btn btn-success btn-submit" id="btnSubmitApplication">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                Kirim Permohonan ke Kominfo
+              </button>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- ================= STEP 5: SUCCESS CONFIRMATION ================= -->
+        <fieldset class="step-content" id="stepPanel5">
+          <div class="success-wrap">
+            <div class="success-icon-badge">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <span class="badge-soft green">STATUS: TIKET BERHASIL DITERBITKAN</span>
+            <h2 class="success-title">Permohonan Aplikasi F.A01 Berhasil Terkirim!</h2>
+            <p class="success-desc">
+              Berkas permohonan Anda telah resmi tercatat di sistem MPSI SPBE Kota Yogyakarta dan diteruskan ke antrean <strong>Seksi Perencanaan TI (Gatekeeper 1)</strong> untuk telaah kelayakan teknis.
+            </p>
+
+            <div class="ticket-card">
+              <div class="ticket-row">
+                <span class="ticket-label">Nomor Registrasi Unik</span>
+                <span class="ticket-value text-mono text-accent" id="finalRegNumber">REG-20261006-0042</span>
+              </div>
+              <div class="ticket-row">
+                <span class="ticket-label">Nama Aplikasi</span>
+                <span class="ticket-value" id="finalAppName">Sistem Informasi Pelayanan Rujukan Kesehatan Terpadu (SIP-RUJUK)</span>
+              </div>
+              <div class="ticket-row">
+                <span class="ticket-label">Waktu Pengajuan</span>
+                <span class="ticket-value" id="finalTimestamp">06 Oktober 2026, 13:30 WIB</span>
+              </div>
+              <div class="ticket-row">
+                <span class="ticket-label">Status Alur SPBE Saat Ini</span>
+                <span class="ticket-value status-tag-amber">Menunggu Telaah Kelayakan & Kertas Kerja (F.A02)</span>
+              </div>
+            </div>
+
+            <!-- Stepper Progress Tracker Mini -->
+            <div class="pipeline-tracker">
+              <h4 class="pipeline-title">Progres Pipeline 10 Tahapan SPBE (Kepwal 108/2026)</h4>
+              <div class="pipeline-steps">
+                <div class="pipe-node done">
+                  <div class="pipe-circle">✓</div>
+                  <span>1. Intake F.A01 (Selesai)</span>
+                </div>
+                <div class="pipe-line active"></div>
+                <div class="pipe-node current">
+                  <div class="pipe-circle">2</div>
+                  <span>2. Telaah F.A02 (Dalam Antrean)</span>
+                </div>
+                <div class="pipe-line"></div>
+                <div class="pipe-node">
+                  <div class="pipe-circle">3</div>
+                  <span>3. Metadata F.A03</span>
+                </div>
+                <div class="pipe-line"></div>
+                <div class="pipe-node">
+                  <div class="pipe-circle">4</div>
+                  <span>4. Coding FI.01</span>
+                </div>
+                <div class="pipe-line"></div>
+                <div class="pipe-node">
+                  <div class="pipe-circle">5</div>
+                  <span>5. QA 5 Pilar</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="success-actions">
+              <button type="button" class="btn btn-outline" id="btnPrintReceipt">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Cetak Bukti Tanda Terima (PDF)
+              </button>
+              <button type="button" class="btn btn-primary" id="btnGoToAnalystSimulation">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Simulasi Lanjut ke Telaah Analis (F.A02)
+              </button>
+            </div>
+          </div>
+        </fieldset>
+
+      </form>
+    </div>
+  </main>
+
+  <!-- ================= MODAL PREVIEW DOKUMEN F.A01 RESMI ================= -->
+  <div class="modal-backdrop" id="modalPreviewFA01">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="badge-soft blue">Format Naskah Dinas Resmi</span>
+          <h3 class="modal-title">Lembar Formulir F.A01: Permohonan Pengembangan Aplikasi SPBE</h3>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseModal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="official-paper" id="officialDocPreview">
+          <!-- Kop Surat Resmi -->
+          <div class="kop-surat">
+            <div class="kop-logo-box">
+              <div class="kop-shield">🏛️</div>
+            </div>
+            <div class="kop-text">
+              <h4>PEMERINTAH KOTA YOGYAKARTA</h4>
+              <h3>DINAS KOMUNIKASI INFORMATIKA DAN PERSANDIAN</h3>
+              <p>Jalan Kenari No. 56 Kompleks Balai Kota Yogyakarta 55165 &bull; Telp (0274) 551230</p>
+              <p class="kop-web">Website: kominfo.jogjakota.go.id &bull; Email: kominfo@jogjakota.go.id</p>
+            </div>
+          </div>
+          <div class="kop-line"></div>
+
+          <div class="doc-heading">
+            <h5>FORMULIR F.A01</h5>
+            <h4>PERMOHONAN PENGEMBANGAN APLIKASI SPBE</h4>
+            <p>Sesuai Keputusan Wali Kota Yogyakarta Nomor 108 Tahun 2026</p>
+          </div>
+
+          <table class="doc-table">
+            <tr>
+              <th colspan="2" class="table-section-head">I. INFORMASI REGISTRASI & SURAT PENGANTAR</th>
+            </tr>
+            <tr>
+              <td class="w-35">Nomor Registrasi Sistem</td>
+              <td class="text-mono" id="docRegNum">REG-20261006-0042</td>
+            </tr>
+            <tr>
+              <td>Nomor Surat Dinas eOffice</td>
+              <td class="text-mono" id="docLetterNum">000.8.3/1420/DINKES/2026</td>
+            </tr>
+            <tr>
+              <td>Tanggal Surat Dinas</td>
+              <td id="docLetterDate">06 Oktober 2026</td>
+            </tr>
+            <tr>
+              <td>Perangkat Daerah Pemohon</td>
+              <td id="docOpd">Dinas Kesehatan Kota Yogyakarta</td>
+            </tr>
+            <tr>
+              <td>Nama Penanggung Jawab (PIC)</td>
+              <td id="docPic">Budi Santoso, S.Kom (NIP. 19870512 201101 1 003)</td>
+            </tr>
+
+            <tr>
+              <th colspan="2" class="table-section-head">II. PROFIL & KEBUTUHAN APLIKASI</th>
+            </tr>
+            <tr>
+              <td>Nama Aplikasi & Usulan Akronim</td>
+              <td id="docAppName">Sistem Informasi Pelayanan Rujukan Kesehatan Terpadu (SIP-RUJUK)</td>
+            </tr>
+            <tr>
+              <td>Tipe Permohonan & Domain SPBE</td>
+              <td id="docAppScope">Pembangunan Aplikasi Baru &bull; Domain Layanan Publik</td>
+            </tr>
+            <tr>
+              <td>Latar Belakang & Urgensi</td>
+              <td id="docAppBg">Koordinasi rujukan pasien Puskesmas dan RSUD real-time via Super-App JSS.</td>
+            </tr>
+            <tr>
+              <td>Tujuan & Manfaat Terukur</td>
+              <td id="docAppObj">Mempercepat waktu konfirmasi rujukan faskes dari 45 menit menjadi &le; 10 menit.</td>
+            </tr>
+            <tr>
+              <td>Target Pengguna & Beban</td>
+              <td id="docAppTarget">Campuran ASN Nakes & Warga JSS &bull; Estimasi 1.000 - 10.000 transaksi/bulan</td>
+            </tr>
+
+            <tr>
+              <th colspan="2" class="table-section-head">III. LAMPIRAN DOKUMEN PERSYARATAN TERVERIFIKASI</th>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <ol class="doc-list">
+                  <li>Draf SOP Pelayanan Rujukan / Peta Proses Bisnis (Hasil Konsultasi Bagian Organisasi Setda) &bull; <strong class="text-success">[TERLAMPIR]</strong></li>
+                  <li>Dasar Hukum Tupoksi Perangkat Daerah (Perwal SOTK Dinkes) &bull; <strong class="text-success">[TERLAMPIR]</strong></li>
+                  <li>Diagram Alir Proses Bisnis Faskes &bull; <strong class="text-success">[TERLAMPIR]</strong></li>
+                  <li>Draf Usulan Kamus Data & Indikator Satu Data Daerah &bull; <strong class="text-success">[TERLAMPIR]</strong></li>
+                </ol>
+              </td>
+            </tr>
+          </table>
+
+          <div class="doc-signatures">
+            <div class="sig-box">
+              <p>Mengetahui,</p>
+              <p class="sig-role">Kepala Perangkat Daerah Pemohon</p>
+              <div class="sig-space">
+                <span class="sig-badge-tte">Ditandatangani secara Elektronik<br>via eOffice Pemkot Jogja &bull; BSrE BSSN</span>
+              </div>
+              <p class="sig-name">drg. Emma Rahmi Aryani, MM</p>
+              <p class="sig-nip">NIP. 19690412 199403 2 004</p>
+            </div>
+
+            <div class="sig-box">
+              <p>Yogyakarta, 06 Oktober 2026</p>
+              <p class="sig-role">Penanggung Jawab Teknis (PIC)</p>
+              <div class="sig-space">
+                <span class="sig-badge-tte">Terverifikasi Akun SSO JSS<br>ID: JSS-DINKES-0042</span>
+              </div>
+              <p class="sig-name">Budi Santoso, S.Kom</p>
+              <p class="sig-nip">NIP. 19870512 201101 1 003</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnModalClose">Tutup</button>
+        <button type="button" class="btn btn-primary" id="btnModalPrintDoc">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Cetak PDF Form F.A01
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <span>MPSI SPBE Kota Yogyakarta &bull; Prototype Fase Hulu (F.A01)</span>
+      <span class="footer-links">
+        <a href="../../Blueprint.md" target="_blank">Lihat Blueprint</a> &bull;
+        <a href="../../Alur_Analisis_SPBE.md" target="_blank">Alur Tata Kelola SPBE</a>
+      </span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

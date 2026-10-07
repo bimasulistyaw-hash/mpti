@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Hearing & Notulensi Rapat Klarifikasi OPD - Diskominfo Kota Yogyakarta</title>
+  <meta name="description" content="Modul Dedicated Manajemen Hearing, Log Notulensi Rapat Klarifikasi OPD dengan Editor Rich Text MS Word, Upload Dokumentasi Foto Rapat, Presensi Digital, dan Pelacak Action Items.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../tengah.css">
+  <style>
+    /* Custom Styling for Dedicated Hearing Module */
+    .hearing-nav-group {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      background: #f1f5f9;
+      padding: 0.4rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.75rem;
+    }
+    .hearing-nav-btn {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+    .hearing-nav-btn:hover { color: #0f172a; background: #e2e8f0; }
+    .hearing-nav-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-xs);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .hearing-pane { display: none; }
+    .hearing-pane.active { display: block; animation: fadeIn 0.25s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .action-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.1rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 0.65rem;
+      transition: var(--transition-fast);
+    }
+    .action-item-row:hover {
+      border-color: #93c5fd;
+      background: #f0f9ff;
+    }
+
+    /* Editor MS Word Style Toolbar Styling */
+    .editor-toolbar {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      padding: 0.45rem 0.65rem;
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .editor-btn {
+      padding: 0.28rem 0.6rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .editor-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+    .editor-btn.active {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #93c5fd;
+    }
+    .editor-content-box {
+      min-height: 180px;
+      max-height: 320px;
+      overflow-y: auto;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 0 0 8px 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.86rem;
+      line-height: 1.6;
+      color: #0f172a;
+      outline: none;
+    }
+    .editor-content-box:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .editor-content-box img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      margin: 0.5rem 0;
+      border: 1px solid #cbd5e1;
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Thumbnail Gallery Attached Documentation */
+    .photo-doc-thumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.65rem;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .photo-doc-thumb:hover {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <a href="index.html" class="brand-link">
+          <div class="logo-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">MPSI SPBE &bull; Hearing Center</span>
+            <span class="brand-subtitle">Manajemen Hearing & Log Notulensi Rapat Klarifikasi OPD</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">&larr; Antrean Usulan OPD</a>
+        <a href="katalog-portofolio-pemkot.html" class="nav-link">Portofolio Pemkot</a>
+        <a href="kertas-kerja-fa02.html" class="nav-link">Kertas Kerja F.A02</a>
+        <a href="manajemen-hearing-opd.html" class="nav-link active">Pusat Hearing OPD</a>
+        <a href="../2-standardisasi-metadata-kebutuhan/index.html" class="nav-link">Telaah Metadata SDI</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="kertas-kerja-fa02.html" class="btn btn-secondary btn-sm">
+          &larr; Kembali ke Form F.A02
+        </a>
+        <div class="user-badge">
+          <span class="user-badge-avatar">HW</span>
+          <div class="user-badge-text">
+            <span class="user-badge-name">Hendra Wijaya, S.Kom</span>
+            <span class="user-badge-role">Analis SPBE Ahli Muda</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="page-container">
+
+    <!-- Header Card Usulan -->
+    <section class="workbench-header-card">
+      <div class="wb-app-info">
+        <div class="wb-app-avatar" style="background:#eff6ff; color:#2563eb;">🤝</div>
+        <div class="wb-app-meta">
+          <div class="wb-app-title-row">
+            <h1 class="wb-app-title">SIP-RUJUK &bull; Sistem Informasi Rujukan Terpadu Daerah</h1>
+            <span class="status-pill status-approved">
+              <span class="status-dot"></span>
+              Penyaringan F.A02 Lolos (Skor 86.5)
+            </span>
+            <span class="chip chip-blue" style="font-weight:700;">
+              ✓ 2 Sesi Hearing Selesai
+            </span>
+          </div>
+          <div class="wb-app-sub">
+            <span><strong>No. Registrasi:</strong> <span class="mono-text">REG-20261006-0042</span></span>
+            <span>&bull;</span>
+            <span><strong>Perangkat Daerah:</strong> Dinas Kesehatan Kota Yogyakarta</span>
+            <span>&bull;</span>
+            <span><strong>Status Clarification:</strong> Clearance Gate 2 Valid & Disetujui</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wb-actions-right">
+        <a href="buat-sesi-hearing.html" class="btn btn-outline btn-sm" style="background:#ffffff; font-weight:700;">
+          📝 + Studio Inisiasi & Eksekusi Hearing Sesi &rarr;
+        </a>
+        <a href="kertas-kerja-fa02.html" class="btn btn-primary btn-sm">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Gunakan Notulensi di F.A02 &rarr;
+        </a>
+      </div>
+    </section>
+
+    <!-- Stat Metrics Overview -->
+    <section style="display:grid; grid-template-columns: repeat(4, 1fr); gap:1rem; margin-bottom:1.5rem;">
+      <div class="summary-metric-card" style="background:#ffffff; border:1px solid #cbd5e1;">
+        <div class="summary-metric-label">Total Sesi Hearing</div>
+        <div style="font-size:1.8rem; font-weight:800; color:#1d4ed8; margin:0.2rem 0;" id="statTotalHearing">2 Sesi</div>
+        <div style="font-size:0.75rem; color:#64748b;">Hearing #1 (02 Oct) & Hearing #2 (06 Oct)</div>
+      </div>
+
+      <div class="summary-metric-card" style="background:#ffffff; border:1px solid #cbd5e1;">
+        <div class="summary-metric-label">Peserta Hadir Terverifikasi</div>
+        <div style="font-size:1.8rem; font-weight:800; color:#059669; margin:0.2rem 0;">14 Pejabat</div>
+        <div style="font-size:0.75rem; color:#64748b;">Tim Kominfo, Dinkes, Ortala & Seksi Data</div>
+      </div>
+
+      <div class="summary-metric-card" style="background:#ffffff; border:1px solid #cbd5e1;">
+        <div class="summary-metric-label">Action Items OPD</div>
+        <div style="font-size:1.8rem; font-weight:800; color:#d97706; margin:0.2rem 0;">3 Tugas</div>
+        <div style="font-size:0.75rem; color:#059669; font-weight:700;">✓ 2 Selesai &bull; ⏳ 1 In Verifikasi</div>
+      </div>
+
+      <div class="summary-metric-card" style="background:#ecfdf5; border:1px solid #a7f3d0;">
+        <div class="summary-metric-label" style="color:#065f46;">Status Clearance Hearing</div>
+        <div style="font-size:1.4rem; font-weight:800; color:#059669; margin:0.3rem 0;">FINAL CLEARANCE</div>
+        <span class="chip chip-green" style="font-size:0.72rem;">Siap Terbit Rekomtek F.A02</span>
+      </div>
+    </section>
+
+    <!-- Quick App Selector Bar -->
+    <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:0.75rem 1.25rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; box-shadow:var(--shadow-xs);">
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <span style="font-size:1.2rem;">⚡</span>
+        <div>
+          <strong style="font-size:0.88rem; color:#0f172a; display:block;">Pilih Usulan Aplikasi Aktif:</strong>
+          <span style="font-size:0.75rem; color:#64748b;">Ganti aplikasi untuk me-load log hearing, notulensi, dan action items-nya</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <select class="form-select" id="quickAppSelector" onchange="switchHearingApp(this.value)" style="min-width:340px; font-weight:700; font-size:0.85rem; padding:0.45rem 0.75rem; border-color:#94a3b8; border-radius:6px; background:#f8fafc;">
+          <option value="SIP-RUJUK" selected>🏥 SIP-RUJUK — Dinas Kesehatan (2 Sesi • Clearance Approved)</option>
+          <option value="E-PENGADUAN">📣 E-PENGADUAN — Diskominfo (1 Sesi • Action Items In Progress)</option>
+          <option value="SIM-RETRIBUSI">🚌 SIM-RETRIBUSI — Dinas Perhubungan (0 Sesi • Belum Hearing)</option>
+          <option value="SIMPEG-MOBILE">👤 SIMPEG-MOBILE — BKPSDM (3 Sesi • Rekomendasi Ready)</option>
+        </select>
+        <a href="buat-sesi-hearing.html" class="btn btn-primary btn-xs" style="font-weight:700; padding:0.45rem 0.85rem;">
+          📝 + Studio Inisiasi Hearing Baru &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Multi-Tab Switcher dedicated module -->
+    <div class="hearing-nav-group">
+      <button type="button" class="hearing-nav-btn active" data-pane="pane-app-index">
+        <span>🗂️</span> 1. Daftar Seluruh Usulan Aplikasi
+      </button>
+      <button type="button" class="hearing-nav-btn" data-pane="pane-sessions">
+        <span>📑</span> 2. Log Sesi Hearing & Rich Notulensi
+      </button>
+      <button type="button" class="hearing-nav-btn" data-pane="pane-action-items">
+        <span>🎯</span> 3. Pelacak Action Items OPD
+      </button>
+      <button type="button" class="hearing-nav-btn" data-pane="pane-presensi">
+        <span>✍️</span> 4. Presensi Digital & TTE
+      </button>
+    </div>
+
+    <!-- PANE 1: DAFTAR SELURUH USULAN APLIKASI (MASTER INDEX HEARING) -->
+    <section class="hearing-pane active" id="pane-app-index">
+      <div class="panel" style="margin-bottom:1.5rem;">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <h2 class="panel-title" style="font-size:1.15rem; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:0.5rem;">
+              🗂️ Master Index Usulan Aplikasi SPBE dalam Sesi Hearing
+            </h2>
+            <p class="panel-subtitle">Daftar seluruh permohonan aplikasi dari OPD Pemkot Yogyakarta yang memerlukan atau sedang menjalani tahapan Rapat Hearing & Klarifikasi Teknis F.A02.</p>
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <input type="text" placeholder="🔍 Cari aplikasi / OPD..." style="padding:0.45rem 0.75rem; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem; width:220px;" onkeyup="filterHearingAppIndex(this.value)">
+            <select style="padding:0.45rem 0.75rem; border:1px solid #cbd5e1; border-radius:6px; font-size:0.82rem; font-weight:600; background:#ffffff;">
+              <option value="">Semua Status Clearance</option>
+              <option value="approved">✓ Clearance Approved</option>
+              <option value="in-progress">⏳ In Progress</option>
+              <option value="pending">⚠️ Belum Hearing</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <!-- Summary Banner Stats -->
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:1rem; margin-bottom:1.25rem;">
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.85rem 1rem;">
+              <div style="font-size:0.75rem; color:#64748b; font-weight:700;">TOTAL USULAN APLIKASI</div>
+              <div style="font-size:1.5rem; font-weight:800; color:#0f172a;">4 Aplikasi</div>
+              <span style="font-size:0.72rem; color:#3b82f6; font-weight:600;">100% Terdaftar F.A02</span>
+            </div>
+            <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:0.85rem 1rem;">
+              <div style="font-size:0.75rem; color:#1e40af; font-weight:700;">TOTAL SESI HEARING</div>
+              <div style="font-size:1.5rem; font-weight:800; color:#1d4ed8;">6 Sesi Rapat</div>
+              <span style="font-size:0.72rem; color:#1d4ed8; font-weight:600;">Terverifikasi Notulensi</span>
+            </div>
+            <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:0.85rem 1rem;">
+              <div style="font-size:0.75rem; color:#92400e; font-weight:700;">ACTION ITEMS OPD</div>
+              <div style="font-size:1.5rem; font-weight:800; color:#d97706;">9 Tugas</div>
+              <span style="font-size:0.72rem; color:#059669; font-weight:700;">✓ 7 Selesai &bull; ⏳ 2 Pending</span>
+            </div>
+            <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:0.85rem 1rem;">
+              <div style="font-size:0.75rem; color:#065f46; font-weight:700;">CLEARANCE APPROVED</div>
+              <div style="font-size:1.5rem; font-weight:800; color:#059669;">2 Aplikasi</div>
+              <span style="font-size:0.72rem; color:#059669; font-weight:600;">Siap Rekomtek Kominfo</span>
+            </div>
+          </div>
+
+          <!-- Application Master Index Cards -->
+          <div style="display:flex; flex-direction:column; gap:1rem;" id="appMasterIndexContainer">
+
+            <!-- Card 1: SIP-RUJUK -->
+            <div class="hearing-card" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #2563eb; border-radius:12px; padding:1.25rem; box-shadow:var(--shadow-xs);">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                    <span class="badge badge-indigo" style="font-weight:800;">REG-20261006-0042</span>
+                    <h3 style="font-size:1.1rem; font-weight:800; color:#0f172a; margin:0;">SIP-RUJUK &bull; Sistem Informasi Rujukan Terpadu Daerah</h3>
+                  </div>
+                  <div style="font-size:0.8rem; color:#64748b;">
+                    🏛️ <strong>Dinas Kesehatan Kota Yogyakarta</strong> &bull; Kategori: Pelayanan Kesehatan & Integrated Referral
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span class="badge badge-emerald">✓ Clearance Gate 2 Valid</span>
+                  <span class="chip chip-blue" style="font-weight:700;">Skor F.A02: 86.5</span>
+                </div>
+              </div>
+
+              <div style="grid-template-columns: repeat(3, 1fr); display:grid; gap:0.75rem; background:#f8fafc; padding:0.75rem 1rem; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:1rem; font-size:0.8rem;">
+                <div>
+                  <span style="color:#64748b; display:block;">Sesi Hearing Terakhir:</span>
+                  <strong style="color:#0f172a;">Hearing #2 (06 Okt 2026)</strong>
+                </div>
+                <div>
+                  <span style="color:#64748b; display:block;">Progress Action Items:</span>
+                  <strong style="color:#059669;">✓ 2 Selesai &bull; ⏳ 1 In Verifikasi</strong>
+                </div>
+                <div>
+                  <span style="color:#64748b; display:block;">Status TTE Berita Acara:</span>
+                  <strong style="color:#059669;">✓ Full Signed (2/2 Pejabat)</strong>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                <div style="display:flex; gap:0.4rem;">
+                  <span class="chip chip-blue">2 Sesi Rapat</span>
+                  <span class="chip chip-green">Goals Checklist 100%</span>
+                  <span class="chip chip-purple">Rich Text Notulensi</span>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="selectAppAndOpenHearing('SIP-RUJUK')" style="font-weight:700; background:#ffffff;">
+                    🔍 Buka Log Hearing & Notulensi &rarr;
+                  </button>
+                  <a href="buat-sesi-hearing.html" class="btn btn-secondary btn-sm" style="font-weight:700;">
+                    📝 + Studio Hearing Baru
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: E-PENGADUAN -->
+            <div class="hearing-card" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #d97706; border-radius:12px; padding:1.25rem; box-shadow:var(--shadow-xs);">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                    <span class="badge badge-amber" style="font-weight:800;">REG-20261004-0018</span>
+                    <h3 style="font-size:1.1rem; font-weight:800; color:#0f172a; margin:0;">E-PENGADUAN &bull; Layanan Pengaduan Masyarakat Terintegrasi SP4N-LAPOR</h3>
+                  </div>
+                  <div style="font-size:0.8rem; color:#64748b;">
+                    🏛️ <strong>Dinas Komunikasi, Informatika & Persandian</strong> &bull; Kategori: Komunikasi Publik & Aspirasi Warga
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span class="badge badge-amber">⏳ Dalam Sesi Hearing (1 Sesi)</span>
+                  <span class="chip chip-blue" style="font-weight:700;">Skor F.A02: 78.0</span>
+                </div>
+              </div>
+
+              <div style="grid-template-columns: repeat(3, 1fr); display:grid; gap:0.75rem; background:#f8fafc; padding:0.75rem 1rem; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:1rem; font-size:0.8rem;">
+                <div>
+                  <span style="color:#64748b; display:block;">Sesi Hearing Terakhir:</span>
+                  <strong style="color:#0f172a;">Hearing #1 (04 Okt 2026)</strong>
+                </div>
+                <div>
+                  <span style="color:#64748b; display:block;">Progress Action Items:</span>
+                  <strong style="color:#d97706;">✓ 1 Selesai &bull; ⏳ 1 In Progress</strong>
+                </div>
+                <div>
+                  <span style="color:#64748b; display:block;">Status TTE Berita Acara:</span>
+                  <strong style="color:#d97706;">⏳ Pending Signature OPD</strong>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                <div style="display:flex; gap:0.4rem;">
+                  <span class="chip chip-blue">1 Sesi Rapat</span>
+                  <span class="chip chip-amber">Goal 2/3 Met</span>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="selectAppAndOpenHearing('E-PENGADUAN')" style="font-weight:700; background:#ffffff;">
+                    🔍 Buka Log Hearing & Notulensi &rarr;
+                  </button>
+                  <a href="buat-sesi-hearing.html" class="btn btn-secondary btn-sm" style="font-weight:700;">
+                    📝 + Studio Hearing Baru
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: SIM-RETRIBUSI -->
+            <div class="hearing-card" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #ef4444; border-radius:12px; padding:1.25rem; box-shadow:var(--shadow-xs);">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                    <span class="badge badge-rose" style="font-weight:800;">REG-20261005-0029</span>
+                    <h3 style="font-size:1.1rem; font-weight:800; color:#0f172a; margin:0;">SIM-RETRIBUSI &bull; Sistem Retribusi Parkir & Pengujian Kendaraan</h3>
+                  </div>
+                  <div style="font-size:0.8rem; color:#64748b;">
+                    🏛️ <strong>Dinas Perhubungan Kota Yogyakarta</strong> &bull; Kategori: Pendapatan Asli Daerah & Transaksi Keuangan
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span class="badge badge-rose">⚠️ Belum Di-hearing (Jadwal 12 Okt)</span>
+                  <span class="chip chip-blue" style="font-weight:700;">Skor F.A02: 72.4</span>
+                </div>
+              </div>
+
+              <div style="grid-template-columns: repeat(3, 1fr); display:grid; gap:0.75rem; background:#f8fafc; padding:0.75rem 1rem; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:1rem; font-size:0.8rem;">
+                <div>
+                  <span style="color:#64748b; display:block;">Jadwal Sesi Pertama:</span>
+                  <strong style="color:#ef4444;">Senin, 12 Oktober 2026 (09:00 WIB)</strong>
+                </div>
+                <div>
+                  <span style="color:#64748b; display:block;">Progress Action Items:</span>
+                  <span style="color:#94a3b8;">Belum Ada Tugas</span>
+                </div>
+                <div>
+                  <span style="color:#64748b; display:block;">Status TTE Berita Acara:</span>
+                  <span style="color:#94a3b8;">Belum Diterbitkan</span>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                <div style="display:flex; gap:0.4rem;">
+                  <span class="chip chip-rose">Jadwal Rapat 12 Okt</span>
+                  <span class="chip chip-blue">Pengujian KAK Required</span>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="selectAppAndOpenHearing('SIM-RETRIBUSI')" style="font-weight:700; background:#ffffff;">
+                    🔍 Buka Log Hearing & Notulensi &rarr;
+                  </button>
+                  <a href="buat-sesi-hearing.html" class="btn btn-primary btn-sm" style="font-weight:700;">
+                    📝 Inisiasi Sesi Hearing Sesi #1 &rarr;
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: SIMPEG-MOBILE -->
+            <div class="hearing-card" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #059669; border-radius:12px; padding:1.25rem; box-shadow:var(--shadow-xs);">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                    <span class="badge badge-emerald" style="font-weight:800;">REG-20261002-0009</span>
+                    <h3 style="font-size:1.1rem; font-weight:800; color:#0f172a; margin:0;">SIMPEG-MOBILE &bull; Layanan Kepegawaian & Presensi ASN Pemkot</h3>
+                  </div>
+                  <div style="font-size:0.8rem; color:#64748b;">
+                    🏛️ <strong>Badan Kepegawaian & Pengembangan SDM (BKPSDM)</strong> &bull; Kategori: Internal G2E & Kepegawaian
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span class="badge badge-emerald">✓ Clearance Approved (Rekomtek Ready)</span>
+                  <span class="chip chip-blue" style="font-weight:700;">Skor F.A02: 89.1</span>
+                </div>
+              </div>
+
+              <div style="grid-template-columns: repeat(3, 1fr); display:grid; gap:0.75rem; background:#f8fafc; padding:0.75rem 1rem; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:1rem; font-size:0.8rem;">
+                <div>
+                  <span style="color:#64748b; display:block;">Sesi Hearing Terakhir:</span>
+                  <strong style="color:#0f172a;">Hearing #3 (01 Okt 2026)</strong>
+                </div>
+                <div>
+                  <span style="color:#64748b; display:block;">Progress Action Items:</span>
+                  <strong style="color:#059669;">✓ 4 Selesai (100% Cleared)</strong>
+                </div>
+                <div>
+                  <span style="color:#64748b; display:block;">Status TTE Berita Acara:</span>
+                  <strong style="color:#059669;">✓ TTE Disahkan Kepala Diskominfosan</strong>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                <div style="display:flex; gap:0.4rem;">
+                  <span class="chip chip-green">3 Sesi Selesai</span>
+                  <span class="chip chip-purple">Interoperabilitas Ready</span>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="selectAppAndOpenHearing('SIMPEG-MOBILE')" style="font-weight:700; background:#ffffff;">
+                    🔍 Buka Log Hearing & Notulensi &rarr;
+                  </button>
+                  <a href="kertas-kerja-fa02.html" class="btn btn-secondary btn-sm" style="font-weight:700;">
+                    📄 Kertas Kerja F.A02 &rarr;
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANE 2: LOG SESI HEARING & NOTULENSI -->
+    <section class="hearing-pane" id="pane-sessions">
+      <div class="wb-grid">
+        <div class="wb-col-left">
+
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Dokumentasi Notulensi Sesi Hearing (Rich Format & Foto Dokumentasi)</h2>
+                <p class="panel-subtitle">Catatan kronologis rapat berbentuk format dokumen MS Word dan bukti foto/diagram rapat yang terverifikasi.</p>
+              </div>
+              <a href="buat-sesi-hearing.html" class="btn btn-primary btn-xs" style="font-weight:700;">
+                + Studio Inisiasi Hearing Baru (Full Page) &rarr;
+              </a>
+            </div>
+
+            <div class="panel-body">
+              <div id="dedicatedTimelineList" style="display:flex; flex-direction:column; gap:1.25rem;">
+
+                <!-- Session 1 Card -->
+                <div class="hearing-card" style="background:#ffffff; border:1px solid #cbd5e1; border-left:5px solid #2563eb; border-radius:12px; padding:1.25rem; box-shadow:var(--shadow-xs);">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.2rem;">
+                        <span class="badge badge-indigo" style="font-weight:800; font-size:0.75rem;">SESI HEARING #1</span>
+                        <h3 style="font-size:1rem; font-weight:800; color:#0f172a; margin:0;">Klarifikasi Urgensi KAK & Penyelarasan Alur Pelayanan</h3>
+                      </div>
+                      <div class="text-xs text-muted">
+                        📅 <strong>Rabu, 02 Oktober 2026 (09:30 - 11:30 WIB)</strong> &bull; Ruang Rapat Diskominfosan Lt. 2
+                      </div>
+                    </div>
+                    <span class="badge badge-indigo">✓ Approved w/ Action Items</span>
+                  </div>
+
+                  <!-- Target Goals Checklist Sesi #1 -->
+                  <div style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:8px; padding:0.75rem 0.9rem; margin-bottom:0.85rem; font-size:0.78rem;">
+                    <strong style="color:#0f172a; display:block; margin-bottom:0.35rem;">🎯 Target Goals & Prasyarat Rapat (3/3 Achieved):</strong>
+                    <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+                      <span class="badge badge-emerald">✓ Goal 1: Penyesuaian KAK SOP Ortala 30 Menit (Achieved)</span>
+                      <span class="badge badge-emerald">✓ Goal 2: Standardisasi NIK Terintegrasi Dukcapil (Achieved)</span>
+                      <span class="badge badge-emerald">✓ Goal 3: Penugasan Draf Kamus Data 18 Variabel (Achieved)</span>
+                    </div>
+                  </div>
+
+                  <!-- Render Rich Text Content -->
+                  <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:1rem; font-size:0.83rem; line-height:1.6; color:#334155; margin-bottom:0.85rem;">
+                    <strong style="color:#0f172a; display:block; margin-bottom:0.35rem;">📋 Risalah Rapat (Format MS Word Document):</strong>
+                    <ol style="padding-left:1.2rem; margin:0;">
+                      <li><strong>Revisi KAK Form F.P01:</strong> OPD Pengusul menyetujui penyesuaian alur rujukan 30 menit sesuai Surat Rekomendasi SOP Ortala Setda No. <code>060/1182/ORTALA/2026</code>.</li>
+                      <li><strong>Standardisasi Basis Data:</strong> Dilarang membuat database kependudukan independen. Wajib menggunakan NIK terverifikasi Ditjen Dukcapil via SSO JSS.</li>
+                      <li><strong>Action Item Penugasan:</strong> Tim Dinkes ditugaskan menyusun draf kamus data awal 18 variabel untuk ditelaah pada Hearing #2.</li>
+                    </ol>
+                  </div>
+
+                  <!-- Attachment Lampiran Foto Dokumentasi Rapat -->
+                  <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:0.75rem 0.9rem; margin-bottom:0.85rem;">
+                    <strong style="font-size:0.78rem; color:#0f172a; display:block; margin-bottom:0.4rem;">📷 Bukti Lampiran Foto Dokumentasi & Sketsa Rapat (2 Berkas):</strong>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                      <button type="button" class="photo-doc-thumb" onclick="alert('📸 Menampilkan Foto Rapat Sesi #1: Pembahasan KAK bersama Tim Dinkes di Ruang Rapat Lt. 2')">
+                        <span>🖼️ Foto_Suasana_Rapat_Hearing1.png</span>
+                      </button>
+                      <button type="button" class="photo-doc-thumb" onclick="alert('📐 Menampilkan Sketsa Diagram: Bagan Alur Pelayanan Rujukan Terpadu 30 Menit')">
+                        <span>📐 Sketsa_Alur_Triase_30menit.jpg</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Detail Tim & Peserta Hadir Terlibat -->
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-size:0.8rem; background:#f1f5f9; padding:0.6rem 0.85rem; border-radius:6px;">
+                    <div>
+                      <strong style="display:block; margin-bottom:0.25rem;">Pihak & Tim Hadir Terlibat:</strong>
+                      <div style="display:flex; flex-wrap:wrap; gap:0.3rem;">
+                        <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Hendra W. (Analis SPBE Kominfo)</span>
+                        <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 dr. Triana (Kabid Yankes Dinkes)</span>
+                        <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Bambang P. (Ortala Setda)</span>
+                        <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Rina K. (Walidata Statistik)</span>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-xs" onclick="alert('Membuka PDF Berita Acara Hearing #1...')">
+                      📄 Berita-Acara-Hearing-01.pdf
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Session 2 Card -->
+                <div class="hearing-card" style="background:#ffffff; border:1px solid #a7f3d0; border-left:5px solid #059669; border-radius:12px; padding:1.25rem; box-shadow:var(--shadow-xs);">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.2rem;">
+                        <span class="badge badge-emerald" style="font-weight:800; font-size:0.75rem;">SESI HEARING #2</span>
+                        <h3 style="font-size:1rem; font-weight:800; color:#0f172a; margin:0;">Verifikasi Redundansi, Arsitektur API SPLP, & SDM Programmer</h3>
+                      </div>
+                      <div class="text-xs text-muted">
+                        📅 <strong>Senin, 06 Oktober 2026 (10:00 - 11:30 WIB)</strong> &bull; Online Zoom & Ruang Analis Kominfo
+                      </div>
+                    </div>
+                    <span class="badge badge-emerald">✓ Clearance Approved (Final)</span>
+                  </div>
+
+                  <!-- Target Goals Checklist Sesi #2 -->
+                  <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:0.75rem 0.9rem; margin-bottom:0.85rem; font-size:0.78rem;">
+                    <strong style="color:#065f46; display:block; margin-bottom:0.35rem;">🎯 Target Goals & Prasyarat Rapat (3/3 Achieved):</strong>
+                    <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+                      <span class="badge badge-emerald">✓ Goal 1: 0 Login Mandiri - 100% SSO JSS (Achieved)</span>
+                      <span class="badge badge-emerald">✓ Goal 2: Interoperabilitas REST API SPLP SDI (Achieved)</span>
+                      <span class="badge badge-emerald">✓ Goal 3: Alokasi 2 Programmer In-House Kominfo (Achieved)</span>
+                    </div>
+                  </div>
+
+                  <!-- Render Rich Text Content -->
+                  <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:1rem; font-size:0.83rem; line-height:1.6; color:#065f46; margin-bottom:0.85rem;">
+                    <strong style="color:#065f46; display:block; margin-bottom:0.35rem;">📋 Risalah Rapat (Format MS Word Document):</strong>
+                    <ol style="padding-left:1.2rem; margin:0;">
+                      <li><strong>0 Login Mandiri:</strong> Disepakati 100% otentikasi pengguna menggunakan Single Sign-On (SSO) JSS Pemkot Yogyakarta.</li>
+                      <li><strong>Kepatuhan Satu Data Indonesia:</strong> Kamus Data 18 variabel lolos verifikasi 4 Prinsip SDI dan disetujui penyediaan REST API Bagi Pakai via SPLP.</li>
+                      <li><strong>Pengadaan In-House Programmer:</strong> Tim Kominfo mengonfirmasi alokasi 2 programmer fullstack internal (0 biaya vendor, alokasi 6 sprint Q4 2026).</li>
+                    </ol>
+                  </div>
+
+                  <!-- Attachment Lampiran Foto Dokumentasi Rapat -->
+                  <div style="background:#ffffff; border:1px solid #a7f3d0; border-radius:8px; padding:0.75rem 0.9rem; margin-bottom:0.85rem;">
+                    <strong style="font-size:0.78rem; color:#065f46; display:block; margin-bottom:0.4rem;">📷 Bukti Lampiran Foto Dokumentasi & Sketsa Rapat (2 Berkas):</strong>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                      <button type="button" class="photo-doc-thumb" onclick="alert('📸 Menampilkan Tangkapan Layar Zoom: Verification Meeting bersama Tim IT Dinkes & CSIRT')">
+                        <span>🖼️ Screenshot_Zoom_Hearing2.png</span>
+                      </button>
+                      <button type="button" class="photo-doc-thumb" onclick="alert('📐 Menampilkan Sketsa Arsitektur REST API SPLP Gateway Pemkot')">
+                        <span>📐 Sketsa_Arsitektur_API_SPLP.png</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Detail Tim & Peserta Hadir Terlibat -->
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-size:0.8rem; background:#ecfdf5; padding:0.6rem 0.85rem; border-radius:6px; border:1px solid #a7f3d0;">
+                    <div>
+                      <strong style="display:block; margin-bottom:0.25rem;">Pihak & Tim Hadir Terlibat:</strong>
+                      <div style="display:flex; flex-wrap:wrap; gap:0.3rem;">
+                        <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Hendra W. (Analis SPBE Kominfo)</span>
+                        <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Tim IT Dinkes (Pranata Komputer)</span>
+                        <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Tim CSIRT Cyber Kominfo</span>
+                        <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Seksi Data & Statistik</span>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-xs" onclick="alert('Membuka PDF Berita Acara Hearing #2 Final TTE BSrE...')">
+                      📄 Berita-Acara-Hearing-02-Final.pdf
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column Sidebar -->
+        <div class="wb-col-right">
+
+          <!-- Card Clearance Status -->
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Status Clearance Hearing SPBE</h3>
+            </div>
+            <div class="panel-body">
+              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.8rem;">
+                <div style="font-weight:800; color:#0f172a; margin-bottom:0.4rem;">Ringkasan Keputusan Tim Analis:</div>
+                <ul style="padding-left:1.1rem; margin:0; line-height:1.6; color:#334155;">
+                  <li><strong style="color:#059669;">Probis & SOP Ortala:</strong> Gate 1 Valid</li>
+                  <li><strong style="color:#059669;">Redundansi Portofolio:</strong> Diferensiasi Unik</li>
+                  <li><strong style="color:#059669;">SDI & Interoperabilitas:</strong> REST API SPLP Approved</li>
+                  <li><strong style="color:#059669;">Jalur Delivery:</strong> Jalur A (In-House Kominfo)</li>
+                </ul>
+              </div>
+
+              <a href="kertas-kerja-fa02.html" class="btn btn-primary" style="width:100%; justify-content:center; padding:0.75rem; font-weight:800;">
+                Gunakan Notulensi di F.A02 &rarr;
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PANE 2: PELACAK ACTION ITEMS OPD -->
+    <section class="hearing-pane" id="pane-action-items">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Pelacak Action Items & Catatan Perbaikan OPD</h2>
+            <p class="panel-subtitle">Daftar prasyarat dokumen dan penyesuaian teknis yang wajib dipenuhi Perangkat Daerah pengusul.</p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-xs" onclick="addNewActionItem()">
+            + Tambah Action Item Baru
+          </button>
+        </div>
+        <div class="panel-body">
+
+          <div id="actionItemList">
+
+            <!-- Item 1 -->
+            <div class="action-item-row">
+              <div>
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                  <span class="badge badge-emerald">✓ Selesai</span>
+                  <strong style="font-size:0.88rem; color:#0f172a;">Penyesuaian KAK F.P01 dengan SOP Ortala 30 Menit</strong>
+                </div>
+                <div class="text-xs text-muted">
+                  Batas Waktu: 04 Oktober 2026 &bull; Penanggung Jawab: Subbag Renval Dinas Kesehatan &bull; Sumber: Hearing #1
+                </div>
+              </div>
+              <span class="chip chip-green" style="font-size:0.72rem;">Verified by Analis</span>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="action-item-row">
+              <div>
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                  <span class="badge badge-emerald">✓ Selesai</span>
+                  <strong style="font-size:0.88rem; color:#0f172a;">Penyusunan Draf Kamus Data 18 Variabel Standar SDI</strong>
+                </div>
+                <div class="text-xs text-muted">
+                  Batas Waktu: 05 Oktober 2026 &bull; Penanggung Jawab: Tim IT Dinkes &bull; Sumber: Hearing #1
+                </div>
+              </div>
+              <span class="chip chip-green" style="font-size:0.72rem;">Verified by Walidata</span>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="action-item-row" style="border-left:4px solid #d97706;">
+              <div>
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                  <span class="badge badge-amber">⏳ Dalam Verifikasi</span>
+                  <strong style="font-size:0.88rem; color:#0f172a;">Surat Pernyataan Integrasi SSO JSS & Tanpa Login Pengguna Mandiri</strong>
+                </div>
+                <div class="text-xs text-muted">
+                  Batas Waktu: 08 Oktober 2026 &bull; Penanggung Jawab: Kepala Dinas Kesehatan &bull; Sumber: Hearing #2
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline btn-xs" onclick="alert('Verifikasi dokumen pernyataan SSO JSS...'); this.innerText='✓ Terverifikasi'; this.className='btn btn-secondary btn-xs';">
+                Verifikasi Dokumen
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PANE 3: DAFTAR HADIR & BERITA ACARA TTE -->
+    <section class="hearing-pane" id="pane-presensi">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Presensi Digital & Berita Acara Hearing TTE BSrE</h2>
+            <p class="panel-subtitle">Daftar kehadiran resmi rapat klarifikasi dan pengesahan TTE sertifikat digital BSSN.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+
+            <!-- Daftar Hadir Peserta -->
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:1.15rem;">
+              <h4 style="font-size:0.9rem; font-weight:800; color:#0f172a; margin-bottom:0.75rem;">
+                👥 Daftar Hadir Peserta Hearing #2 (06 Okt 2026):
+              </h4>
+
+              <div class="evidence-list">
+                <div class="evidence-item" style="background:#ffffff;">
+                  <div class="evidence-icon">👤</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">Hendra Wijaya, S.Kom</div>
+                    <div class="evidence-meta">Analis SPBE Diskominfo &bull; Presensi: 10:01 WIB &bull; <span class="text-success">Hadir</span></div>
+                  </div>
+                </div>
+
+                <div class="evidence-item" style="background:#ffffff;">
+                  <div class="evidence-icon">👤</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">dr. Triana Rahmawati</div>
+                    <div class="evidence-meta">Kabid Pelayanan Kesehatan Dinkes &bull; Presensi: 10:04 WIB &bull; <span class="text-success">Hadir</span></div>
+                  </div>
+                </div>
+
+                <div class="evidence-item" style="background:#ffffff;">
+                  <div class="evidence-icon">👤</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">Rina Kusuma, S.Si</div>
+                    <div class="evidence-meta">Walidata Statistik Daerah &bull; Presensi: 10:05 WIB &bull; <span class="text-success">Hadir</span></div>
+                  </div>
+                </div>
+
+                <div class="evidence-item" style="background:#ffffff;">
+                  <div class="evidence-icon">👤</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">Bambang Pranoto, M.Eng</div>
+                    <div class="evidence-meta">Kabid TI & Komunikasi &bull; Presensi: 10:08 WIB &bull; <span class="text-success">Hadir</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TTE Verification Card -->
+            <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:1.15rem; display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <h4 style="font-size:0.9rem; font-weight:800; color:#0f172a; margin-bottom:0.5rem;">
+                  🔏 Status Pengesahan Berita Acara Hearing:
+                </h4>
+                <p style="font-size:0.8rem; color:#475569; margin-bottom:1rem; line-height:1.5;">
+                  Seluruh risalah rapat dan hasil clearance disahkan secara elektronik menggunakan Sertifikat Digital BSrE Badan Siber dan Sandi Negara (BSSN).
+                </p>
+
+                <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:1rem; margin-bottom:1rem;">
+                  <div style="font-weight:800; font-size:0.85rem; color:#065f46; margin-bottom:0.25rem;">🔒 TTE BSrE Terverifikasi Sah</div>
+                  <div class="mono-text" style="font-size:0.72rem; color:#047857;">
+                    ID Sertifikat: BSR-HEARING-20261006-042<br>
+                    Waktu Sign-Off: 06 Oktober 2026, 11:35:12 WIB
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="alert('Membuka preview Berita Acara Hearing lengkap dengan TTE BSrE...')">
+                🖨️ Cetak Berita Acara Hearing PDF
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL CREATION JADWAL / SESI HEARING BARU DENGAN RICH TEXT MS WORD & UPLOAD FOTO -->
+  <div class="modal-overlay" id="modalCreateSession">
+    <div class="modal-container" style="max-width:750px;">
+      <div class="modal-header">
+        <strong style="font-size:0.95rem;">📝 Catat Sesi Hearing & Risalah Notulensi Baru (Format Word & Gambar)</strong>
+        <button type="button" class="btn btn-secondary btn-xs" onclick="closeModalCreateSession()">&times; Tutup</button>
+      </div>
+
+      <div class="modal-body" style="max-height:80vh; overflow-y:auto;">
+        <div class="form-group">
+          <label class="form-label">Topik / Agendas Sesi Hearing Baru:</label>
+          <input type="text" id="addTopic" class="form-input" placeholder="Contoh: Hearing #3: Penetapan Skema Throttling API & SPLP" value="Hearing #3: Fine-Tuning Integrasi API Gateway & Security SPLP">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem;" class="form-group">
+          <div>
+            <label class="form-label">Tanggal & Waktu Rapat:</label>
+            <input type="text" id="addTime" class="form-input" value="09 Oktober 2026, 09:30 WIB">
+          </div>
+          <div>
+            <label class="form-label">Status Outcome Hearing:</label>
+            <select id="addStatus" class="form-select" style="font-weight:700;">
+              <option value="✓ Clearance Approved (Final)">✓ Clearance Approved (Final)</option>
+              <option value="✓ Approved w/ Action Items" selected>✓ Approved w/ Action Items</option>
+              <option value="⏳ In Progress / Discussion">⏳ In Progress / Discussion</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pihak / Pejabat yang Hadir:</label>
+          <input type="text" id="addAttendees" class="form-input" value="Tim Analis SPBE Kominfo, Tim IT Dinkes, & Tim CSIRT Cyber Kominfo">
+        </div>
+
+        <!-- RICH TEXT EDITOR MS WORD STYLE TOOLBAR -->
+        <div class="form-group">
+          <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Notulensi Hasil Kesepakatan Rapat (WYSIWYG Rich Text Editor MS Word):</span>
+            <span class="text-xs text-muted">Bisa format Bold, List, & Disisipkan Gambar</span>
+          </label>
+
+          <!-- Toolbar Formatting -->
+          <div class="editor-toolbar">
+            <button type="button" class="editor-btn" onclick="execEditorCommand('bold')" title="Bold (Ctrl+B)"><b>B</b> Bold</button>
+            <button type="button" class="editor-btn" onclick="execEditorCommand('italic')" title="Italic (Ctrl+I)"><i>I</i> Italic</button>
+            <button type="button" class="editor-btn" onclick="execEditorCommand('underline')" title="Underline (Ctrl+U)"><u>U</u> Underline</button>
+            <button type="button" class="editor-btn" onclick="execEditorCommand('strikeThrough')" title="Strikethrough"><s>S</s> Strike</button>
+            <span style="border-right:1px solid #cbd5e1; height:18px; margin:0 0.2rem;"></span>
+            <button type="button" class="editor-btn" onclick="execEditorCommand('insertUnorderedList')" title="Bullet List">• List Bullet</button>
+            <button type="button" class="editor-btn" onclick="execEditorCommand('insertOrderedList')" title="Numbered List">1. List Angka</button>
+            <span style="border-right:1px solid #cbd5e1; height:18px; margin:0 0.2rem;"></span>
+            <button type="button" class="editor-btn" onclick="execEditorCommand('formatBlock', 'H3')" title="Heading 3">Sub-Heading</button>
+            <button type="button" class="editor-btn" onclick="execEditorCommand('formatBlock', 'P')" title="Paragraph">Normal</button>
+            <span style="border-right:1px solid #cbd5e1; height:18px; margin:0 0.2rem;"></span>
+            <button type="button" class="editor-btn" onclick="triggerEditorImageUpload()" style="background:#eff6ff; color:#1d4ed8; font-weight:700;">
+              🖼️ + Sisipkan Foto Rapat
+            </button>
+          </div>
+
+          <!-- Canvas Textarea Rich Text -->
+          <div id="addNotesRich" class="editor-content-box" contenteditable="true">
+            <p><b>Poin-poin Kesepakatan Utama Rapat:</b></p>
+            <ol>
+              <li><b>Rate Limiting &amp; DDoS Throttling:</b> Batas diset 120 request/menit pada API Gateway SPLP Pemkot.</li>
+              <li><b>Masking NIK Warga:</b> Keamanan payload NIK menggunakan masking 6 digit tengah (contoh: <code>347101******0001</code>).</li>
+              <li><b>Persetujuan Rekomtek F.A02:</b> Seluruh pihak sepakat draf rekomendasi teknis F.A02 dapat disahkan.</li>
+            </ol>
+          </div>
+          <input type="file" id="editorImageInput" accept="image/*" style="display:none;" onchange="handleEditorImageSelect(event)">
+        </div>
+
+        <!-- UPLOAD FOTO DOKUMENTASI & DIAGRAM RAPAT -->
+        <div class="form-group" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:0.85rem;">
+          <label class="form-label" style="margin-bottom:0.4rem; display:flex; justify-content:space-between; align-items:center;">
+            <span>📷 Lampiran Bukti Foto Dokumentasi &amp; Diagram Arsitektur:</span>
+            <span class="text-xs text-muted">Format: PNG, JPG, WEBP (Max 5MB)</span>
+          </label>
+          <div id="attachedPhotoGallery" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+            <div style="padding:0.35rem 0.65rem; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; font-size:0.75rem; color:#0f172a; display:flex; align-items:center; gap:0.35rem;">
+              <span>🖼️ Foto_Rapat_Hearing3.png</span>
+              <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="this.parentElement.remove()">&times;</span>
+            </div>
+            <div style="padding:0.35rem 0.65rem; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; font-size:0.75rem; color:#0f172a; display:flex; align-items:center; gap:0.35rem;">
+              <span>📐 Diagram_Gateway_SPLP.jpg</span>
+              <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="this.parentElement.remove()">&times;</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline btn-xs" style="background:#ffffff; font-weight:700;" onclick="triggerEditorImageUpload()">
+            📷 + Unggah / Pilih Berkas Foto Dokumentasi
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Lampirkan Berkas PDF Notulensi Resmi (MinIO Object Storage):</label>
+          <input type="text" id="addFile" class="form-input mono-text" value="Berita-Acara-Hearing-03-Security.pdf">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModalCreateSession()">Batal</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="submitNewSession()">💾 Simpan & Terbitkan Sesi Hearing</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../tengah.js"></script>
+  <script>
+    // Tab Switcher for Hearing Module Dedicated Panes
+    document.querySelectorAll('.hearing-nav-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.hearing-nav-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const target = this.getAttribute('data-pane');
+        document.querySelectorAll('.hearing-pane').forEach(pane => {
+          if (pane.id === target) pane.classList.add('active');
+          else pane.classList.remove('active');
+        });
+      });
+    });
+
+    // Helper Functions for App Switcher & Master Index
+    function switchHearingApp(appId) {
+      const titleEl = document.querySelector('.wb-app-title');
+      const subEl = document.querySelector('.wb-app-sub');
+      
+      if (appId === 'SIP-RUJUK') {
+        if (titleEl) titleEl.innerHTML = 'SIP-RUJUK &bull; Sistem Informasi Rujukan Terpadu Daerah';
+        if (subEl) subEl.innerHTML = `<span><strong>No. Registrasi:</strong> <span class="mono-text">REG-20261006-0042</span></span> <span>&bull;</span> <span><strong>Perangkat Daerah:</strong> Dinas Kesehatan Kota Yogyakarta</span> <span>&bull;</span> <span><strong>Status Clarification:</strong> Clearance Gate 2 Valid & Disetujui</span>`;
+      } else if (appId === 'E-PENGADUAN') {
+        if (titleEl) titleEl.innerHTML = 'E-PENGADUAN &bull; Layanan Pengaduan Masyarakat SP4N-LAPOR';
+        if (subEl) subEl.innerHTML = `<span><strong>No. Registrasi:</strong> <span class="mono-text">REG-20261004-0018</span></span> <span>&bull;</span> <span><strong>Perangkat Daerah:</strong> Dinas Komunikasi, Informatika & Persandian</span> <span>&bull;</span> <span><strong>Status Clarification:</strong> Sesi Hearing #1 In Progress</span>`;
+      } else if (appId === 'SIM-RETRIBUSI') {
+        if (titleEl) titleEl.innerHTML = 'SIM-RETRIBUSI &bull; Sistem Retribusi Parkir & Pengujian Kendaraan';
+        if (subEl) subEl.innerHTML = `<span><strong>No. Registrasi:</strong> <span class="mono-text">REG-20261005-0029</span></span> <span>&bull;</span> <span><strong>Perangkat Daerah:</strong> Dinas Perhubungan Kota Yogyakarta</span> <span>&bull;</span> <span><strong>Status Clarification:</strong> Belum Di-hearing (Jadwal 12 Okt)</span>`;
+      } else if (appId === 'SIMPEG-MOBILE') {
+        if (titleEl) titleEl.innerHTML = 'SIMPEG-MOBILE &bull; Layanan Kepegawaian & Presensi ASN';
+        if (subEl) subEl.innerHTML = `<span><strong>No. Registrasi:</strong> <span class="mono-text">REG-20261002-0009</span></span> <span>&bull;</span> <span><strong>Perangkat Daerah:</strong> BKPSDM Kota Yogyakarta</span> <span>&bull;</span> <span><strong>Status Clarification:</strong> Final Clearance Approved (Rekomtek Ready)</span>`;
+      }
+    }
+
+    function selectAppAndOpenHearing(appId) {
+      const select = document.getElementById('quickAppSelector');
+      if (select) {
+        select.value = appId;
+        switchHearingApp(appId);
+      }
+      document.querySelectorAll('.hearing-nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-pane') === 'pane-sessions') {
+          btn.click();
+        }
+      });
+    }
+
+    function filterHearingAppIndex(val) {
+      const q = val.toLowerCase();
+      const cards = document.querySelectorAll('#appMasterIndexContainer .hearing-card');
+      cards.forEach(c => {
+        if (c.innerText.toLowerCase().includes(q)) {
+          c.style.display = 'block';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+
+    // Rich Text Editor Commands (MS Word Style)
+    function execEditorCommand(command, value = null) {
+      document.execCommand(command, false, value);
+      const editor = document.getElementById('addNotesRich');
+      if (editor) editor.focus();
+    }
+
+    // Trigger File Dialog for Images
+    function triggerEditorImageUpload() {
+      const fileInput = document.getElementById('editorImageInput');
+      if (fileInput) fileInput.click();
+    }
+
+    // Handle Image Selection and Embed into Rich Editor + Gallery
+    function handleEditorImageSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const imgSrc = evt.target.result;
+        
+        // 1. Embed image into Rich Text Canvas
+        const imgTag = `<img src="${imgSrc}" alt="${file.name}" style="max-width:100%; border-radius:6px; margin:0.5rem 0; border:1px solid #cbd5e1;"><br>`;
+        document.execCommand('insertHTML', false, imgTag);
+
+        // 2. Add thumbnail badge into Gallery preview
+        const gallery = document.getElementById('attachedPhotoGallery');
+        if (gallery) {
+          const badge = document.createElement('div');
+          badge.style.cssText = 'padding:0.35rem 0.65rem; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; font-size:0.75rem; color:#0f172a; display:flex; align-items:center; gap:0.35rem; animation:fadeIn 0.3s ease;';
+          badge.innerHTML = `
+            <span>🖼️ ${file.name}</span>
+            <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="this.parentElement.remove()">&times;</span>
+          `;
+          gallery.appendChild(badge);
+        }
+
+        alert(`✓ Foto "${file.name}" berhasil diunggah & disisipkan ke dalam notulensi rapat!`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    let dedicatedSessionCount = 2;
+
+    function openModalCreateSession() {
+      const m = document.getElementById('modalCreateSession');
+      if (m) m.classList.add('active');
+    }
+
+    function closeModalCreateSession() {
+      const m = document.getElementById('modalCreateSession');
+      if (m) m.classList.remove('active');
+    }
+
+    function submitNewSession() {
+      const topic = document.getElementById('addTopic').value.trim();
+      const time = document.getElementById('addTime').value.trim();
+      const status = document.getElementById('addStatus').value;
+      const attendees = document.getElementById('addAttendees').value.trim();
+      const editor = document.getElementById('addNotesRich');
+      const richNotesHtml = editor ? editor.innerHTML : '';
+      const file = document.getElementById('addFile').value.trim() || 'Berita-Acara-Hearing-Baru.pdf';
+
+      if (!topic || !richNotesHtml.trim()) {
+        alert('Mohon isi Judul Topik dan Notulensi Hasil Rapat!');
+        return;
+      }
+
+      dedicatedSessionCount++;
+      document.getElementById('statTotalHearing').innerText = `${dedicatedSessionCount} Sesi`;
+
+      let badgeClass = 'badge-indigo';
+      let borderCol = '#2563eb';
+      if (status.includes('Final') || status.includes('Clearance')) {
+        badgeClass = 'badge-emerald';
+        borderCol = '#059669';
+      }
+
+      const card = document.createElement('div');
+      card.className = 'hearing-card';
+      card.style.cssText = `background:#ffffff; border:1px solid ${borderCol}; border-left:5px solid ${borderCol}; border-radius:12px; padding:1.25rem; box-shadow:var(--shadow-xs); animation:fadeIn 0.3s ease;`;
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.2rem;">
+              <span class="badge ${badgeClass}" style="font-weight:800; font-size:0.75rem;">SESI HEARING #${dedicatedSessionCount}</span>
+              <h3 style="font-size:1rem; font-weight:800; color:#0f172a; margin:0;">${topic}</h3>
+            </div>
+            <div class="text-xs text-muted">
+              📅 <strong>${time}</strong> &bull; Hadir: ${attendees}
+            </div>
+          </div>
+          <span class="badge ${badgeClass}">${status}</span>
+        </div>
+
+        <!-- Rich Text HTML Content Rendered -->
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:1rem; font-size:0.83rem; line-height:1.6; color:#334155; margin-bottom:0.85rem;">
+          <strong style="color:#0f172a; display:block; margin-bottom:0.35rem;">📋 Risalah Rapat (Format MS Word Document):</strong>
+          <div style="margin:0;">${richNotesHtml}</div>
+        </div>
+
+        <!-- Attachment Foto Dokumentasi Thumbnail -->
+        <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:0.75rem 0.9rem; margin-bottom:0.85rem;">
+          <strong style="font-size:0.78rem; color:#0f172a; display:block; margin-bottom:0.4rem;">📷 Bukti Lampiran Foto Dokumentasi & Sketsa Rapat:</strong>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button type="button" class="photo-doc-thumb" onclick="alert('📸 Menampilkan foto dokumentasi rapat Sesi #${dedicatedSessionCount}')">
+              <span>🖼️ Foto_Dokumentasi_Rapat_Sesi${dedicatedSessionCount}.png</span>
+            </button>
+            <button type="button" class="photo-doc-thumb" onclick="alert('📐 Menampilkan sketsa diagram arsitektur Sesi #${dedicatedSessionCount}')">
+              <span>📐 Sketsa_Diagram_Sesi${dedicatedSessionCount}.jpg</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-size:0.8rem; background:#f1f5f9; padding:0.6rem 0.85rem; border-radius:6px;">
+          <div>
+            <strong>Berkas MinIO Storage:</strong> ${file}
+          </div>
+          <button type="button" class="btn btn-secondary btn-xs" onclick="alert('Membuka ${file}...')">
+            📄 Unduh Berita Acara Sesi #${dedicatedSessionCount}
+          </button>
+        </div>
+      `;
+
+      const list = document.getElementById('dedicatedTimelineList');
+      if (list) list.insertBefore(card, list.firstChild);
+      closeModalCreateSession();
+      alert(`✓ Sesi Hearing #${dedicatedSessionCount} ("${topic}") dengan notulensi Rich Text MS Word & lampiran foto berhasil diterbitkan!`);
+    }
+
+    function addNewActionItem() {
+      const task = prompt('Masukkan tugas/persyaratan Action Item baru untuk Perangkat Daerah:', 'Upload Dokumen SOP Hasil Penyelarasan Ortala (PDF)');
+      if (!task) return;
+
+      const list = document.getElementById('actionItemList');
+      if (!list) return;
+
+      const row = document.createElement('div');
+      row.className = 'action-item-row';
+      row.style.borderLeft = '4px solid #d97706';
+      row.style.animation = 'fadeIn 0.3s ease';
+      row.innerHTML = `
+        <div>
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+            <span class="badge badge-amber">⏳ Pending OPD</span>
+            <strong style="font-size:0.88rem; color:#0f172a;">${task}</strong>
+          </div>
+          <div class="text-xs text-muted">
+            Ditambahkan Hari Ini &bull; Penanggung Jawab: Tim Teknis OPD
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-xs" onclick="alert('Verifikasi action item...'); this.innerText='✓ Terverifikasi'; this.className='btn btn-secondary btn-xs';">
+          Verifikasi Dokumen
+        </button>
+      `;
+      list.appendChild(row);
+      alert(`✓ Action Item "${task}" berhasil ditambahkan ke daftar pelacak!`);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('new_session_added') === 'true') {
+        dedicatedSessionCount = 3;
+        document.getElementById('statTotalHearing').innerText = '3 Sesi';
+
+        const list = document.getElementById('dedicatedTimelineList');
+        if (list) {
+          const card = document.createElement('div');
+          card.className = 'hearing-card';
+          card.style.cssText = `background:#ffffff; border:1px solid #059669; border-left:5px solid #059669; border-radius:12px; padding:1.25rem; box-shadow:var(--shadow-xs); animation:fadeIn 0.3s ease; margin-bottom:1rem;`;
+          card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+              <div>
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.2rem;">
+                  <span class="badge badge-emerald" style="font-weight:800; font-size:0.75rem;">SESI HEARING #3</span>
+                  <h3 style="font-size:1rem; font-weight:800; color:#0f172a; margin:0;">Hearing #3: Fine-Tuning Integrasi API Gateway & Security SPLP Pemkot</h3>
+                </div>
+                <div class="text-xs text-muted">
+                  📅 <strong>Jumat, 09 Oktober 2026 (09:30 WIB)</strong> &bull; Ruang Rapat Diskominfosan & Zoom
+                </div>
+              </div>
+              <span class="badge badge-emerald">✓ Clearance Approved (Final TTE)</span>
+            </div>
+
+            <!-- Target Goals Checklist Sesi #3 -->
+            <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:0.75rem 0.9rem; margin-bottom:0.85rem; font-size:0.78rem;">
+              <strong style="color:#065f46; display:block; margin-bottom:0.35rem;">🎯 Target Goals & Prasyarat Rapat (3/3 Achieved):</strong>
+              <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+                <span class="badge badge-emerald">✓ Goal 1: Rate Limiting 120 req/menit API Gateway (Achieved)</span>
+                <span class="badge badge-emerald">✓ Goal 2: Enkripsi TLS 1.3 & Data Masking NIK (Achieved)</span>
+                <span class="badge badge-emerald">✓ Goal 3: Harmonisasi Kamus Data SDI Disetujui Walidata (Achieved)</span>
+              </div>
+            </div>
+
+            <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:1rem; font-size:0.83rem; line-height:1.6; color:#065f46; margin-bottom:0.85rem;">
+              <strong style="color:#065f46; display:block; margin-bottom:0.35rem;">📋 Risalah Rapat (Disahkan via Studio Workspace):</strong>
+              <ol style="padding-left:1.2rem; margin:0;">
+                <li><b>Rate Limiting & DDoS Throttling:</b> Batas diset 120 request/menit pada API Gateway SPLP Pemkot.</li>
+                <li><b>Keamanan Data Pribadi (PDP):</b> Payload NIK warga menggunakan <i>masking 6 digit tengah</i> (contoh: <code>347101******0001</code>).</li>
+                <li><b>100% Target Goal Terpenuhi:</b> Seluruh pihak menyetujui draf Berita Acara Rekomendasi Teknis Form F.A02.</li>
+              </ol>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid #a7f3d0; border-radius:8px; padding:0.75rem 0.9rem; margin-bottom:0.85rem;">
+              <strong style="font-size:0.78rem; color:#065f46; display:block; margin-bottom:0.4rem;">📷 Bukti Lampiran Foto Dokumentasi & Sketsa Rapat (2 Berkas):</strong>
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button type="button" class="photo-doc-thumb" onclick="alert('📸 Menampilkan Foto Absensi Sesi #3')">
+                  <span>🖼️ Foto_Absensi_Rapat_Hearing3.png</span>
+                </button>
+                <button type="button" class="photo-doc-thumb" onclick="alert('📐 Menampilkan Sketsa Arsitektur SPLP Sesi #3')">
+                  <span>📐 Sketsa_Arsitektur_API_SPLP.jpg</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-size:0.8rem; background:#ecfdf5; padding:0.6rem 0.85rem; border-radius:6px; border:1px solid #a7f3d0;">
+              <div>
+                <strong style="display:block; margin-bottom:0.25rem;">Pihak & Tim Hadir Terlibat:</strong>
+                <div style="display:flex; flex-wrap:wrap; gap:0.3rem;">
+                  <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Hendra W. (Analis SPBE Kominfo)</span>
+                  <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 dr. Triana (Kabid Yankes Dinkes)</span>
+                  <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Rina K. (Walidata Statistik)</span>
+                  <span class="attendee-chip" style="font-size:0.72rem; padding:0.2rem 0.55rem; margin:0;">👤 Tim CSIRT Cyber Kominfo</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-xs" onclick="alert('Membuka PDF Berita Acara Hearing #3...')">
+                📄 Berita-Acara-Hearing-03-Final.pdf
+              </button>
+            </div>
+          `;
+          list.insertBefore(card, list.firstChild);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

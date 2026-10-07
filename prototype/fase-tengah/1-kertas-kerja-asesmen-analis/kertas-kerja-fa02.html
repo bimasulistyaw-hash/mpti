@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kertas Kerja Analis Asesmen Kelayakan SPBE (Form F.A02) - Diskominfo Kota Yogyakarta</title>
+  <meta name="description" content="Workbench Kertas Kerja Asesmen Objektif 12 Bagian Kelayakan SPBE, Uji Redundansi, Kuadran McFarlan-Peppard, serta Dossier Inspeksi Berkas Permohonan OPD.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../tengah.css">
+  <style>
+    /* Workbench Split Layout (Kiri: Alur Asesmen 1-4, Kanan: Dossier Berkas OPD) */
+    .wb-page-wrapper {
+      max-width: 1440px;
+      margin: 1.5rem auto 3.5rem;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    .wb-split-grid {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1200px) {
+      .wb-split-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .wb-stream-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* Sticky Anchor Flow Tracker */
+    .wb-flow-tracker {
+      display: flex;
+      background: #ffffff;
+      border: 1px solid var(--border-medium);
+      padding: 0.4rem;
+      border-radius: var(--radius-md);
+      gap: 0.35rem;
+      position: sticky;
+      top: 4.85rem;
+      z-index: 90;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+    .wb-flow-step {
+      flex: 1;
+      padding: 0.55rem 0.65rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+    .wb-flow-step:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+    }
+    .wb-flow-step.active {
+      background: #eff6ff;
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+    }
+
+    /* Section Step Cards */
+    .wb-step-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .step-number-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.74rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      padding: 0.2rem 0.6rem;
+      background: #eff6ff;
+      color: var(--primary);
+      border-radius: var(--radius-xs);
+      margin-bottom: 0.65rem;
+      border: 1px solid #bfdbfe;
+    }
+
+    /* Sisi Kanan: Sticky Dossier Inspector Panel */
+    .wb-dossier-right {
+      position: sticky;
+      top: 4.85rem;
+      max-height: calc(100vh - 5.5rem);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .wb-dossier-right::-webkit-scrollbar {
+      width: 5px;
+    }
+    .wb-dossier-right::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+
+    .dossier-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+    }
+
+    .dossier-head {
+      background: #f8fafc;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dossier-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dossier-tabs {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      gap: 0.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .dossier-tab-btn {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-align: center;
+    }
+    .dossier-tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .dossier-body {
+      padding: 1.25rem 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .dossier-pane { display: none; }
+    .dossier-pane.active { display: block; animation: fadeIn 0.2s ease; }
+
+    /* Dossier File Item */
+    .dossier-file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      padding: 0.85rem;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.75rem;
+      background: #ffffff;
+      transition: var(--transition-fast);
+      cursor: pointer;
+    }
+    .dossier-file-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+      background: #f8fafc;
+    }
+    .dossier-file-item.selected {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .doc-viewer-paper {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      max-height: 380px;
+      overflow-y: auto;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    .doc-viewer-paper::-webkit-scrollbar {
+      width: 4px;
+    }
+    .doc-viewer-paper::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Nav -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <a href="index.html" class="brand-link">
+          <div class="logo-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">MPSI SPBE &bull; Tim Analis Kominfo</span>
+            <span class="brand-subtitle">1. Kertas Kerja Asesmen Analis (F.A02)</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Antrean Usulan OPD</a>
+        <a href="katalog-portofolio-pemkot.html" class="nav-link">Portofolio Aplikasi Pemkot</a>
+        <a href="kertas-kerja-fa02.html" class="nav-link active">Kertas Kerja F.A02</a>
+        <a href="manajemen-hearing-opd.html" class="nav-link">Hearing OPD</a>
+        <a href="dashboard-kuadran-portofolio.html" class="nav-link">Dashboard 4 Kuadran</a>
+        <a href="../2-standardisasi-metadata-kebutuhan/index.html" class="nav-link">Metadata SDI & Risiko (M.R01) &rarr;</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn-secondary btn-sm">
+          &larr; Kembali ke Antrean
+        </a>
+        <div class="user-badge">
+          <span class="user-badge-avatar">AN</span>
+          <div class="user-badge-text">
+            <span class="user-badge-name">Hendra Wijaya, S.Kom</span>
+            <span class="user-badge-role">Analis SPBE Diskominfo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="wb-page-wrapper">
+
+    <!-- Header Card Usulan yang Ditelaah -->
+    <section class="workbench-header-card">
+      <div class="wb-app-info">
+        <div class="wb-app-avatar">🏥</div>
+        <div>
+          <div style="display:flex; align-items:center; gap:0.65rem; margin-bottom:0.25rem; flex-wrap:wrap;">
+            <h1 class="wb-app-title">SIP-RUJUK &bull; Sistem Pelayanan Rujukan Kesehatan</h1>
+            <span class="chip chip-amber">Sedang Ditelaah Analis</span>
+            <span class="chip chip-blue" style="font-weight:800;">🛡️ Gerbang Penyaringan Pertama (Gatekeeper F.A02)</span>
+          </div>
+          <div class="wb-meta-tags">
+            <span>No. Reg: <strong class="text-mono text-accent">REG-20261006-0042</strong></span> &bull;
+            <span>OPD: <strong>Dinas Kesehatan Kota Yogyakarta</strong></span> &bull;
+            <span>Surat eOffice: <strong class="text-mono">000.8.3/1420/DINKES/2026</strong></span> &bull;
+            <span>PIC: dr. Rian Pratama (0812-3456-7890)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wb-score-pill">
+        <div class="wb-score-label">Skor Kelayakan SPBE</div>
+        <div class="wb-score-num text-success" id="displayTotalScore">86.5 <span style="font-size:1.1rem; font-weight:600;">/ 100</span></div>
+        <div class="score-gauge-bar">
+          <div class="score-gauge-fill" id="scoreBarFill" style="width: 86.5%;"></div>
+        </div>
+        <span class="chip chip-green" id="displayFeasibilityStatus" style="font-size:0.75rem;">Sangat Layak (Rekomtek)</span>
+      </div>
+    </section>
+
+    <!-- WORKBENCH DUAL-PANE SPLIT VIEW -->
+    <div class="wb-split-grid">
+
+      <!-- ================= SISI KIRI (60%): ALUR KERJA ANALIS GERBANG PENYARINGAN PERTAMA ================= -->
+      <div class="wb-stream-left">
+
+        <!-- Sticky Progress Flow Tracker -->
+        <nav class="wb-flow-tracker" aria-label="Alur Asesmen Kertas Kerja Gatekeeper">
+          <a href="#sec-probis" class="wb-flow-step active">
+            <span>📋</span> 1. Urgensi & Probis
+          </a>
+          <a href="#sec-redundansi" class="wb-flow-step">
+            <span>🔍</span> 2. Redundansi Dini
+          </a>
+          <a href="#sec-konseptual" class="wb-flow-step">
+            <span>⚙️</span> 3. Kelayakan Konseptual
+          </a>
+          <a href="#sec-rekomendasi" class="wb-flow-step">
+            <span>⚖️</span> 4. Finalisasi & Simpan
+          </a>
+        </nav>
+
+        <!-- 1️⃣ PILAR 1: VALIDASI URGENSI & ALUR PROSES BISNIS -->
+        <section class="wb-step-card" id="sec-probis">
+          <span class="step-number-tag">BAGIAN 01 &bull; PILAR 1: VALIDASI URGENSI & PROSES BISNIS</span>
+          <div class="rubrik-head" style="margin-bottom:1.25rem; padding-bottom:0.75rem;">
+            <div>
+              <h2 class="rubrik-title">1. Validasi Urgensi & Alur Proses Bisnis (Business Process Validation)</h2>
+              <p class="rubrik-desc"><strong>Inti yang dinilai:</strong> Apakah layanan yang diajukan ini benar-benar kebutuhan mendesak untuk memperbaiki pelayanan publik atau tupoksi OPD, atau sekadar "pengen punya aplikasi"?</p>
+            </div>
+            <span class="chip chip-blue" style="font-size:0.75rem;">Bobot Pilar: 35%</span>
+          </div>
+
+          <!-- Parameter 1.1: Urgensi Kebutuhan Nyata vs Sekadar Ingin Aplikasi (Bobot 15%) -->
+          <div class="rubrik-item">
+            <div class="rubrik-item-head">
+              <span class="rubrik-name">1.1. Urgensi Kebutuhan Nyata (Real Problem vs Sekadar Ingin Aplikasi)</span>
+              <span class="rubrik-bobot">Bobot: 15%</span>
+            </div>
+            <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+              <strong>Yang dicek analis:</strong> Apakah ada problem statement riil yang mendesak, terukur dampaknya pada peningkatan pelayanan masyarakat atau pemenuhan tupoksi utama perangkat daerah, bukan sekadar proyek sampingan?
+            </p>
+            <div class="level-grid">
+              <label class="level-option">
+                <input type="radio" name="param1_1" value="25" onchange="recalculateScore()">
+                <span class="level-tag">Level 1 (25%)</span>
+                <span class="level-text">Tidak ada urgensi mendesak; usulan sekadar euforia "pengen punya aplikasi" tanpa akar masalah yang jelas.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param1_1" value="50" onchange="recalculateScore()">
+                <span class="level-tag">Level 2 (50%)</span>
+                <span class="level-text">Masalah dirasakan internal unit kerja, namun tanpa indikator dampak pelayanan publik atau efisiensi kerja yang terukur.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param1_1" value="75" onchange="recalculateScore()">
+                <span class="level-tag">Level 3 (75%)</span>
+                <span class="level-text">Kebutuhan perbaikan nyata untuk efisiensi operasional perangkat daerah, dampak publik tidak langsung.</span>
+              </label>
+              <label class="level-option selected">
+                <input type="radio" name="param1_1" value="100" checked onchange="recalculateScore()">
+                <span class="level-tag">Level 4 (100%)</span>
+                <span class="level-text"><strong>Sangat Kritis & Mendesak:</strong> Menyelesaikan hambatan pelayanan publik utama atau mandat regulasi prioritas dengan target pemangkasan waktu layanan dan efisiensi yang terukur jelas.</span>
+              </label>
+            </div>
+            <div class="evidence-slot">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" value="KAK F.P01 Bab I: Urgensi Penurunan Waktu Tunggu Layanan & Pencapaian Target SPM Terlampir" placeholder="Tautkan bukti urgensi...">
+            </div>
+          </div>
+
+          <!-- Parameter 1.2: Ketersediaan SOP Manual Baku (Gate 1 Ortala) (Bobot 10%) -->
+          <div class="rubrik-item">
+            <div class="rubrik-item-head">
+              <span class="rubrik-name">1.2. Ketersediaan SOP Manual Baku (Clearance Gate 1 Ortala)</span>
+              <span class="rubrik-bobot">Bobot: 10%</span>
+            </div>
+            <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+              <strong>Yang dicek analis:</strong> Apakah proses bisnis yang mau didigitalisasi ini sudah ada SOP manualnya yang diverifikasi oleh Bagian Organisasi Setda?
+            </p>
+            <div class="level-grid">
+              <label class="level-option">
+                <input type="radio" name="param1_2" value="25" onchange="recalculateScore()">
+                <span class="level-tag">Level 1 (25%)</span>
+                <span class="level-text">Belum ada SOP tertulis sama sekali; proses kerja masih berjalan atas kebiasaan lisan tanpa standarisasi.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param1_2" value="50" onchange="recalculateScore()">
+                <span class="level-tag">Level 2 (50%)</span>
+                <span class="level-text">Baru berupa draf SOP internal bidang/seksi, belum diharmonisasi dan disahkan oleh Bagian Organisasi Setda.</span>
+              </label>
+              <label class="level-option selected">
+                <input type="radio" name="param1_2" value="90" checked onchange="recalculateScore()">
+                <span class="level-tag">Level 3 (90%)</span>
+                <span class="level-text"><strong>Clearance Gate 1 Sah:</strong> Telah mengantongi Surat Rekomendasi SOP Baku dari Bagian Organisasi Sekretariat Daerah.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param1_2" value="100" onchange="recalculateScore()">
+                <span class="level-tag">Level 4 (100%)</span>
+                <span class="level-text">SOP terdaftar resmi dalam Peta Proses Bisnis Pemerintah Daerah dan tersertifikasi standar mutu pelayanan publik.</span>
+              </label>
+            </div>
+            <div class="evidence-slot">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" value="Surat Rekomendasi SOP Bagian Ortala Setda No. 060/1182/ORTALA/2026 (Clearance Gate 1 Valid)" placeholder="Tautkan surat rekomendasi SOP...">
+            </div>
+          </div>
+
+          <!-- Parameter 1.3: Logika Alur Kerja & Simplifikasi Birokrasi (Bobot 10%) -->
+          <div class="rubrik-item">
+            <div class="rubrik-item-head">
+              <span class="rubrik-name">1.3. Logika Alur Kerja & Simplifikasi Birokrasi</span>
+              <span class="rubrik-bobot">Bobot: 10%</span>
+            </div>
+            <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+              <strong>Yang dicek analis:</strong> Apakah alur kerjanya logis atau justru bikin birokrasi makin ribet bagi masyarakat dan aparatur pelaksana?
+            </p>
+            <div class="level-grid">
+              <label class="level-option">
+                <input type="radio" name="param1_3" value="25" onchange="recalculateScore()">
+                <span class="level-tag">Level 1 (25%)</span>
+                <span class="level-text">Alur berbelit-belit; digitalisasi justru menambah tahapan meja birokrasi dan mempersulit pengguna layanan.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param1_3" value="50" onchange="recalculateScore()">
+                <span class="level-tag">Level 2 (50%)</span>
+                <span class="level-text">Sekadar memindahkan formulir kertas manual ke format digital tanpa memangkas tahapan rantai birokrasi.</span>
+              </label>
+              <label class="level-option selected">
+                <input type="radio" name="param1_3" value="90" checked onchange="recalculateScore()">
+                <span class="level-tag">Level 3 (90%)</span>
+                <span class="level-text"><strong>Simplifikasi Terbukti:</strong> Berhasil memangkas rantai koordinasi manual yang lambat menjadi alur kerja digital yang terpadu dan ringkas.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param1_3" value="100" onchange="recalculateScore()">
+                <span class="level-tag">Level 4 (100%)</span>
+                <span class="level-text">Alur terotomatisasi cerdas (end-to-end routing) dengan pemrosesan instan (zero-delay processing) lintas unit.</span>
+              </label>
+            </div>
+            <div class="evidence-slot">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" value="KAK Bab II: Bagan Alur Layanan Terpadu Memangkas Durasi Proses Secara Signifikan" placeholder="Tautkan bagan alur...">
+            </div>
+          </div>
+        </section>
+
+        <!-- 2️⃣ PILAR 2: CEK REDUNDANSI DINI (APLIKASI SERUPA / DUPLIKASI) -->
+        <section class="wb-step-card" id="sec-redundansi">
+          <span class="step-number-tag">BAGIAN 02 &bull; PILAR 2: CEK REDUNDANSI DINI & DUPLIKASI</span>
+          <div class="rubrik-head" style="margin-bottom:1.25rem; padding-bottom:0.75rem;">
+            <div>
+              <h2 class="rubrik-title">2. Cek Redundansi Dini (Aplikasi Serupa / Duplikasi Portofolio)</h2>
+              <p class="rubrik-desc"><strong>Inti yang dinilai:</strong> Mencegah pemborosan anggaran untuk membuat aplikasi yang fungsinya sama persis dengan yang sudah ada di Pemkot Yogyakarta maupun nasional.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <span class="chip chip-blue" style="font-size:0.75rem;">Bobot Pilar: 30%</span>
+              <a href="katalog-portofolio-pemkot.html" target="_blank" class="btn btn-outline btn-xs">
+                Katalog Portofolio &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Parameter 2.1: Pemindaian Aplikasi Serupa Eksisting (Bobot 15%) -->
+          <div class="rubrik-item">
+            <div class="rubrik-item-head">
+              <span class="rubrik-name">2.1. Pemindaian Aplikasi Eksisting Pemkot (Fungsi Serupa)</span>
+              <span class="rubrik-bobot">Bobot: 15%</span>
+            </div>
+            <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+              <strong>Yang dicek analis:</strong> Apakah di Pemkot sudah ada aplikasi eksisting yang mencakup fungsi serupa?
+            </p>
+
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.85rem; margin-bottom:0.85rem; font-size:0.8rem;">
+              <div style="font-weight:700; color:#0f172a; margin-bottom:0.35rem;">🔍 Panduan & Catatan Analis Pemindaian Sistem Terkait di Pemkot:</div>
+              <ul style="padding-left:1.2rem; margin:0; line-height:1.5; color:#334155;">
+                <li><strong>Aplikasi Layanan Eksisting Perangkat Daerah:</strong> Menangani operasional internal rutin unit pengusul, namun belum memiliki modul transaksi kolaborasi lintas perangkat daerah.</li>
+                <li><strong>Aplikasi Berbagi Pakai / Nasional:</strong> Belum mengakomodasi kekhususan alur kerja atau regulasi lokal Kota Yogyakarta.</li>
+                <li><strong>Portal Layanan Publik Daerah (JSS / SPLP):</strong> Berfungsi sebagai penyedia Single Sign-On (SSO) dan antarmuka integrasi data daerah, bukan logika pemrosesan teknis usulan.</li>
+              </ul>
+            </div>
+
+            <div class="level-grid">
+              <label class="level-option">
+                <input type="radio" name="param2_1" value="25" onchange="recalculateScore()">
+                <span class="level-tag">Level 1 (25%)</span>
+                <span class="level-text"><strong>Duplikasi Total:</strong> Aplikasi dengan fungsi yang sama persis sudah beroperasi aktif di perangkat daerah lain. Belanja ditolak.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param2_1" value="50" onchange="recalculateScore()">
+                <span class="level-tag">Level 2 (50%)</span>
+                <span class="level-text">Sebagian besar fungsi (&ge; 70%) tumpang tindih; kebutuhan usulan dapat diakomodasi cukup dengan menambahkan modul/fitur pada aplikasi eksisting.</span>
+              </label>
+              <label class="level-option selected">
+                <input type="radio" name="param2_1" value="85" checked onchange="recalculateScore()">
+                <span class="level-tag">Level 3 (85%)</span>
+                <span class="level-text"><strong>Fungsi Komplementer / Diferensiasi Unik:</strong> Mengisi celah integrasi atau kebutuhan layanan spesifik daerah yang belum terfasilitasi pada aplikasi eksisting.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param2_1" value="100" onchange="recalculateScore()">
+                <span class="level-tag">Level 4 (100%)</span>
+                <span class="level-text">Inovasi layanan baru murni yang sama sekali belum memiliki padanan dalam katalog portofolio daerah maupun nasional.</span>
+              </label>
+            </div>
+            <div class="evidence-slot">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" value="Hasil Pindai Katalog Master Portofolio SPBE Pemkot: Diferensiasi Unik Disetujui" placeholder="Tautkan bukti telaah redundansi...">
+            </div>
+          </div>
+
+          <!-- Parameter 2.2: Justifikasi Keharusan Bikin Baru vs Integrasi / Sharing Modul (Bobot 15%) -->
+          <div class="rubrik-item">
+            <div class="rubrik-item-head">
+              <span class="rubrik-name">2.2. Justifikasi Bikin Baru vs Integrasi / Sharing Modul</span>
+              <span class="rubrik-bobot">Bobot: 15%</span>
+            </div>
+            <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+              <strong>Yang dicek analis:</strong> Kalau sudah ada sistem terkait, kenapa OPD harus bikin baru? Apakah harusnya cukup integrasi API, sharing modul, atau nebeng di aplikasi yang sudah ada?
+            </p>
+            <div class="level-grid">
+              <label class="level-option">
+                <input type="radio" name="param2_2" value="25" onchange="recalculateScore()">
+                <span class="level-tag">Level 1 (25%)</span>
+                <span class="level-text">Menolak integrasi; memaksakan pengembangan sistem terisolasi baru karena ego sektoral perangkat daerah.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param2_2" value="50" onchange="recalculateScore()">
+                <span class="level-tag">Level 2 (50%)</span>
+                <span class="level-text">Dapat menumpang atau memperluas aplikasi eksisting, namun pemohon belum berkoordinasi dengan pengelola sistem terkait.</span>
+              </label>
+              <label class="level-option selected">
+                <input type="radio" name="param2_2" value="80" checked onchange="recalculateScore()">
+                <span class="level-tag">Level 3 (80%)</span>
+                <span class="level-text"><strong>Sistem Khusus Terjustifikasi + Wajib Integrasi API:</strong> Memiliki proses bisnis inti yang spesifik untuk tupoksi instansi, namun wajib menyediakan interoperabilitas REST API ke sistem eksisting terkait dan modul identitas daerah.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param2_2" value="100" onchange="recalculateScore()">
+                <span class="level-tag">Level 4 (100%)</span>
+                <span class="level-text">Sepenuhnya mengadopsi konsep shared services / modul bersama pada platform terpadu daerah tanpa membuat infrastruktur terpisah.</span>
+              </label>
+            </div>
+            <div class="evidence-slot">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" value="Notulensi Kesepakatan: Wajib REST API Gateway & SSO Akun Terpadu Daerah (Tanpa Login Pengguna Terpisah)" placeholder="Tautkan justifikasi integrasi...">
+            </div>
+          </div>
+        </section>
+
+        <!-- 3️⃣ PILAR 3: ASPEK KELAYAKAN TEKNIS KONSEPTUAL (HIGH-LEVEL FEASIBILITY) -->
+        <section class="wb-step-card" id="sec-konseptual">
+          <span class="step-number-tag">BAGIAN 03 &bull; PILAR 3: KELAYAKAN TEKNIS KONSEPTUAL</span>
+          <div class="rubrik-head" style="margin-bottom:1.25rem; padding-bottom:0.75rem;">
+            <div>
+              <h2 class="rubrik-title">3. Aspek Kelayakan Teknis Konseptual (High-Level Feasibility)</h2>
+              <p class="rubrik-desc"><strong>Inti yang dinilai:</strong> Memastikan rancangan awal secara teknologi masuk akal, tidak melanggar arsitektur SPBE daerah, terintegrasi data besar, dan memiliki penanggung jawab teknis definitif di OPD.</p>
+            </div>
+            <span class="chip chip-blue" style="font-size:0.75rem;">Bobot Pilar: 35%</span>
+          </div>
+
+          <!-- Parameter 3.1: Bentuk Usulan & Mode Pengembangan (Bobot 10%) -->
+          <div class="rubrik-item">
+            <div class="rubrik-item-head">
+              <span class="rubrik-name">3.1. Bentuk Usulan & Mode Pengembangan (Kustom vs Adopsi/Replikasi)</span>
+              <span class="rubrik-bobot">Bobot: 10%</span>
+            </div>
+            <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+              <strong>Yang dicek analis:</strong> Apa bentuk usulannya? Apakah butuh kustom dari nol, atau bisa pakai open-source / adopsi aplikasi nasional?
+            </p>
+            <div class="level-grid">
+              <label class="level-option">
+                <input type="radio" name="param3_1" value="25" onchange="recalculateScore()">
+                <span class="level-tag">Level 1 (25%)</span>
+                <span class="level-text">Usulan kustom dengan biaya pengadaan tinggi tanpa mengkaji ketersediaan opsi open-source atau aplikasi nasional.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param3_1" value="50" onchange="recalculateScore()">
+                <span class="level-tag">Level 2 (50%)</span>
+                <span class="level-text">Mengajukan pengadaan pihak ketiga (vendor), padahal beban pengembangan masih dalam jangkauan kapasitas in-house Kominfo.</span>
+              </label>
+              <label class="level-option selected">
+                <input type="radio" name="param3_1" value="85" checked onchange="recalculateScore()">
+                <span class="level-tag">Level 3 (85%)</span>
+                <span class="level-text"><strong>Kustom Terarah (In-House Diskominfo):</strong> Modul spesifik kebutuhan daerah, layak dibangun oleh tim programmer internal Kominfo (0 biaya belanja vendor).</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param3_1" value="100" onchange="recalculateScore()">
+                <span class="level-tag">Level 4 (100%)</span>
+                <span class="level-text">Memanfaatkan replikasi penuh aplikasi berbagi pakai nasional atau mengadopsi standar sistem terbuka siap pakai.</span>
+              </label>
+            </div>
+            <div class="evidence-slot">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" value="Telaah Kapasitas SDM Programmer Kominfo: Siap Alokasi 2 Programmer Fullstack Sprint Q4 2026" placeholder="Tautkan analisis kapasitas programmer...">
+            </div>
+          </div>
+
+          <!-- Parameter 3.2: Kebutuhan Integrasi Data Besar & Interoperabilitas (Bobot 15%) -->
+          <div class="rubrik-item">
+            <div class="rubrik-item-head">
+              <span class="rubrik-name">3.2. Integrasi Data Besar & Mekanisme Interoperabilitas (SPLP / SDI)</span>
+              <span class="rubrik-bobot">Bobot: 15%</span>
+            </div>
+            <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+              <strong>Yang dicek analis:</strong> Apakah membutuhkan integrasi data besar (kependudukan, keuangan, kepegawaian)? Apakah mereka paham mekanisme integrasinya?
+            </p>
+            <div class="level-grid">
+              <label class="level-option">
+                <input type="radio" name="param3_2" value="25" onchange="recalculateScore()">
+                <span class="level-tag">Level 1 (25%)</span>
+                <span class="level-text">Pengelolaan data tertutup (data silo); merencanakan input data ganda manual atau ekspor-impor berkas spreadsheet lokal.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param3_2" value="50" onchange="recalculateScore()">
+                <span class="level-tag">Level 2 (50%)</span>
+                <span class="level-text">Merencanakan koneksi langsung antardatabase tanpa lapisan keamanan antarmuka pertukaran data (berisiko kebocoran data).</span>
+              </label>
+              <label class="level-option selected">
+                <input type="radio" name="param3_2" value="85" checked onchange="recalculateScore()">
+                <span class="level-tag">Level 3 (85%)</span>
+                <span class="level-text"><strong>Paham Arsitektur API & Standar Data:</strong> Menyiapkan kamus data terstruktur sesuai kaidah Satu Data Indonesia (SDI) dan siap integrasi REST API via SPLP Daerah.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param3_2" value="100" onchange="recalculateScore()">
+                <span class="level-tag">Level 4 (100%)</span>
+                <span class="level-text">Interoperabilitas data matang secara real-time (event-driven architecture) terhubung ke basis data terpadu nasional.</span>
+              </label>
+            </div>
+            <div class="evidence-slot">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" value="Draf Kamus Data Standar SDI & Skema REST API JSON Schema Terlampir Form F.A01" placeholder="Tautkan kamus data & API...">
+            </div>
+          </div>
+
+          <!-- Parameter 3.3: Penanggung Jawab Teknis OPD (PIC IT / Tim Internal) (Bobot 10%) -->
+          <div class="rubrik-item">
+            <div class="rubrik-item-head">
+              <span class="rubrik-name">3.3. Penanggung Jawab Teknis OPD (PIC IT / Pranata Komputer Internal)</span>
+              <span class="rubrik-bobot">Bobot: 10%</span>
+            </div>
+            <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+              <strong>Yang dicek analis:</strong> Siapa penanggung jawab teknis di OPD tersebut? Minimal ada PIC atau tim IT/Pranata Komputer internal yang mengawal, bukan asal lempar ke vendor terus ditinggal.
+            </p>
+            <div class="level-grid">
+              <label class="level-option">
+                <input type="radio" name="param3_3" value="25" onchange="recalculateScore()">
+                <span class="level-tag">Level 1 (25%)</span>
+                <span class="level-text">Tidak memiliki pengelola teknis internal sama sekali; perencanaan dan pemeliharaan diserahkan seutuhnya ke pihak ketiga.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param3_3" value="50" onchange="recalculateScore()">
+                <span class="level-tag">Level 2 (50%)</span>
+                <span class="level-text">Hanya memiliki operator entri data tingkat pengguna akhir; tidak ada personil yang memahami pemeliharaan dan alur data sistem.</span>
+              </label>
+              <label class="level-option selected">
+                <input type="radio" name="param3_3" value="90" checked onchange="recalculateScore()">
+                <span class="level-tag">Level 3 (90%)</span>
+                <span class="level-text"><strong>Tersedia Tim Teknis Definitif OPD:</strong> Memiliki Pranata Komputer / PIC IT internal instansi pengusul yang menguasai proses bisnis dan berkomitmen mengawal pemeliharaan sistem.</span>
+              </label>
+              <label class="level-option">
+                <input type="radio" name="param3_3" value="100" onchange="recalculateScore()">
+                <span class="level-tag">Level 4 (100%)</span>
+                <span class="level-text">Memiliki unit pengelola teknologi informasi mandiri dengan prosedur operasional pemeliharaan dan jaminan keberlanjutan multi-tahun.</span>
+              </label>
+            </div>
+            <div class="evidence-slot">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <input type="text" value="SK Kepala Perangkat Daerah tentang Tim Teknis Pengelola Aplikasi Internal" placeholder="Tautkan SK tim IT dinas...">
+            </div>
+          </div>
+        </section>
+
+        <!-- 4️⃣ BAGIAN IV: FINALISASI ASESMEN & SIMPAN UNTUK PENENTUAN 4 KUADRAN -->
+        <section class="wb-step-card" id="sec-rekomendasi">
+          <span class="step-number-tag">BAGIAN 04 &bull; FINALISASI TELAAH & SIMPAN ASESMEN</span>
+          <div class="rubrik-head" style="margin-bottom:1.25rem; padding-bottom:0.75rem;">
+            <div>
+              <h2 class="rubrik-title">Finalisasi Asesmen Analis & Kalkulasi 4 Kuadran</h2>
+              <p class="rubrik-desc">Periksa ringkasan hasil asesmen 3 Pilar Gatekeeper di bawah. Klik tombol <strong>Simpan & Proses Penentuan 4 Kuadran</strong> untuk memproses kalkulasi matriks McFarlan-Peppard dan memetakan usulan ini ke dalam Dashboard Portofolio SPBE Pemkot.</p>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.5rem;">
+            <!-- Ringkasan Live Score Asesmen -->
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:1.25rem;">
+              <h3 style="font-size:0.92rem; font-weight:800; color:#0f172a; margin-bottom:0.5rem;">Ringkasan Skor Live Asesmen F.A02:</h3>
+              <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:1rem; margin-bottom:0.6rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                  <span style="font-size:0.82rem; color:#64748b; font-weight:600;">Skor Kelayakan Kumulatif:</span>
+                  <strong style="font-size:1.15rem; color:#059669;" id="summaryScoreDisplay">86.5 / 100</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.82rem; color:#64748b; font-weight:600;">Status Saringan Gatekeeper:</span>
+                  <span class="chip chip-green" style="font-size:0.75rem;">✓ Lolos Gatekeeper (Sangat Layak)</span>
+                </div>
+              </div>
+              <p style="font-size:0.78rem; color:#64748b; line-height:1.4;">
+                *Posisi pasti pada titik Matriks 4 Kuadran akan dikalkulasikan secara otomatis berdasarkan akumulasi skor Pilar 1 s.d. 3 saat proses simpan dieksekusi.
+              </p>
+            </div>
+
+            <!-- Rekomendasi Jalur Delivery -->
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:1.25rem;">
+              <h3 style="font-size:0.92rem; font-weight:800; color:#0f172a; margin-bottom:0.5rem;">Rekomendasi Jalur Delivery (Oleh Analis):</h3>
+              <div class="form-group">
+                <select class="form-select" id="jalurDelivery" style="font-weight:700;">
+                  <option value="A" selected>JALUR A: In-House Programmer Kominfo (Kapasitas Mencukupi, 0 Biaya)</option>
+                  <option value="B">JALUR B: Pihak Ketiga / Vendor (Kompensasi Kompleksitas Khusus)</option>
+                  <option value="C">JALUR C: Adopsi / Replikasi Aplikasi Berbagi Pakai Nasional / Daerah Lain</option>
+                </select>
+              </div>
+              <p style="font-size:0.78rem; color:#64748b; line-height:1.4;">
+                Pilih jalur pengadaan/pembangunan yang paling optimal bagi OPD pengusul sesuai kapasitas SDM internal Pemkot.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:1rem 1.25rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+            <div style="font-size:0.83rem; color:#166534; line-height:1.45;">
+              <strong>💡 Siap Memproses Matriks Kuadran:</strong> Seluruh indikator 3 pilar telah diverifikasi. Klik tombol hijau di bawah untuk menyimpan dokumen asesmen F.A02 dan membuka <strong>Visualisasi Titik Kuadran Portofolio SPBE</strong>.
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; padding-top:1.25rem; border-top:1px solid #e2e8f0; flex-wrap:wrap; gap:1rem;">
+            <div style="font-size:0.82rem; color:var(--text-muted);">
+              Penilaian Gatekeeper Pilar 1 s.d. 3 siap diproses oleh Analis SPBE.
+            </div>
+
+            <div style="display:flex; gap:0.75rem;">
+              <button type="button" class="btn btn-outline" id="btnPreviewFA02">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Preview Lembar Resmi F.A02 PDF
+              </button>
+              <button type="button" class="btn btn-success" id="btnSaveToKuadran" style="background:#059669; border-color:#047857; font-weight:800; padding:0.65rem 1.35rem; font-size:0.88rem; box-shadow:0 3px 10px rgba(5,150,105,0.25); display:inline-flex; align-items:center; gap:0.5rem;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Simpan & Proses Penentuan 4 Kuadran &rarr;
+              </button>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
+      <!-- ================= SISI KANAN (40% - STICKY): DOSSIER PERMOHONAN OPD ================= -->
+      <aside class="wb-dossier-right">
+
+        <!-- Card Dossier Permohonan OPD -->
+        <div class="dossier-card">
+          <div class="dossier-head">
+            <div class="dossier-title">
+              <span>📂</span>
+              <span>Dossier Permohonan OPD (F.A01)</span>
+            </div>
+            <span class="badge badge-emerald">✓ Terverifikasi eOffice</span>
+          </div>
+
+          <!-- Tab Selector Dossier -->
+          <div class="dossier-tabs">
+            <button type="button" class="dossier-tab-btn active" data-dossier="pane-profil">
+              1. Profil Usulan
+            </button>
+            <button type="button" class="dossier-tab-btn" data-dossier="pane-berkas">
+              2. Berkas Lampiran (4)
+            </button>
+            <button type="button" class="dossier-tab-btn" data-dossier="pane-inspector">
+              3. Quick Inspector
+            </button>
+          </div>
+
+          <div class="dossier-body">
+
+            <!-- PANE 1: PROFIL USULAN MASUK DARI OPD -->
+            <div class="dossier-pane active" id="pane-profil">
+              <div style="margin-bottom:1rem; padding-bottom:0.75rem; border-bottom:1px solid #f1f5f9;">
+                <div class="text-xs text-muted">Instansi Pengusul:</div>
+                <strong style="color:#0f172a; font-size:0.92rem;">Dinas Kesehatan Kota Yogyakarta</strong>
+                <div class="text-xs text-muted" style="margin-top:0.25rem;">
+                  PIC Teknis: dr. Rian Pratama &bull; Bidang Pelayanan Kesehatan
+                </div>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <div class="text-xs text-muted" style="font-weight:700;">Latar Belakang & Urgensi Masalah:</div>
+                <p style="font-size:0.8rem; color:#334155; line-height:1.5; margin-top:0.25rem;">
+                  Waktu tunggu rujukan pasien dari 18 Puskesmas ke RSUD Jogja saat ini mencapai rata-rata 4.5 jam karena proses verifikasi manual via WhatsApp/telepon yang sering tidak terjawab. Diperlukan kepastian ketersediaan ranjang rawat inap secara real-time.
+                </p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <div class="text-xs text-muted" style="font-weight:700;">Tujuan & Sasaran Manfaat:</div>
+                <ul style="padding-left:1.15rem; font-size:0.78rem; color:#334155; line-height:1.5; margin-top:0.25rem;">
+                  <li>Memangkas durasi respons triase rujukan menjadi &le; 30 menit.</li>
+                  <li>Mencegah penolakan pasien darurat di IGD karena bed penuh.</li>
+                  <li>Integrasi dengan aplikasi JSS Mobile bagi keluarga pasien.</li>
+                </ul>
+              </div>
+
+              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.75rem; font-size:0.78rem;">
+                <div><strong>Domain SPBE:</strong> Layanan Publik Kesehatan</div>
+                <div style="margin-top:0.25rem;"><strong>Target Rilis:</strong> Q4 2026 (November 2026)</div>
+                <div style="margin-top:0.25rem;"><strong>Integrasi Target:</strong> SIMPUS, SIMRS, BPJS PCare, SSO JSS</div>
+              </div>
+            </div>
+
+            <!-- PANE 2: DAFTAR BERKAS LAMPIRAN UPLOAD OPD -->
+            <div class="dossier-pane" id="pane-berkas">
+              <p class="text-xs text-muted" style="margin-bottom:0.85rem;">
+                Klik tombol <strong>"Inspeksi"</strong> pada berkas di bawah untuk membaca isi dokumen secara langsung di panel samping tanpa berpindah halaman:
+              </p>
+
+              <!-- Berkas 1: Surat Pengantar -->
+              <div class="dossier-file-item selected" onclick="inspectDocument('surat', this)">
+                <div style="display:flex; align-items:center; gap:0.65rem;">
+                  <span style="font-size:1.4rem;">📄</span>
+                  <div>
+                    <strong style="font-size:0.82rem; color:#0f172a; display:block;">Surat-Pengantar-Dinkes-1420.pdf</strong>
+                    <span class="text-xs text-muted">Surat eOffice Pemkot &bull; 1.2 MB &bull; TTE Sah</span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-xs">Inspeksi</button>
+              </div>
+
+              <!-- Berkas 2: KAK F.P01 -->
+              <div class="dossier-file-item" onclick="inspectDocument('kak', this)">
+                <div style="display:flex; align-items:center; gap:0.65rem;">
+                  <span style="font-size:1.4rem;">📘</span>
+                  <div>
+                    <strong style="font-size:0.82rem; color:#0f172a; display:block;">KAK-Pengembangan-SIPRUJUK-2026.pdf</strong>
+                    <span class="text-xs text-muted">Kerangka Acuan Kerja F.P01 &bull; 4.2 MB</span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-xs">Inspeksi</button>
+              </div>
+
+              <!-- Berkas 3: SOP Ortala -->
+              <div class="dossier-file-item" onclick="inspectDocument('sop', this)">
+                <div style="display:flex; align-items:center; gap:0.65rem;">
+                  <span style="font-size:1.4rem;">📑</span>
+                  <div>
+                    <strong style="font-size:0.82rem; color:#0f172a; display:block;">Rekomendasi-SOP-Ortala-Gate1.pdf</strong>
+                    <span class="text-xs text-muted">Clearance Bagian Organisasi &bull; 850 KB</span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-xs">Inspeksi</button>
+              </div>
+
+              <!-- Berkas 4: Kamus Data -->
+              <div class="dossier-file-item" onclick="inspectDocument('kamus', this)">
+                <div style="display:flex; align-items:center; gap:0.65rem;">
+                  <span style="font-size:1.4rem;">📊</span>
+                  <div>
+                    <strong style="font-size:0.82rem; color:#0f172a; display:block;">Kamus-Data-Elemen-Rujukan.xlsx</strong>
+                    <span class="text-xs text-muted">18 Variabel Data Medis &bull; 340 KB</span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-xs">Inspeksi</button>
+              </div>
+            </div>
+
+            <!-- PANE 3: QUICK DOCUMENT INSPECTOR / VIEWER -->
+            <div class="dossier-pane" id="pane-inspector">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <span class="chip chip-blue" id="docViewerTitle" style="font-size:0.72rem;">📄 Surat Pengantar eOffice (000.8.3/1420/DINKES/2026)</span>
+                <span class="text-xs text-muted">Pratinjau Asli</span>
+              </div>
+
+              <!-- Paper Document Viewer Container -->
+              <div class="doc-viewer-paper" id="docViewerContent">
+                <!-- Konten dinamis akan disuntikkan via JS -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Card Bantuan Analis -->
+        <div style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:12px; padding:1.15rem; font-size:0.8rem;">
+          <div style="font-weight:700; color:#0f172a; margin-bottom:0.35rem; display:flex; align-items:center; gap:0.4rem;">
+            <span>💡</span> Panduan Kertas Kerja Analis:
+          </div>
+          <p style="color:#475569; line-height:1.45; margin:0;">
+            Gunakan panel kanan untuk memverifikasi klausul pada KAK dan Surat Ortala. Isian rubrik di sebelah kiri dapat disesuaikan berdasarkan bukti dukung riil yang tertera di dokumen.
+          </p>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  <!-- ================= MODAL MULTI-SESSION ADD HEARING LOG ================= -->
+  <div class="modal-overlay" id="modalAddHearing">
+    <div class="modal-window" style="max-width: 650px;">
+      <div class="modal-head">
+        <div>
+          <span class="chip chip-blue">MULTI-SESSION HEARING LOG</span>
+          <h3 style="font-size:1.1rem; font-weight:800; color:#0f172a; margin-top:0.2rem;">+ Catat Sesi Hearing & Notulensi Klarifikasi Baru</h3>
+        </div>
+        <button type="button" class="btn-close-modal" onclick="closeAddHearingModal()" style="background:none; border:none; font-size:1.6rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding:1.25rem;">
+        <div class="form-group" style="margin-bottom:0.85rem;">
+          <label class="form-label">Nama / Topik Sesi Hearing:</label>
+          <input type="text" id="newHearingTopic" class="form-input" placeholder="Contoh: Hearing #3: Penyelarasan REST API Gateway SPLP & BPKAD" value="Hearing #3: Penyelarasan REST API Gateway SPLP & Security Throttling">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; margin-bottom:0.85rem;">
+          <div>
+            <label class="form-label">Tanggal & Waktu Hearing:</label>
+            <input type="text" id="newHearingTime" class="form-input" placeholder="DD MMMM YYYY, HH:MM WIB" value="08 Oktober 2026, 13:30 - 15:00 WIB">
+          </div>
+          <div>
+            <label class="form-label">Status Hasil Hearing:</label>
+            <select id="newHearingStatus" class="form-select" style="font-weight:700;">
+              <option value="✓ Clearance Approved (Final)">✓ Clearance Approved (Final)</option>
+              <option value="✓ Approved w/ Action Items" selected>✓ Approved w/ Action Items</option>
+              <option value="⏳ Dalam Discussion / Pending">⏳ Dalam Discussion / Pending</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0.85rem;">
+          <label class="form-label">Pihak / Tim yang Hadir (Analis & OPD):</label>
+          <input type="text" id="newHearingAttendees" class="form-input" value="Tim Analis SPBE, Tim IT Dinkes, & Tim Security Cyber Diskominfo">
+        </div>
+
+        <div class="form-group" style="margin-bottom:0.85rem;">
+          <label class="form-label">Poin Kesepakatan & Notulensi Hasil Rapat:</label>
+          <textarea id="newHearingNotes" class="form-textarea" rows="4" placeholder="Tuliskan poin-poin kesepakatan rapat...">1. Disepakati penambahan rate limit 120 req/menit untuk keamanan endpoint API.
+2. Lampiran OpenAPI 3.0 diserahkan ke Seksi Data & Statistik untuk registrasi Katalog SDI.
+3. Seluruh tim menyetujui draf final rekomendasi teknis F.A02.</textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Lampirkan Dokumen Notulensi / Berita Acara PDF (MinIO Storage):</label>
+          <input type="text" id="newHearingFile" class="form-input mono-text" value="Berita-Acara-Hearing-03-Security.pdf">
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" onclick="closeAddHearingModal()">Batal</button>
+        <button type="button" class="btn btn-primary" onclick="saveNewHearingSession()">
+          💾 Simpan Entri Hearing
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL PREVIEW LEMBAR RESMI F.A02 PDF ================= -->
+  <div class="modal-overlay" id="modalFA02">
+    <div class="modal-window">
+      <div class="modal-head">
+        <div>
+          <span class="chip chip-blue">Format Kepwal 108/2026 Lampiran II Hal 59</span>
+          <h3 style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-top:0.25rem;">Lembar Formulir F.A02: Hasil Analisis Kelayakan Aplikasi SPBE</h3>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseModalFA02" style="background:none; border:none; font-size:1.6rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="background:#fff; padding:2.5rem; font-family:'Times New Roman', serif; color:#000; line-height:1.4; border-radius:4px; box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+          <!-- KOP Dinas Resmi -->
+          <div style="text-align:center; border-bottom:3px double #000; padding-bottom:0.75rem; margin-bottom:1.25rem;">
+            <h4 style="font-size:1.1rem; margin:0; font-weight:bold;">PEMERINTAH KOTA YOGYAKARTA</h4>
+            <h3 style="font-size:1.25rem; margin:0; font-weight:900;">DINAS KOMUNIKASI INFORMATIKA DAN PERSANDIAN</h3>
+            <p style="font-size:0.85rem; margin:0;">Jalan Kenari No. 56 Kompleks Balai Kota Yogyakarta 55165</p>
+          </div>
+
+          <div style="text-align:center; margin-bottom:1.5rem;">
+            <h5 style="margin:0; font-size:1rem; font-weight:bold;">FORMULIR F.A02</h5>
+            <h4 style="margin:0; text-decoration:underline; font-size:1.15rem; font-weight:bold;">SURAT REKOMENDASI HASIL ANALISIS KELAYAKAN TEKNIS APLIKASI SPBE</h4>
+            <p style="font-size:0.85rem; margin:0; font-style:italic;">Nomor: 000.8.3 / 0842 / REKOMTEK / 2026</p>
+          </div>
+
+          <table style="width:100%; border-collapse:collapse; font-size:0.85rem; margin-bottom:1.5rem;" border="1">
+            <tr style="background:#f1f5f9;">
+              <th colspan="2" style="text-align:left; padding:0.4rem 0.6rem;">I. DATA DASAR PERMOHONAN</th>
+            </tr>
+            <tr>
+              <td style="width:35%; padding:0.4rem 0.6rem;">Nomor Registrasi & Surat</td>
+              <td style="padding:0.4rem 0.6rem;">REG-20261006-0042 &bull; Surat eOffice: 000.8.3/1420/DINKES/2026</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Perangkat Daerah Pemohon</td>
+              <td style="padding:0.4rem 0.6rem;">Dinas Kesehatan Kota Yogyakarta</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Nama Usulan Sistem</td>
+              <td style="padding:0.4rem 0.6rem;">Sistem Informasi Pelayanan Rujukan Kesehatan Terpadu (SIP-RUJUK)</td>
+            </tr>
+
+            <tr style="background:#f1f5f9;">
+              <th colspan="2" style="text-align:left; padding:0.4rem 0.6rem;">II. KESIMPULAN PENYARINGAN GATEKEEPER (3 PILAR ASESMEN F.A02)</th>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Pilar 1: Urgensi & Proses Bisnis</td>
+              <td style="padding:0.4rem 0.6rem;"><strong>MEMENUHI SYARAT MUTLAK</strong> &bull; Masalah riil peningkatan mutu layanan publik & efisiensi kerja operasional. SOP Baku disahkan Bagian Ortala Setda (Gate 1).</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Pilar 2: Redundansi Dini</td>
+              <td style="padding:0.4rem 0.6rem;"><strong>LOLOS (Diferensiasi Unik)</strong> &bull; Mengisi celah alur kerja spesifik daerah, tidak menduplikasi portofolio eksisting. Wajib interoperabilitas REST API & SSO Pemkot.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Pilar 3: Kelayakan Konseptual</td>
+              <td style="padding:0.4rem 0.6rem;"><strong>LAYAK DIBANGUN IN-HOUSE</strong> &bull; Kesiapan REST API OpenAPI & kamus data SDI terstruktur. Penanggung jawab teknis definitif Pranata Komputer internal OPD.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Skor Rubrik Kelayakan</td>
+              <td style="padding:0.4rem 0.6rem;"><strong id="pdfDisplayScore">86.5 / 100</strong> (Kategori: Sangat Layak Memperoleh Rekomtek).</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Kuadran McFarlan-Peppard</td>
+              <td style="padding:0.4rem 0.6rem;"><strong>STRATEGIC (Strategis)</strong> &bull; Prioritas tinggi belanja sistem in-house daerah.</td>
+            </tr>
+            <tr>
+              <td style="padding:0.4rem 0.6rem;">Keputusan Jalur Delivery</td>
+              <td style="padding:0.4rem 0.6rem;"><strong>JALUR A: In-House Programmer Kominfo</strong> (Kapasitas internal mencukupi selama 6 sprint, 0 biaya vendor).</td>
+            </tr>
+          </table>
+
+          <!-- TTD Kabid -->
+          <div style="display:flex; justify-content:space-between; margin-top:2rem; text-align:center; font-size:0.85rem;">
+            <div style="width:40%;">
+              <p>Tim Analis Kebijakan SPBE,</p>
+              <div style="height:60px; display:flex; align-items:center; justify-content:center;">
+                <span style="border:1px dashed #0284c7; background:#f0f9ff; color:#0369a1; padding:0.25rem 0.5rem; font-size:0.7rem;">Terverifikasi Kertas Kerja</span>
+              </div>
+              <p style="font-weight:bold; text-decoration:underline;">Hendra Wijaya, S.Kom</p>
+              <p>NIP. 19890815 201402 1 002</p>
+            </div>
+
+            <div style="width:45%;">
+              <p>Yogyakarta, 06 Oktober 2026</p>
+              <p style="font-weight:bold;">Kepala Bidang Pengembangan Aplikasi,</p>
+              <div style="height:60px; display:flex; align-items:center; justify-content:center;">
+                <span style="border:1px dashed #059669; background:#ecfdf5; color:#047857; padding:0.35rem 0.65rem; font-size:0.72rem; font-weight:bold;">
+                  Ditandatangani secara Elektronik<br>via TTE BSrE BSSN
+                </span>
+              </div>
+              <p style="font-weight:bold; text-decoration:underline;">Drs. Tri Haryanto, M.Eng</p>
+              <p>NIP. 19740520 199903 1 004</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" id="btnModalCloseFA02">Tutup</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Cetak Dokumen F.A02 PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <span>MPSI SPBE Kota Yogyakarta &bull; Modul 1: Kertas Kerja Analis Form F.A02</span>
+      <span class="footer-links">
+        <a href="index.html">Antrean Analis</a> &bull;
+        <a href="../2-standardisasi-metadata-kebutuhan/index.html">Modul 2: Metadata F.A03</a> &bull;
+        <a href="../../../Blueprint.md" target="_blank">Cetak Biru SPBE</a>
+      </span>
+    </div>
+  </footer>
+
+  <script src="../tengah.js"></script>
+  <script>
+    // Quick Document Inspector Script
+    const docData = {
+      surat: {
+        title: "📄 Surat Pengantar eOffice (000.8.3/1420/DINKES/2026)",
+        content: `
+          <div style="text-align:center; border-bottom:1.5px solid #000; padding-bottom:0.5rem; margin-bottom:0.75rem;">
+            <strong>PEMERINTAH KOTA YOGYAKARTA</strong><br>
+            <strong style="font-size:0.95rem;">DINAS KESEHATAN</strong><br>
+            <span style="font-size:0.72rem;">Kompleks Balai Kota Jl. Kenari No. 56 Yogyakarta 55165</span>
+          </div>
+          <div style="margin-bottom:0.6rem; font-size:0.78rem;">
+            <div><strong>Nomor:</strong> 000.8.3 / 1420 / DINKES / 2026</div>
+            <div><strong>Sifat:</strong> Penting / Segera</div>
+            <div><strong>Perihal:</strong> Permohonan Pembangunan Sistem Informasi Rujukan Terpadu (SIP-RUJUK)</div>
+          </div>
+          <p style="text-align:justify; font-size:0.78rem; line-height:1.5;">
+            Menindaklanjuti hasil evaluasi waktu tunggu rujukan pasien FKTP ke RSUD Kota Yogyakarta, bersama ini kami mengajukan permohonan analisis kelayakan teknis SPBE untuk pembangunan aplikasi SIP-RUJUK. Seluruh berkas KAK dan verifikasi SOP telah kami lampirkan secara lengkap.
+          </p>
+          <div style="text-align:right; margin-top:1rem; font-size:0.75rem;">
+            <strong>Kepala Dinas Kesehatan,</strong><br><br>
+            <span style="color:#059669; font-weight:700;">🔒 TTE BSrE Sah</span><br>
+            <strong>drg. Emma Rahmi Aryani, MM</strong>
+          </div>
+        `
+      },
+      kak: {
+        title: "📘 KAK Kerangka Acuan Kerja (Form F.P01)",
+        content: `
+          <div style="border-bottom:1px solid #cbd5e1; padding-bottom:0.5rem; margin-bottom:0.75rem;">
+            <strong style="font-size:0.9rem; color:#0f172a;">KERANGKA ACUAN KERJA (KAK) PENGEMBANGAN SIP-RUJUK</strong><br>
+            <span class="text-xs text-muted">Tahun Anggaran 2026 &bull; Dinas Kesehatan Kota Yogyakarta</span>
+          </div>
+          <p><strong>1. Ruang Lingkup Pekerjaan:</strong></p>
+          <ul style="padding-left:1.2rem; font-size:0.78rem; line-height:1.5;">
+            <li>Pembangunan modul intake rujukan berbasis web untuk 18 Puskesmas di Kota Yogyakarta.</li>
+            <li>Modul Triase Gawat Darurat dan Advis Dokter Spesialis di RSUD Kota Yogyakarta.</li>
+            <li>Integrasi REST API dengan SIRS RSUD untuk ketersediaan bed rawat inap.</li>
+            <li>Penyediaan modul pelacakan status rujukan bagi warga via Single Identity JSS.</li>
+          </ul>
+          <p style="margin-top:0.6rem;"><strong>2. Kebutuhan Non-Fungsional:</strong></p>
+          <p style="font-size:0.78rem; line-height:1.5;">
+            Ketersediaan SLA minimal 99.5%, waktu respons API &le; 1.5 detik, dan lolos uji penetrasi keamanan (Pentest CSIRT) sebelum dipublikasikan.
+          </p>
+        `
+      },
+      sop: {
+        title: "📑 Surat Rekomendasi SOP Bagian Ortala (Gate 1)",
+        content: `
+          <div style="border-bottom:1px solid #cbd5e1; padding-bottom:0.5rem; margin-bottom:0.75rem;">
+            <strong>SEKRETARIAT DAERAH KOTA YOGYAKARTA</strong><br>
+            <strong>BAGIAN ORGANISASI (ORTALA)</strong><br>
+            <span class="text-xs text-muted">Surat Rekomendasi Clearance Gate 1 SOP Layanan SPBE</span>
+          </div>
+          <div style="font-size:0.78rem; margin-bottom:0.5rem;">
+            <strong>Nomor:</strong> 060 / 1182 / ORTALA / 2026 &bull; <strong>Status:</strong> CLEAR (Memenuhi Syarat)
+          </div>
+          <p style="font-size:0.78rem; line-height:1.5;">
+            Berdasarkan telaah dokumen SOP Alur Rujukan Pelayanan Kesehatan Puskesmas ke RSUD yang diajukan oleh Dinas Kesehatan, Bagian Organisasi menyatakan bahwa:
+          </p>
+          <ol style="padding-left:1.2rem; font-size:0.78rem; line-height:1.5;">
+            <li>SOP telah selaras dengan PermenPANRB Nomor 35 Tahun 2012.</li>
+            <li>Standar pelayanan dan waktu tanggap triase 30 menit telah baku secara regulasi.</li>
+            <li>Rekomendasi Gate 1 dinyatakan <strong>DITERIMA & SAH</strong> untuk dilanjutkan ke Gate 2 (Diskominfo).</li>
+          </ol>
+        `
+      },
+      kamus: {
+        title: "📊 Draf Kamus Data Awal SDI (18 Variabel)",
+        content: `
+          <div style="border-bottom:1px solid #cbd5e1; padding-bottom:0.5rem; margin-bottom:0.75rem;">
+            <strong style="font-size:0.9rem; color:#0f172a;">KAMUS DATA ELEMEN RUJUKAN KESEHATAN</strong><br>
+            <span class="text-xs text-muted">Standar Data Terbuka & Interoperabilitas Satu Data Indonesia</span>
+          </div>
+          <table style="width:100%; border-collapse:collapse; font-size:0.75rem;" border="1">
+            <tr style="background:#f1f5f9;">
+              <th style="padding:3px 5px;">Variabel</th>
+              <th style="padding:3px 5px;">Tipe</th>
+              <th style="padding:3px 5px;">Klasifikasi PDP</th>
+            </tr>
+            <tr>
+              <td style="padding:3px 5px;">nik_pasien</td>
+              <td style="padding:3px 5px;">VARCHAR(16)</td>
+              <td style="padding:3px 5px; color:#b91c1c;">Data Pribadi Sensitif</td>
+            </tr>
+            <tr>
+              <td style="padding:3px 5px;">no_rujukan</td>
+              <td style="padding:3px 5px;">VARCHAR(25)</td>
+              <td style="padding:3px 5px;">Data Pribadi Spesifik</td>
+            </tr>
+            <tr>
+              <td style="padding:3px 5px;">kode_faskes</td>
+              <td style="padding:3px 5px;">VARCHAR(10)</td>
+              <td style="padding:3px 5px; color:#059669;">Data Publik Instansi</td>
+            </tr>
+            <tr>
+              <td style="padding:3px 5px;">diagnosa_icd10</td>
+              <td style="padding:3px 5px;">VARCHAR(8)</td>
+              <td style="padding:3px 5px; color:#b91c1c;">Rekam Medis Sensitif</td>
+            </tr>
+            <tr>
+              <td style="padding:3px 5px;">kapasitas_bed</td>
+              <td style="padding:3px 5px;">INT(4)</td>
+              <td style="padding:3px 5px; color:#059669;">Data Publik Agregat</td>
+            </tr>
+          </table>
+        `
+      }
+    };
+
+    function inspectDocument(key, el) {
+      const data = docData[key];
+      if (!data) return;
+
+      document.getElementById('docViewerTitle').innerText = data.title;
+      document.getElementById('docViewerContent').innerHTML = data.content;
+
+      // Switch dossier pane to inspector
+      document.querySelectorAll('.dossier-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-dossier') === 'pane-inspector') {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      document.querySelectorAll('.dossier-pane').forEach(pane => {
+        if (pane.id === 'pane-inspector') {
+          pane.classList.add('active');
+        } else {
+          pane.classList.remove('active');
+        }
+      });
+
+      // Highlight selected item in file list
+      document.querySelectorAll('.dossier-file-item').forEach(item => item.classList.remove('selected'));
+      if (el) {
+        const card = el.closest ? el.closest('.dossier-file-item') : el;
+        if (card) card.classList.add('selected');
+      }
+    }
+
+    // Tab switcher pada dossier
+    document.querySelectorAll('.dossier-tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.dossier-tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const target = this.getAttribute('data-dossier');
+        document.querySelectorAll('.dossier-pane').forEach(p => {
+          if (p.id === target) p.classList.add('active');
+          else p.classList.remove('active');
+        });
+      });
+    });
+
+    // Inisialisasi awal document viewer & Multi-Session Hearing Log
+    let hearingSessionCount = 2;
+
+    function openAddHearingModal() {
+      const modal = document.getElementById('modalAddHearing');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeAddHearingModal() {
+      const modal = document.getElementById('modalAddHearing');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function saveNewHearingSession() {
+      const topicEl = document.getElementById('newHearingTopic');
+      const timeEl = document.getElementById('newHearingTime');
+      const statusEl = document.getElementById('newHearingStatus');
+      const attendeesEl = document.getElementById('newHearingAttendees');
+      const notesEl = document.getElementById('newHearingNotes');
+      const fileEl = document.getElementById('newHearingFile');
+
+      const topic = topicEl ? topicEl.value.trim() : '';
+      const time = timeEl ? timeEl.value.trim() : '';
+      const status = statusEl ? statusEl.value : '';
+      const attendees = attendeesEl ? attendeesEl.value.trim() : '';
+      const notes = notesEl ? notesEl.value.trim() : '';
+      const file = (fileEl && fileEl.value.trim()) ? fileEl.value.trim() : 'Berita-Acara-Hearing-Baru.pdf';
+
+      if (!topic || !notes) {
+        alert('Mohon lengkapi Judul Topik dan Notulensi Hasil Rapat!');
+        return;
+      }
+
+      hearingSessionCount++;
+      const list = document.getElementById('hearingTimelineList');
+      const countBadge = document.getElementById('hearingSessionCount');
+      if (countBadge) countBadge.innerText = `${hearingSessionCount} Sesi Hearing Terdaftar`;
+
+      let badgeClass = 'badge-indigo';
+      let borderCol = '#2563eb';
+      if (status.includes('Final') || status.includes('Clearance')) {
+        badgeClass = 'badge-emerald';
+        borderCol = '#059669';
+      }
+
+      const notesHtml = notes.split('\n').map(item => item ? `<li>${item.replace(/^\d+\.\s*/, '')}</li>` : '').join('');
+
+      const card = document.createElement('div');
+      card.className = 'hearing-card';
+      card.style.cssText = `background:#ffffff; border:1px solid ${borderCol}; border-left:4px solid ${borderCol}; border-radius:10px; padding:1.15rem; box-shadow:0 2px 8px rgba(15,23,42,0.03); animation:fadeIn 0.3s ease;`;
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <span class="badge ${badgeClass}" style="font-weight:800;">SESI #${hearingSessionCount}</span>
+              <strong style="font-size:0.92rem; color:#0f172a;">${topic}</strong>
+            </div>
+            <div class="text-xs text-muted" style="margin-top:0.25rem;">
+              📅 <strong>${time}</strong> &bull; Hadir: ${attendees}
+            </div>
+          </div>
+          <span class="badge ${badgeClass}">${status}</span>
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.85rem; font-size:0.82rem; line-height:1.5; color:#334155; margin-bottom:0.75rem;">
+          <strong style="color:#0f172a; display:block; margin-bottom:0.25rem;">📝 Poin Kesepakatan & Hasil Rapat:</strong>
+          <ol style="padding-left:1.2rem; margin:0;">
+            ${notesHtml}
+          </ol>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem;">
+          <span style="color:#64748b;">📂 Berkas Notulensi Rapat: <strong>${file}</strong> (MinIO Stored)</span>
+          <button type="button" class="btn btn-secondary btn-xs" onclick="alert('Membuka Berita Acara Notulensi ${file} PDF...')">
+            📄 Unduh Notulensi Sesi #${hearingSessionCount}
+          </button>
+        </div>
+      `;
+
+      if (list) list.appendChild(card);
+      closeAddHearingModal();
+      alert(`✓ Sesi Hearing #${hearingSessionCount} ("${topic}") berhasil ditambahkan ke Kertas Kerja F.A02!`);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      if (document.getElementById('docViewerTitle') && docData.surat) {
+        document.getElementById('docViewerTitle').innerText = docData.surat.title;
+        document.getElementById('docViewerContent').innerHTML = docData.surat.content;
+      }
+    });
+  </script>
+</body>
+</html>

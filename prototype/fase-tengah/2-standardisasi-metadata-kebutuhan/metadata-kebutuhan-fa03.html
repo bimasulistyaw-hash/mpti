@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spesifikasi Kebutuhan Sistem & Metadata SDI (Form F.A03) - Diskominfo Kota Yogyakarta</title>
+  <meta name="description" content="Workbench Pengisian dan Validasi Spesifikasi Kebutuhan Sistem Terstruktur (Form F.A03) serta Penyelarasan Standar Metadata Satu Data Indonesia (Walidata Statistik).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../tengah.css">
+  <style>
+    /* Section Steps Navigator */
+    .fa03-nav-pill-group {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+      background: #f1f5f9;
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.75rem;
+      overflow: hidden;
+    }
+    .fa03-nav-pill {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+    .fa03-nav-pill:hover { color: #0f172a; }
+    .fa03-nav-pill.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .fa03-step-pane {
+      display: none;
+    }
+    .fa03-step-pane.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Metadata SDI Element Table */
+    .meta-table input, .meta-table select {
+      width: 100%;
+      padding: 0.45rem 0.65rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xs);
+      font-size: 0.82rem;
+      font-family: inherit;
+      background: #ffffff;
+    }
+    .meta-table input:focus, .meta-table select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.12);
+    }
+
+    .walidata-verif-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .walidata-verif-badge.pending {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+
+    .pdp-tag {
+      display: inline-flex;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-xs);
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .pdp-tag.sensitif { background: #fee2e2; color: #991b1b; }
+    .pdp-tag.umum { background: #e0f2fe; color: #075985; }
+    .pdp-tag.publik { background: #f1f5f9; color: #475569; }
+
+    /* Requirement Row Item */
+    .req-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: var(--transition-fast);
+      position: relative;
+    }
+    .req-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: var(--shadow-sm);
+    }
+    .req-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .req-id-badge {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 0.2rem 0.5rem;
+      background: #eff6ff;
+      color: var(--primary);
+      border-radius: var(--radius-xs);
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <a href="index.html" class="brand-link">
+          <div class="logo-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">MPSI SPBE &bull; Tim Analis Kominfo</span>
+            <span class="brand-subtitle">2. Standardisasi Metadata & Kebutuhan Teknis (F.A03)</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="../1-kertas-kerja-asesmen-analis/index.html" class="nav-link">&larr; Antrean Usulan OPD</a>
+        <a href="../1-kertas-kerja-asesmen-analis/katalog-portofolio-pemkot.html" class="nav-link">Portofolio Pemkot</a>
+        <a href="../1-kertas-kerja-asesmen-analis/kertas-kerja-fa02.html" class="nav-link">Kertas Kerja F.A02</a>
+        <a href="index.html" class="nav-link active">Metadata SDI (F.A03)</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="../1-kertas-kerja-asesmen-analis/kertas-kerja-fa02.html" class="btn btn-secondary btn-sm">
+          &larr; Kertas Kerja F.A02
+        </a>
+        <div class="user-badge">
+          <span class="user-badge-avatar" style="background:#059669;">WD</span>
+          <div class="user-badge-text">
+            <span class="user-badge-name">Rina Kusuma, S.Si</span>
+            <span class="user-badge-role">Walidata Statistik & Analis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="page-container">
+
+    <!-- Header Card Usulan yang Ditelaah -->
+    <section class="workbench-header-card">
+      <div class="wb-app-info">
+        <div class="wb-app-avatar">🏥</div>
+        <div class="wb-app-meta">
+          <div class="wb-app-title-row">
+            <h1 class="wb-app-title">SIP-RUJUK &bull; Sistem Informasi Rujukan Terpadu Puskesmas & RSUD</h1>
+            <span class="status-pill status-approved">
+              <span class="status-dot"></span>
+              Kelayakan F.A02 Disetujui (92.5%)
+            </span>
+          </div>
+          <div class="wb-app-sub">
+            <span><strong>No. Registrasi:</strong> <span class="mono-text">REG-20261006-0042</span></span>
+            <span>&bull;</span>
+            <span><strong>OPD Pengusul:</strong> Dinas Kesehatan Kota Yogyakarta</span>
+            <span>&bull;</span>
+            <span><strong>PIC:</strong> dr. Rian Pratama (0812-3456-7890)</span>
+            <span>&bull;</span>
+            <span><strong>Target Tahapan:</strong> Pengesahan F.A03 Menuju Tim Pengembang</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wb-actions-right">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnPreviewFA03">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Preview Berita Acara F.A03 (PDF)
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnSahkanFA03">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Sahkan & Teruskan ke Seksi Perangkat Lunak
+        </button>
+      </div>
+    </section>
+
+    <!-- Navigation Pills / Step Switcher -->
+    <div class="fa03-nav-pill-group">
+      <button type="button" class="fa03-nav-pill active" data-pane="pane-walidata">
+        <span>📊</span> 1. Validasi Walidata & Standar Metadata SDI
+      </button>
+      <button type="button" class="fa03-nav-pill" data-pane="pane-fungsional">
+        <span>⚙️</span> 2. Spesifikasi Kebutuhan Fungsional (User Stories)
+      </button>
+      <button type="button" class="fa03-nav-pill" data-pane="pane-nonfungsional">
+        <span>🛡️</span> 3. Kebutuhan Non-Fungsional, SLA & Keamanan
+      </button>
+      <button type="button" class="fa03-nav-pill" data-pane="pane-repositori">
+        <span>📁</span> 4. Dokumen KAK, Blueprint & Pengesahan Final
+      </button>
+    </div>
+
+    <!-- PANE 1: VALIDASI WALIDATA & METADATA SDI -->
+    <section class="fa03-step-pane active" id="pane-walidata">
+      <div class="wb-grid">
+        <div class="wb-col-left">
+
+          <!-- Card SDI Summary -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Standar Data & Kamus Data Satu Data Indonesia (SDI)</h2>
+                <p class="panel-subtitle">Verifikasi kepatuhan data terhadap Perwal SDI Kota Yogyakarta dan kesiapan integrasi SPLP.</p>
+              </div>
+              <span class="walidata-verif-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Terverifikasi Walidata Statistik
+              </span>
+            </div>
+
+            <div class="panel-body">
+              <p class="text-sm text-muted" style="margin-bottom:1.25rem;">
+                Setiap variabel atau elemen data yang dikelola oleh <strong>SIP-RUJUK</strong> wajib memiliki definisi operasional baku, klasifikasi perlindungan data pribadi (UU No. 27/2022), dan keterhubungan dengan Kode Referensi Induk Pemkot Yogyakarta.
+              </p>
+
+              <!-- Tabel Kamus Data Elemen SDI -->
+              <div class="table-responsive">
+                <table class="data-table meta-table" style="font-size:0.83rem;">
+                  <thead>
+                    <tr>
+                      <th style="width:18%;">Elemen Data</th>
+                      <th style="width:12%;">Tipe & Format</th>
+                      <th>Definisi Operasional & Aturan Validasi</th>
+                      <th style="width:18%;">Klasifikasi PDP</th>
+                      <th style="width:16%;">Kode Referensi Induk</th>
+                      <th style="width:10%; text-align:center;">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sdiTableBody">
+                    <tr>
+                      <td>
+                        <strong>nik_pasien</strong>
+                        <div class="text-xs text-muted">Identitas Pasien</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(16)</span></td>
+                      <td>Nomor Induk Kependudukan 16 digit terverifikasi Ditjen Dukcapil</td>
+                      <td><span class="pdp-tag sensitif">Data Pribadi Sensitif</span></td>
+                      <td>Dukcapil Pemkot (JSS Core)</td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>no_rujukan</strong>
+                        <div class="text-xs text-muted">Nomor Surat Rujukan</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(25)</span></td>
+                      <td>Nomor Rujukan Standar FKTP BPJS (format: RUJ-YYYYMM-XXXXX)</td>
+                      <td><span class="pdp-tag umum">Data Pribadi Spesifik</span></td>
+                      <td>Bridging BPJS PCare API</td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>kode_faskes_asal</strong>
+                        <div class="text-xs text-muted">Puskesmas Pengirim</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(10)</span></td>
+                      <td>Kode Fasilitas Pelayanan Kesehatan Kemenkes RI (8 Puskesmas di Kota Yogya)</td>
+                      <td><span class="pdp-tag publik">Data Publik Instansi</span></td>
+                      <td>Master Faskes Dinkes Kota</td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>kode_diagnosa_icd10</strong>
+                        <div class="text-xs text-muted">Diagnosa Medis Primer</div>
+                      </td>
+                      <td><span class="mono-text">VARCHAR(8)</span></td>
+                      <td>Klasifikasi Penyakit Internasional WHO (ICD-10 Rev. 2019)</td>
+                      <td><span class="pdp-tag sensitif">Rekam Medis Sensitif</span></td>
+                      <td>Katalog Diagnosa Kemenkes</td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>kapasitas_bed_tersedia</strong>
+                        <div class="text-xs text-muted">Ketersediaan TT RSUD</div>
+                      </td>
+                      <td><span class="mono-text">INT(4)</span></td>
+                      <td>Jumlah tempat tidur rawat inap kosong per kelas perawatan di RSUD Jogja</td>
+                      <td><span class="pdp-tag publik">Data Agregat Publik</span></td>
+                      <td>SIRS Online & SatuSehat</td>
+                      <td style="text-align:center;"><span class="badge badge-emerald">Valid</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Bar Tambah Elemen Data Baru -->
+              <div style="margin-top:1rem; display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:0.75rem 1rem; border-radius:var(--radius-sm); border:1px dashed var(--border-color);">
+                <div class="text-xs text-muted">
+                  Ingin menambahkan elemen data baru ke dalam Kamus Data SDI?
+                </div>
+                <button type="button" class="btn btn-secondary btn-xs" id="btnAddMetaElem">
+                  + Tambah Variabel Data SDI
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Card Interoperabilitas & Format API (Bagi Pakai Data) -->
+          <div class="panel" style="margin-top:1.5rem;">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h3 class="panel-title">Standar Interoperabilitas & Spesifikasi API Bagi Pakai (SPLP)</h3>
+                <p class="panel-subtitle">Protokol integrasi dengan Sistem Penghubung Layanan Pemerintah & JSS.</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="summary-grid" style="grid-template-columns: repeat(3, 1fr); gap:1rem; margin-bottom:1.25rem;">
+                <div class="summary-metric-card">
+                  <div class="summary-metric-label">Gaya Arsitektur API</div>
+                  <div class="summary-metric-val" style="font-size:1.15rem; color:var(--primary);">RESTful JSON</div>
+                  <div class="text-xs text-muted" style="margin-top:0.25rem;">OpenAPI Specification 3.0 (OAS)</div>
+                </div>
+                <div class="summary-metric-card">
+                  <div class="summary-metric-label">Mekanisme Autentikasi</div>
+                  <div class="summary-metric-val" style="font-size:1.15rem; color:#059669;">OAuth 2.0 / JWT</div>
+                  <div class="text-xs text-muted" style="margin-top:0.25rem;">Single Sign-On JSS Terpusat</div>
+                </div>
+                <div class="summary-metric-card">
+                  <div class="summary-metric-label">Format Pertukaran Data</div>
+                  <div class="summary-metric-val" style="font-size:1.15rem; color:#d97706;">UTF-8 / GeoJSON</div>
+                  <div class="text-xs text-muted" style="margin-top:0.25rem;">Mendukung Peta GIS Faskes</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Endpoint Layanan Terbuka untuk Integrasi Antar-OPD</label>
+                <div style="background:#0f172a; color:#f8fafc; padding:1rem; border-radius:var(--radius-sm); font-family:var(--font-mono); font-size:0.8rem; line-height:1.6;">
+                  <span style="color:#38bdf8;">GET</span>  /api/v1/rujukan/ketersediaan-bed-rsud<br>
+                  <span style="color:#4ade80;">POST</span> /api/v1/rujukan/create-ticket-fktp<br>
+                  <span style="color:#38bdf8;">GET</span>  /api/v1/rujukan/status-verifikasi/{no_rujukan}<br>
+                  <span style="color:#facc15;">PUT</span>  /api/v1/rujukan/terima-pasien/{ticket_id}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Sidebar Rekomendasi Walidata -->
+        <div class="wb-col-right">
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Lembar Telaah Walidata Statistik</h3>
+            </div>
+            <div class="panel-body">
+              <div class="info-callout info-callout-success" style="margin-bottom:1rem;">
+                <div class="info-callout-icon">✓</div>
+                <div>
+                  <strong>Status SDI: Memenuhi Kaidah</strong>
+                  <div class="text-xs" style="margin-top:0.25rem;">
+                    Kamus data telah memenuhi 4 prinsip Satu Data Indonesia: Standar Data, Metadata Baku, Interoperabilitas, dan Kode Referensi Tunggal.
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Petugas Penelaah Walidata</label>
+                <input type="text" class="form-input" value="Rina Kusuma, S.Si (NIP. 198804152011012003)" readonly style="background:#f8fafc;">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Tanggal Verifikasi Walidata</label>
+                <input type="text" class="form-input" value="06 Oktober 2026, 11:30 WIB" readonly style="background:#f8fafc;">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Catatan Rekomendasi Walidata</label>
+                <textarea class="form-textarea" rows="4" style="background:#f8fafc; font-size:0.83rem;" readonly>1. Variabel NIK wajib di-hash saat transmisi eksternal ke log audit guna mematuhi prinsip minimasi data PDP.
+2. Kode Faskes wajib disinkronkan berkala via cron job mingguan ke API Master Faskes Kemenkes RI.
+3. Ketersediaan Bed RSUD disetujui dipublikasikan ke Portal Open Data Kota Yogyakarta setiap 15 menit.</textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Tanda Tangan Elektronik Walidata</label>
+                <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:var(--radius-sm); padding:0.75rem; display:flex; align-items:center; gap:0.75rem;">
+                  <span style="font-size:1.5rem;">🔒</span>
+                  <div>
+                    <div style="font-weight:700; font-size:0.82rem; color:#065f46;">Tersertifikasi Balai Sertifikasi Elektronik (BSrE)</div>
+                    <div style="font-size:0.72rem; color:#047857;">ID Transaksi: BSR-SDI-20261006-088</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PANE 2: SPESIFIKASI KEBUTUHAN FUNGSIONAL (USER STORIES) -->
+    <section class="fa03-step-pane" id="pane-fungsional">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Matriks Spesifikasi Kebutuhan Fungsional (Functional Requirements)</h2>
+            <p class="panel-subtitle">Daftar fungsi sistem yang wajib dibangun oleh tim pengembang perangkat lunak berdasarkan proses bisnis Dinkes.</p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btnAddReqBtn">
+            + Tambah Kebutuhan Baru
+          </button>
+        </div>
+        <div class="panel-body">
+
+          <!-- Requirement 1 -->
+          <div class="req-card">
+            <div class="req-card-header">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span class="req-id-badge">REQ-F-01</span>
+                <strong>Validasi & Entri Rujukan Pasien di Puskesmas (FKTP)</strong>
+              </div>
+              <span class="badge badge-indigo">Role: Petugas Puskesmas / Dokter Pemeriksa</span>
+            </div>
+            <p class="text-sm" style="color:var(--text-secondary); margin-bottom:0.75rem;">
+              Sistem harus mampu menarik data kependudukan pasien secara otomatis melalui NIK (integrasi JSS Dukcapil) dan memvalidasi kepesertaan jaminan BPJS Kesehatan secara real-time via BPJS PCare API sebelum surat rujukan elektronik diterbitkan.
+            </p>
+            <div style="display:flex; gap:1.5rem; font-size:0.8rem; color:var(--text-muted); background:#f8fafc; padding:0.6rem 0.85rem; border-radius:var(--radius-xs);">
+              <span><strong>Prioritas:</strong> <span style="color:#dc2626; font-weight:700;">Tinggi (Must Have)</span></span>
+              <span><strong>Kriteria Keberhasilan:</strong> Durasi penarikan NIK &le; 1.5 detik, auto-fill nama, alamat, faskes induk.</span>
+              <span><strong>Modul:</strong> Modul Intake Rujukan FKTP</span>
+            </div>
+          </div>
+
+          <!-- Requirement 2 -->
+          <div class="req-card">
+            <div class="req-card-header">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span class="req-id-badge">REQ-F-02</span>
+                <strong>Pemberitahuan & Triase Terpadu Tim IGD / Spesialis RSUD</strong>
+              </div>
+              <span class="badge badge-indigo">Role: Dokter Spesialis / Perawat IGD RSUD</span>
+            </div>
+            <p class="text-sm" style="color:var(--text-secondary); margin-bottom:0.75rem;">
+              Sistem harus menampilkan notifikasi suara dan visual peringatan rujukan darurat (Emergency Red Tag) di ruang IGD RSUD Yogyakarta, serta memungkinkan dokter spesialis memberikan advis awal (tindakan stabilisasi pra-rujukan) langsung melalui aplikasi sebelum pasien tiba.
+            </p>
+            <div style="display:flex; gap:1.5rem; font-size:0.8rem; color:var(--text-muted); background:#f8fafc; padding:0.6rem 0.85rem; border-radius:var(--radius-xs);">
+              <span><strong>Prioritas:</strong> <span style="color:#dc2626; font-weight:700;">Tinggi (Must Have)</span></span>
+              <span><strong>Kriteria Keberhasilan:</strong> Push notification WebSocket latency &le; 500ms, tombol konfirmasi respons satu ketukan.</span>
+              <span><strong>Modul:</strong> Modul Triase & Advis Gawat Darurat</span>
+            </div>
+          </div>
+
+          <!-- Requirement 3 -->
+          <div class="req-card">
+            <div class="req-card-header">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span class="req-id-badge">REQ-F-03</span>
+                <strong>Live Dashboard Kapasitas Bed & Ruang ICU/NICU Terkini</strong>
+              </div>
+              <span class="badge badge-indigo">Role: Operator Call Center PSC 119 & Publik</span>
+            </div>
+            <p class="text-sm" style="color:var(--text-secondary); margin-bottom:0.75rem;">
+              Sistem harus menyajikan matriks live bed availability terintegrasi dengan SIMRS RSUD Jogja, memetakan ketersediaan ranjang isolasi, ICU, HCU, perinatologi secara berkala per 5 menit tanpa intervensi manual petugas.
+            </p>
+            <div style="display:flex; gap:1.5rem; font-size:0.8rem; color:var(--text-muted); background:#f8fafc; padding:0.6rem 0.85rem; border-radius:var(--radius-xs);">
+              <span><strong>Prioritas:</strong> <span style="color:#d97706; font-weight:700;">Sedang (Should Have)</span></span>
+              <span><strong>Kriteria Keberhasilan:</strong> Sinkronisasi API dua arah tanpa lag dan tersedia widget publik di JSS Mobile.</span>
+              <span><strong>Modul:</strong> Modul Integrasi SIMRS Bed Monitoring</span>
+            </div>
+          </div>
+
+          <!-- Requirement 4 -->
+          <div class="req-card">
+            <div class="req-card-header">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span class="req-id-badge">REQ-F-04</span>
+                <strong>Pelacakan Status Rujukan Mandiri oleh Pasien & Keluarga (via JSS)</strong>
+              </div>
+              <span class="badge badge-indigo">Role: Pasien / Masyarakat Kota Yogyakarta</span>
+            </div>
+            <p class="text-sm" style="color:var(--text-secondary); margin-bottom:0.75rem;">
+              Pasien atau keluarga yang memiliki akun Jogja Smart Service (JSS) dapat memantau estimasi nomor antrean, jadwal dokter poli spesialis yang dituju, dan estimasi waktu penanganan rujukan langsung dari ponsel pintar mereka.
+            </p>
+            <div style="display:flex; gap:1.5rem; font-size:0.8rem; color:var(--text-muted); background:#f8fafc; padding:0.6rem 0.85rem; border-radius:var(--radius-xs);">
+              <span><strong>Prioritas:</strong> <span style="color:#059669; font-weight:700;">Menengah (Nice to Have / Fase 2)</span></span>
+              <span><strong>Kriteria Keberhasilan:</strong> Antarmuka ramah ponsel dengan integrasi Single Identity JSS.</span>
+              <span><strong>Modul:</strong> Modul Portal Warga JSS Gateway</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PANE 3: KEBUTUHAN NON-FUNGSIONAL, SLA & KEAMANAN -->
+    <section class="fa03-step-pane" id="pane-nonfungsional">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Standar Kebutuhan Non-Fungsional (Non-Functional Requirements)</h2>
+            <p class="panel-subtitle">Parameter performa, keandalan teknis, ketahanan siber, dan infrastruktur pusat data Pemkot.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="table-responsive">
+            <table class="data-table" style="font-size:0.84rem;">
+              <thead>
+                <tr>
+                  <th style="width:20%;">Dimensi NFR</th>
+                  <th style="width:25%;">Parameter / Target Metrik</th>
+                  <th>Spesifikasi Implementasi Tim Pengembang</th>
+                  <th style="width:15%;">Tingkat Kritis</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Ketersediaan & Keandalan (Availability)</strong>
+                  </td>
+                  <td>
+                    <span class="mono-text">SLA &ge; 99.5%</span> (Downtime maks. 3.6 jam/bulan)
+                  </td>
+                  <td>Dijalankan pada klaster containerized OpenShift/Docker Swarm Data Center Diskominfo Kota Yogya dengan load balancing Nginx redundant.</td>
+                  <td><span class="badge badge-red">Mission-Critical</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Kecepatan Tanggap (Response Time)</strong>
+                  </td>
+                  <td>
+                    <span class="mono-text">Waktu respons API &le; 1.5 detik</span> pada 95th percentile
+                  </td>
+                  <td>Optimasi query database PostgreSQL, implementasi Redis Caching untuk ketersediaan bed, dan kompresi payload GZIP.</td>
+                  <td><span class="badge badge-blue">Tinggi</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Beban Pengguna (Concurrent Users)</strong>
+                  </td>
+                  <td>
+                    <span class="mono-text">1.000 concurrent sessions</span> tanpa degradasi memori
+                  </td>
+                  <td>Kapasitas alokasi server awal: 4 vCPU, 8 GB RAM, auto-scale horizontal hingga 3 replicas saat lonjakan wabah musiman.</td>
+                  <td><span class="badge badge-amber">Sedang</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Keamanan & Kelaikan Siber (Cybersecurity)</strong>
+                  </td>
+                  <td>
+                    <span class="mono-text">Zero High/Critical Vulnerability</span> (OWASP Top 10)
+                  </td>
+                  <td>Enkripsi TLS 1.3, proteksi CSRF, Content Security Policy (CSP), proteksi injeksi SQL via ORM Prisma/TypeORM, dan mandatory Pentest sebelum rilis.</td>
+                  <td><span class="badge badge-red">Wajib Pentest</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Pencadangan & Pemulihan (Backup & DR)</strong>
+                  </td>
+                  <td>
+                    <span class="mono-text">RPO &le; 1 Jam, RTO &le; 4 Jam</span>
+                  </td>
+                  <td>Automated snapshot harian MinIO Object Storage Pemkot, cadangan database off-site ke Data Center Sekunder Giwangan.</td>
+                  <td><span class="badge badge-indigo">Penting</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Kepatuhan Regulasi & PDP</strong>
+                  </td>
+                  <td>
+                    <span class="mono-text">UU No. 27/2022 (PDP) & Permenkes</span>
+                  </td>
+                  <td>Audit trail terenkripsi untuk seluruh akses rekam medis rujukan; pencatatan IP, waktu, identitas dokter pengakses yang tidak dapat diubah (immutable log).</td>
+                  <td><span class="badge badge-emerald">Mandatori</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Matriks Manajemen Risiko & Ketergantungan -->
+          <div style="margin-top:1.5rem; background:#f8fafc; border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.25rem;">
+            <h4 style="font-size:0.95rem; font-weight:700; color:#0f172a; margin-bottom:0.75rem;">Matriks Mitigasi Risiko Ketergantungan Eksternal</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; font-size:0.83rem;">
+              <div style="background:#ffffff; border:1px solid var(--border-color); padding:0.85rem; border-radius:var(--radius-sm);">
+                <strong style="color:#b91c1c;">Risiko 1: Kegagalan API BPJS PCare (Downtime Nasional)</strong>
+                <p class="text-muted" style="margin-top:0.35rem; font-size:0.78rem;">
+                  <strong>Mitigasi:</strong> Sediakan antrean asinkron (Message Queue RabbitMQ/BullMQ) dengan fallback mode darurat offline kartu fisik BPJS, sehingga rujukan pasien gawat darurat tidak boleh tertolak di loket IGD.
+                </p>
+              </div>
+              <div style="background:#ffffff; border:1px solid var(--border-color); padding:0.85rem; border-radius:var(--radius-sm);">
+                <strong style="color:#d97706;">Risiko 2: Keterbatasan Bandwidth Internet di Puskesmas Pembantu</strong>
+                <p class="text-muted" style="margin-top:0.35rem; font-size:0.78rem;">
+                  <strong>Mitigasi:</strong> Kompresi payload transmisi data, caching lokal browser (Service Worker PWA), dan prioritas rute VPN FO Pemerintah Kota Yogyakarta.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PANE 4: DOKUMEN KAK, BLUEPRINT & PENGESAHAN FINAL -->
+    <section class="fa03-step-pane" id="pane-repositori">
+      <div class="wb-grid">
+        <div class="wb-col-left">
+
+          <!-- Berkas Repositori -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h2 class="panel-title">Dokumen Pendukung & Repositori Arsitektur</h2>
+                <p class="panel-subtitle">Berkas resmi Kerangka Acuan Kerja (KAK) dan rancang bangun arsitektur sistem.</p>
+              </div>
+            </div>
+            <div class="panel-body">
+
+              <div class="evidence-list" style="margin-bottom:1.5rem;">
+                <div class="evidence-item">
+                  <div class="evidence-icon">📄</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">KAK-Pengembangan-SIP-RUJUK-2026.pdf</div>
+                    <div class="evidence-meta">Form F.P01 &bull; Diajukan Dinkes &bull; 4.2 MB &bull; Terverifikasi eOffice Pemkot</div>
+                  </div>
+                  <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Mengunduh KAK resmi Form F.P01 Dinas Kesehatan...'); return false;">Unduh KAK</a>
+                </div>
+
+                <div class="evidence-item">
+                  <div class="evidence-icon">🗺️</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">Blueprint-Arsitektur-Aplikasi-SIPRUJUK-v1.png</div>
+                    <div class="evidence-meta">Diagram Arsitektur Komponen, SPLP, & JSS Gateway &bull; 2.8 MB</div>
+                  </div>
+                  <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Membuka diagram blueprint arsitektur sistem...'); return false;">Lihat Diagram</a>
+                </div>
+
+                <div class="evidence-item">
+                  <div class="evidence-icon">📑</div>
+                  <div class="evidence-info">
+                    <div class="evidence-name">Berita-Acara-Asesmen-FA02-TTE-Kabid.pdf</div>
+                    <div class="evidence-meta">Kelayakan SPBE Diskominfo &bull; Skor 92.5/100 &bull; TTE Kabid Aptika &bull; 1.1 MB</div>
+                  </div>
+                  <a href="#" class="btn btn-secondary btn-xs" onclick="alert('Membuka Berita Acara F.A02 yang telah di-TTE Kabid Aptika...'); return false;">Buka Berita Acara</a>
+                </div>
+              </div>
+
+              <!-- Upload Berkas Tambahan -->
+              <div style="border:2px dashed var(--border-color); border-radius:var(--radius-md); padding:1.5rem; text-align:center; background:#f8fafc;">
+                <div style="font-size:2rem; margin-bottom:0.5rem;">📤</div>
+                <div style="font-weight:700; font-size:0.9rem; color:#0f172a;">Unggah Dokumen Tambahan Pengembang</div>
+                <div class="text-xs text-muted" style="margin-top:0.25rem;">Format diperbolehkan: PDF, PNG, DOCX, ZIP (Maks 15 MB)</div>
+                <button type="button" class="btn btn-secondary btn-xs" style="margin-top:0.75rem;" onclick="alert('Simulasi upload dokumen pengembang ke MinIO Object Storage...');">
+                  Pilih Berkas Lampiran
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Final Handover Card -->
+        <div class="wb-col-right">
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Pengesahan Penyerahan ke Seksi Perangkat Lunak</h3>
+            </div>
+            <div class="panel-body">
+
+              <div class="summary-metric-card" style="margin-bottom:1rem; text-align:left;">
+                <div class="summary-metric-label">Status Alur MPSI SPBE</div>
+                <div class="summary-metric-val" style="font-size:1.1rem; color:var(--primary); margin-top:0.25rem;">
+                  Fase Tengah Menuju Hilir
+                </div>
+                <div class="text-xs text-muted" style="margin-top:0.35rem;">
+                  Setelah disahkan, usulan ini resmi berpindah status menjadi <strong>Ready for Development</strong> dan masuk ke antrean sprint Seksi Pengembangan Perangkat Lunak Diskominfo.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Nomor Dokumen F.A03 Resmi</label>
+                <input type="text" class="form-input mono-text" value="BA-FA03/DKIS/X/2026/042" readonly style="background:#f8fafc;">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Tim Penerima (Seksi Perangkat Lunak)</label>
+                <select class="form-select" id="targetDevLead">
+                  <option value="lead-1" selected>Tim Software Eng 1 - Bp. Joko Santoso (Web & Fullstack)</option>
+                  <option value="lead-2">Tim Software Eng 2 - Ibu Maya Indira (Mobile & JSS Services)</option>
+                  <option value="lead-3">Tim Integrasi Data & API SPLP - Bp. Fajar Nugroho</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Catatan Serah Terima Kebutuhan</label>
+                <textarea class="form-textarea" rows="3" placeholder="Tuliskan catatan khusus untuk tim pengembang perangkat lunak...">Seluruh spesifikasi kebutuhan fungsional (4 user stories) dan kamus data SDI telah disetujui Walidata Statistik. Prioritas pengembangan sprint awal adalah modul intake puskesmas dan bridging BPJS PCare API.</textarea>
+              </div>
+
+              <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:var(--radius-sm); padding:0.85rem; margin-bottom:1.25rem;">
+                <div style="display:flex; align-items:center; gap:0.5rem; font-weight:700; font-size:0.82rem; color:#065f46;">
+                  <span>🔒</span> Penandatanganan Kolektif Terverifikasi
+                </div>
+                <div class="text-xs" style="color:#047857; margin-top:0.35rem; line-height:1.4;">
+                  Dokumen F.A03 ini menggabungkan tanda tangan elektronik BSrE Analis SPBE, Walidata Statistik, dan Kepala Bidang TI & Komunikasi.
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-primary" style="width:100%; justify-content:center; padding:0.85rem;" id="btnFinalSubmitFaseHilir">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Sahkan & Alirkan ke Fase Hilir (Ready for Dev)
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL PREVIEW BERITA ACARA F.A03 RESMI KOP DISKOMINFO -->
+  <div class="modal-overlay" id="modalFA03Preview">
+    <div class="modal-container" style="max-width:850px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="pdf-tag">DOKUMEN RESMI PEMKOT</div>
+          <strong style="font-size:0.95rem;">Spesifikasi Kebutuhan & Standar Data (Form F.A03)</strong>
+        </div>
+        <button type="button" class="btn btn-secondary btn-xs" id="btnCloseFA03Modal">&times; Tutup</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Paper Kop Surat Resmi -->
+        <div class="pdf-paper">
+          <div class="pdf-kop">
+            <div class="pdf-logo-box">🏛️</div>
+            <div class="pdf-kop-text">
+              <h2 class="pdf-kop-instansi">PEMERINTAH KOTA YOGYAKARTA</h2>
+              <h1 class="pdf-kop-dinas">DINAS KOMUNIKASI INFORMATIKA DAN PERSANDIAN</h1>
+              <p class="pdf-kop-alamat">Jl. Kenari No. 56 Kompleks Balai Kota Yogyakarta 55165 | Telp. (0274) 551230 | kominfo@jogjakota.go.id</p>
+            </div>
+          </div>
+
+          <div class="pdf-doc-title">
+            <h3>BERITA ACARA SPESIFIKASI KEBUTUHAN SISTEM & METADATA SDI</h3>
+            <p>NOMOR: BA-FA03/DKIS/X/2026/042 &bull; FORM F.A03</p>
+          </div>
+
+          <div style="font-size:0.83rem; line-height:1.6; margin-bottom:1rem;">
+            Pada hari ini, <strong>Selasa tanggal Enam bulan Oktober tahun Dua Ribu Dua Puluh Enam</strong>, bertempat di Kantor Dinas Komunikasi Informatika dan Persandian Kota Yogyakarta, telah dilakukan penyusunan, verifikasi kamus data Satu Data Indonesia, dan pembakuan spesifikasi kebutuhan sistem informasi sebagai berikut:
+          </div>
+
+          <table class="pdf-table">
+            <tr>
+              <td style="width:30%; font-weight:700;">Nama Sistem Informasi</td>
+              <td>SIP-RUJUK (Sistem Informasi Rujukan Terpadu Puskesmas & RSUD)</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Instansi Pengusul</td>
+              <td>Dinas Kesehatan Kota Yogyakarta</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Nomor Registrasi Usulan</td>
+              <td><span class="mono-text">REG-20261006-0042</span> (Form F.A01)</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Hasil Asesmen F.A02</td>
+              <td><strong>Disetujui</strong> (Skor Kelayakan: 92.5/100 &bull; High Potential &bull; In-House)</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Kesesuaian Metadata SDI</td>
+              <td><strong>Memenuhi Kaidah Walidata Statistik</strong> (Kamus Data, Standar Data, Format SPLP)</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Kebutuhan Fungsional Pokok</td>
+              <td>4 Modul Utama (Intake FKTP, Triase IGD, Bed Monitoring SIMRS, Portal Warga JSS)</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Standar Non-Fungsional</td>
+              <td>SLA &ge; 99.5%, Waktu Respons API &le; 1.5s, TLS 1.3, Mandatory Pentest, UU 27/2022 PDP</td>
+            </tr>
+          </table>
+
+          <div style="margin-top:1.5rem; display:flex; justify-content:space-between; text-align:center; font-size:0.8rem;">
+            <div style="width:28%;">
+              <div>Mengetahui,</div>
+              <strong>Walidata Statistik</strong>
+              <div style="margin:0.75rem 0; font-family:var(--font-mono); font-size:0.7rem; color:#059669; border:1px dashed #a7f3d0; padding:0.35rem; border-radius:4px;">
+                🔒 TTE BSrE Terverifikasi<br>
+                RINA KUSUMA, S.Si
+              </div>
+              <div>NIP. 198804152011012003</div>
+            </div>
+
+            <div style="width:28%;">
+              <div>Disusun Oleh,</div>
+              <strong>Analis SPBE Diskominfo</strong>
+              <div style="margin:0.75rem 0; font-family:var(--font-mono); font-size:0.7rem; color:#059669; border:1px dashed #a7f3d0; padding:0.35rem; border-radius:4px;">
+                🔒 TTE BSrE Terverifikasi<br>
+                HENDRA WIJAYA, S.Kom
+              </div>
+              <div>NIP. 198407222009021001</div>
+            </div>
+
+            <div style="width:32%;">
+              <div>Disetujui Oleh,</div>
+              <strong>Kepala Bidang TI & Komunikasi</strong>
+              <div style="margin:0.75rem 0; font-family:var(--font-mono); font-size:0.7rem; color:#059669; border:1px dashed #a7f3d0; padding:0.35rem; border-radius:4px;">
+                🔒 TTE BSrE Terverifikasi<br>
+                BAMBANG PRANOTO, M.Eng
+              </div>
+              <div>NIP. 197709122002121003</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnPrintFA03Doc" onclick="window.print();">
+          🖨️ Cetak / Unduh PDF
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnConfirmFromModal">
+          Sahkan & Teruskan ke Seksi Perangkat Lunak &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../tengah.js"></script>
+</body>
+</html>

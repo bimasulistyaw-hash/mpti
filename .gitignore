@@ -1,0 +1,35 @@
+# Environment Variables
+.env
+*.env.local
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Go Binaries & Tools
+backend/main
+backend/bin/
+backend/dist/
+backend/tmp/
+backend/.air.toml
+
+# Node & Frontend Dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Database & Storage Mounts (Local Development)
+postgres_data/
+redis_data/
+minio_data/
+
+# IDE & Editor Configs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test & Coverage Artifacts
+coverage.out
+coverage.html
