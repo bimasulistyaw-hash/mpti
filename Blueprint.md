@@ -104,10 +104,10 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
      - Sesi Pembahasan & Harmonisasi Draf KAK bersama Tim Teknis OPD Pemohon untuk mengunci ruang lingkup pekerjaan.
      - **Penandatanganan Digital KAK oleh Kedua Belah Pihak (Mandatory Contract Gate):** Dokumen KAK F.P01 wajib ditandatangani secara digital oleh **Pihak I (Kepala Bidang / Diskominfo)** dan **Pihak II (Kepala OPD / PPK Pemohon)**. Penandatanganan kedua belah pihak ini menjadi komitmen sah ruang lingkup dan alokasi waktu.
      - **Quality Guard:** Status tiket HANYA dapat bertransisi menjadi **Ready for Dev** apabila KAK telah ditandatangani oleh kedua belah pihak dan seluruh dokumen perencanaan terkunci permanen di MinIO. Tim pengembang dilarang memulai koding sebelum KAK disahkan kedua pihak (*mencegah scope creep*).
-  5. **Fase 5: Pengembangan Sistem / Development (Papan Kerja Ala OpenProject & Eksekusi FI.01/FI.02):** Tiket berstatus `Ready for Dev` diterima Ketua Tim Kerja Perangkat Lunak. Proses pengembangan dijalankan secara terstruktur:
+  5. **Fase 5: Pengembangan Sistem / Development (Workspace Pengembangan Tangkas: Agile Sprint & Work Packages, serta Eksekusi FI.01/FI.02):** Tiket berstatus `Ready for Dev` diterima Ketua Tim Kerja Perangkat Lunak. Proses pengembangan dijalankan secara terstruktur:
      - **Alokasi Squad Pengembang:** Penugasan Project Manager (PM), Desainer Sistem Informasi (DSI UI-UX), Backend Dev, Frontend Dev, dan QA.
      - **Sprint Kickoff & Koordinasi Teknis:** Bedah F.A03, KAK F.P01, penetapan milestone sprint, arsitektur tech stack, dan branching Git.
-     - **Papan Kerja Work Packages (Ala OpenProject):** Manajemen kartu kerja kanban (`Backlog` ➔ `To Do` ➔ `In Progress` ➔ `Review` ➔ `Done`), pelacak persentase progres fisik pengembangan secara real-time (0% s/d 100%), dan integrasi commit Git.
+     - **Workspace Pengembangan Tangkas (Agile Sprint & Work Packages):** Manajemen kartu kerja kanban (`Backlog` ➔ `To Do` ➔ `In Progress` ➔ `Review` ➔ `Done`), pelacak persentase progres fisik pengembangan secara real-time (0% s/d 100%), dan integrasi commit Git.
      - **Dokumentasi & Infrastruktur:** Pengisian Form **FI.01** (Dokumentasi Rancang Bangun & Kodefikasi), pengajuan Form **FI.02** (Hosting & Subdomain ke Bidang IT), serta deployment build ke lingkungan Staging Sandbox Pemkot.
   6. **Fase 6: Pengujian Mutu Sistem / QA Suite (5 Pilar Kepwal 108/2026):** Setelah progres pengembangan fisik mencapai 100% dan deploy ke staging, tim QA mengeksekusi 5 Pilar Pengujian Mutu (Form **F.UO1 s/d F.U07**):
      - Rencana Uji Sistem (Form **F.UO1**).
@@ -286,10 +286,10 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
       
       LOCK -->|"✅ KAK Resmi Ditandatangani Kedua Belah Pihak"| OutFase4["🎯 OUTPUT FASE 4: DOKUMEN KAK SAH & TERKUNCI<br/>• Form F.A03 Software Requirements Final<br/>• KAK F.P01 Ber-TTD Digital Diskominfo & OPD<br/>• Status Tiket: Ready for Dev"]
       
-      OutFase4 -->|"➡️ Diteruskan ke Seksi Perangkat Lunak"| NextFase5["💻 FASE 5: PENGEMBANGAN SISTEM (DEVELOPMENT)<br/>(Workspace Ala OpenProject, FI.01 & FI.02)"]
+      OutFase4 -->|"➡️ Diteruskan ke Seksi Perangkat Lunak"| NextFase5["💻 FASE 5: PENGEMBANGAN SISTEM (DEVELOPMENT)<br/>(Workspace Pengembangan Tangkas: Agile Sprint & Work Packages, FI.01 & FI.02)"]
   ```
 
-  **5. Fase 5: Pengembangan Sistem / Development (Workspace Ala OpenProject, FI.01 & FI.02)**
+  **5. Fase 5: Pengembangan Sistem / Development (Workspace Pengembangan Tangkas: Agile Sprint & Work Packages, FI.01 & FI.02)**
   ```mermaid
   flowchart TD
       ReadyDev["🎯 Tiket Masuk: Status Ready for Dev<br/>(Dokumen F.A03 & KAK F.P01 Ditandatangani 2 Pihak)"] --> DevLead["👤 Ketua Tim Kerja Perangkat Lunak<br/>(Seksi Pengembangan Aplikasi)"]
@@ -320,7 +320,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
       
       DevKickoff --> DevBoard
       
-      subgraph DevBoard ["📊 3. PAPAN KERJA SPRINT & MONITORING PROGRES (ALA OPENPROJECT)"]
+      subgraph DevBoard ["📊 3. WORKSPACE PENGEMBANGAN TANGKAS (AGILE SPRINT & WORK PACKAGES)"]
           direction TB
           OP1["Papan Kerja Work Packages (Backlog ➔ To Do ➔ In Progress ➔ Review ➔ Done)"]
           OP2["Task DSI / UI-UX: Wireframing, Desain UI & Prototipe Figma"]
@@ -406,7 +406,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
       
       Auditor --> DashAuditor["📊 DASHBOARD AUDITOR INTERNAL SPBE<br/>• Monitoring Tahap Pengembangan & Progres Fisik Riil<br/>• Rekapitulasi Matriks 10 Artefak Mandatori SPBE<br/>• Verifikasi Integritas Audit Trail SHA-256 Chaining"]
       
-      DashAuditor --> CheckDev["🔍 1. Audit Tahap Development Ala OpenProject<br/>• Validasi KAK F.P01 Sah 2 Pihak Sebelum Dev Dimulai<br/>• Verifikasi Kurva S Realisasi vs Rencana Milestone<br/>• Audit Log Jam Kerja Staf (Timesheet vs Estimasi Jam)<br/>• Pelacakan Commit Hash Git ke Nomor Work Package<br/>• Penegakan Ketiadaan Bypass Development"]
+      DashAuditor --> CheckDev["🔍 1. Audit Tahap Development Tangkas (Agile Sprint & Work Packages)<br/>• Validasi KAK F.P01 Sah 2 Pihak Sebelum Dev Dimulai<br/>• Verifikasi Kurva S Realisasi vs Rencana Milestone<br/>• Audit Log Jam Kerja Staf (Timesheet vs Estimasi Jam)<br/>• Pelacakan Commit Hash Git ke Nomor Work Package<br/>• Penegakan Ketiadaan Bypass Development"]
       
       DashAuditor --> CheckArtifacts["🗂️ 2. Rekapitulasi Matriks 10 Artefak Mandatori<br/>• Fase 1: Form F.A01, eOffice & 4 Lampiran MinIO<br/>• Fase 2: BA Rapat Klarifikasi & Form F.A02 Sah Kabid<br/>• Fase 3: Rekomendasi SDI Walidata Daerah Clear<br/>• Fase 4: Form F.A03 & KAK F.P01 TTD 2 Pihak Sah<br/>• Fase 5: Form Rancang Bangun FI.01 & Hosting FI.02<br/>• Fase 6: 5 Pilar QA (Fungsional, Pentest CSIRT, UAT, k6)<br/>• Fase 7: BAST F.SR01 Klausul 3 Bulan & Rilis F.R04"]
       
@@ -458,7 +458,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 4. **Modul Analisis Kelayakan & Approval (F.A02 - Assessment Workbench)**: Disposisi Tim Telaah (Ketua Tim Kerja assign Lead Analis F.A02 & Business Analyst BA), Kertas kerja asesmen 4 pilar (Uji Redundansi Katalog, Pemetaan Arsitektur, Rubrik 12 Bagian berbobot Level 1-4 & Eviden Sah), integrasi clearance berita acara rapat klarifikasi, scoring engine otomatis, kuadran McFarlan-Peppard, Panel Tampilan Rekapitulasi Hasil Asesmen, Pengisian Manual Form F.A02 Resmi oleh Analis, Rekomendasi Tindak Lanjut, Approval Digital Kabid.
 5. **Modul Standardisasi Metadata SDI (Walidata Daerah)**: Telaah struktur data & usulan variabel, verifikasi Kamus Data OPD, validasi Standar Data nasional/daerah, sinkronisasi Kode Referensi Data Induk Pemkot Yogyakarta, pengujian kesiapan bagi pakai SPLP, dan penerbitan Rekomendasi Walidata SDI (Clearance Metadata Wajib Clear).
 6. **Modul Analisis Kebutuhan Sistem & Penandatanganan KAK Bersama (F.A03 & KAK F.P01)**: Input Form F.A03 Software Requirements (kebutuhan fungsional per role, non-fungsional, matriks risiko), penyusunan draf KAK Teknis (F.P01) dan Blueprint Rancang Bangun Sistem, sesi harmonisasi ruang lingkup bersama OPD, penandatanganan digital KAK oleh kedua belah pihak (Diskominfo & OPD), penguncian berkas ke MinIO, serta penerbitan status Ready for Dev.
-7. **Modul Manajemen Proyek Pengembangan (Ala OpenProject - FI.01 & FI.02)**: Resource Allocation (Ketua Tim Kerja assign PM, DSI UI-UX, Backend Dev, Frontend Dev, QA), Sprint Kickoff & Notulensi Dev Meeting, Papan Kerja Work Packages Kanban terintegrasi Git commits, Pelacak Real-Time Progres Fisik Pengembangan (0-100%), Pengisian Formulir Rancang Bangun FI.01, dan Pengajuan Hosting/Subdomain FI.02.
+7. **Modul Manajemen Proyek Pengembangan (Workspace Pengembangan Tangkas: Agile Sprint & Work Packages - FI.01 & FI.02)**: Resource Allocation (Ketua Tim Kerja assign PM, DSI UI-UX, Backend Dev, Frontend Dev, QA), Sprint Kickoff & Notulensi Dev Meeting, Papan Kerja Work Packages Kanban terintegrasi Git commits, Pelacak Real-Time Progres Fisik Pengembangan (0-100%), Pengisian Formulir Rancang Bangun FI.01, dan Pengajuan Hosting/Subdomain FI.02.
 8. **Modul 5 Pilar Pengujian Mutu (QA Suite Kepwal 108/2026)**:
    - Pengujian Integrasi (**F.UO2**)
    - Pengujian Fungsional (**F.UO3**)
@@ -561,7 +561,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
   2. *Pihak II (Kepala OPD Pemohon / Pejabat Pembuat Komitmen OPD)*: Membubuhkan tanda tangan digital komitmen kesiapan proses bisnis, data, dan ruang lingkup.
 - **`[Sistem]`**: Mengunci artefak sah KAK F.P01 dan Form F.A03 secara permanen di MinIO, mencatat jejak audit TTE kedua belah pihak, mengubah status permohonan aplikasi menjadi `Ready for Dev`, dan meneruskan tiket ke dashboard antrean Seksi Perangkat Lunak (Developer). **Quality Guard**: Sistem memblokir inisiasi development jika KAK belum ditandatangani oleh kedua belah pihak.
 
-### Probis 5: Manajemen Proyek Pengembangan / Development Ala OpenProject (FI.01 & FI.02)
+### Probis 5: Manajemen Proyek Pengembangan / Development — Workspace Pengembangan Tangkas (Agile Sprint & Work Packages, FI.01 & FI.02)
 - **`[Aktor: Ketua Tim Kerja Perangkat Lunak]`**: Mengakses tiket aplikasi berstatus `Ready for Dev` (yang telah sah ber-KAK dua pihak), membuka menu **Alokasi Squad Project (Resource Allocation)**:
   1. *Penugasan PM*: Menunjuk Project Manager (PM / Ketua Tim Teknis) sebagai pengelola sprint deliverable.
   2. *Penugasan DSI*: Menugaskan Desainer Sistem Informasi (DSI / UI-UX) untuk desain wireframe, alur interaksi, dan prototipe.
@@ -571,7 +571,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
   1. Membedah Form F.A03 (Kebutuhan Sistem), KAK F.P01 yang telah ditandatangani, dan Clearance Metadata SDI.
   2. Menyepakati pembagian sprint milestones, struktur branch Git, dan arsitektur tech stack.
   3. Mencatat risalah notulensi rapat koordinasi dev & target deliverable modul.
-- **`[Sistem]`**: Menginisiasi ruang proyek di **Papan Kerja Sprint (Ala OpenProject)** lengkap dengan Work Packages Kanban (`Backlog` ➔ `To Do` ➔ `In Progress` ➔ `In Review` ➔ `Done`):
+- **`[Sistem]`**: Menginisiasi ruang proyek di **Workspace Pengembangan Tangkas (Agile Sprint & Work Packages)** lengkap dengan Work Packages Kanban (`Backlog` ➔ `To Do` ➔ `In Progress` ➔ `In Review` ➔ `Done`):
   1. *Jalur DSI / UI-UX*: Pembuatan wireframe, design system, dan prototipe interaktif Figma.
   2. *Jalur Backend Dev*: Desain skema DB, implementasi REST API/GraphQL, dan interoperabilitas SPLP.
   3. *Jalur Frontend Dev*: Slicing antarmuka, konsumsi API, manajemen state, dan penanganan validasi.
@@ -699,7 +699,7 @@ Daftar kebutuhan produk (PRD) di bawah ini disusun secara komprehensif berdasark
 | `PRD-09A` | **Manajemen Squad: Resource Allocation Matriks** | Menu penugasan squad project oleh Ketua Tim Kerja Perangkat Lunak: Project Manager (PM), Desainer UI-UX (DSI), Backend Dev, Frontend Dev, dan QA Tester. | **Must Have** | `BR-07` |
 | `PRD-09B` | **Manajemen Squad: Sprint Kickoff & Notulensi Dev** | Studio penyelenggaraan kickoff sprint pengembangan: pembagian target rilis modul, kesepakatan arsitektur tech stack, dan pencatatan risalah dev meeting. | **Must Have** | `BR-07` |
 | `PRD-09C` | **Manajemen Squad: Inisialisasi Git & Webhook** | Pencatatan URL repositori Git resmi Pemkot, konfigurasi branching strategy (`main`, `staging`, `feature/*`), dan integrasi webhook event commit. | **Must Have** | `BR-07` |
-| `PRD-10A` | **Papan Kerja Dev: Papan Kanban Work Packages** | Papan kerja visual interaktif ala OpenProject dengan status kartu kerja kanban: `Backlog` ➔ `To Do` ➔ `In Progress` ➔ `In Review` ➔ `Done`. | **Must Have** | `BR-07` |
+| `PRD-10A` | **Papan Kerja Dev: Papan Kanban Work Packages** | Papan kerja visual interaktif Workspace Pengembangan Tangkas (Agile Sprint & Work Packages) dengan status kartu kerja kanban: `Backlog` ➔ `To Do` ➔ `In Progress` ➔ `In Review` ➔ `Done`. | **Must Have** | `BR-07` |
 | `PRD-10B` | **Papan Kerja Dev: Jalur Kerja Multidisiplin** | Pembagian jalur kerja (discipline tracks): Track DSI UI-UX Figma, Track Backend DB/API/SPLP, Track Frontend Slicing/State, dan Track QA Testing. | **Must Have** | `BR-07` |
 | `PRD-10C` | **Papan Kerja Dev: Kalkulator Progres Fisik Real-Time** | Pembobotan nilai persentase per task work package dan agregasi kalkulasi otomatis progres fisik pengembangan aplikasi secara real-time (0% s/d 100%). | **Must Have** | `BR-07` |
 | `PRD-10D` | **Papan Kerja Dev: Timesheet Log Jam Pengembang** | Pencatatan jam kerja efektif pengembang (*logged hours*) dibandingkan dengan estimasi jam kerja (*estimated hours*) pada setiap kartu pekerjaan. | **Should Have** | `BR-07` |
@@ -902,7 +902,7 @@ SRS-F-10: Resource Allocation Squad Dev, Kickoff Sprint & Repositori Git Webhook
 ```
 
 ```
-SRS-F-11: Papan Kerja Kanban Work Packages Multidisiplin Ala OpenProject & Engine Progres Fisik
+SRS-F-11: Workspace Pengembangan Tangkas (Agile Sprint & Work Packages Multidisiplin) & Engine Progres Fisik
 ├── 1. Input Data: DTO Work Package Task (Squad ID, Judul Pekerjaan, Deskripsi Rinci, Track Disiplin: 'DSI_UI_UX' / 'BACKEND_API' / 'FRONTEND_UI' / 'QA_TESTING', Assignee ID, Status Kanban: 'Backlog' / 'To Do' / 'In Progress' / 'In Review' / 'Done', Bobot Persentase Task %, Estimasi Jam, Logged Hours Jam Kerja, Checklists Sub-Task, Commit Hash Git Terkait).
 ├── 2. Validasi: Role wajib anggota squad yang ditugaskan; total penjumlahan bobot task pada proyek wajib tepat 100%; perpindahan kartu ke kolom 'Done' pada track QA wajib melampirkan referensi test case ID; pembaruan posisi kanban wajib atomic via transaksi database.
 ├── 3. Penyimpanan Data: Tabel `work_packages`, `work_package_logs`, `timesheets`, `git_commits`; kalkulasi agregat progres fisik riil:
@@ -1462,7 +1462,7 @@ Tabel berikut memetakan ke-21 modul implementasi, relasi terhadap modul PRD (Bag
 | `MOD-08` | **Perencanaan Kebutuhan Sistem & Matriks Risiko (Form F.A03)** | `PRD-07A..07D` | `SRS-F-08` | Matriks User Story & Use Case, SLA Non-Fungsional Parameters, Matriks Manajemen Risiko SPBE (Dampak vs Probabilitas), Generator PDF F.A03. | `MOD-07` | 9 | Sedang |
 | `MOD-09` | **Kerangka Acuan Kerja (KAK F.P01) & Penandatanganan Digital 2 Pihak** | `PRD-08A..08D` | `SRS-F-09` | Builder Draf KAK Teknis & Blueprint, Studio Harmonisasi Ruang Lingkup, Digital Dual-Signature (Pihak I Kominfo & Pihak II OPD), Mandatory Contract Lock. | `MOD-08` | 10 | Sangat Tinggi |
 | `MOD-10` | **Resource Allocation & Manajemen Squad Pengembang** | `PRD-09A..09C` | `SRS-F-10` | Squad Assignment Panel (Ketua Tim, PM, DSI UI-UX, BE Dev, FE Dev, QA Tester), Kickoff Sprint Studio, Git Repo Linker & Webhook Listener. | `MOD-09` | 11 | Sedang |
-| `MOD-11` | **Papan Kerja Sprint & Work Packages Ala OpenProject** | `PRD-10A..10E` | `SRS-F-11` | Kanban Board Interaktif (Backlog ➔ Done), 4 Track Multidisiplin (DSI, BE, FE, QA), Real-Time Physical Progress Engine, Timesheet Logger, Git Feed Stream. | `MOD-10` | 12 | Sangat Tinggi |
+| `MOD-11` | **Workspace Pengembangan Tangkas (Agile Sprint & Work Packages)** | `PRD-10A..10E` | `SRS-F-11` | Kanban Board Interaktif (Backlog ➔ Done), 4 Track Multidisiplin (DSI, BE, FE, QA), Real-Time Physical Progress Engine, Timesheet Logger, Git Feed Stream. | `MOD-10` | 12 | Sangat Tinggi |
 | `MOD-12` | **Monitoring Progres Development & Progress Reporting** | `PRD-11A..11D` | `SRS-F-12` | Dashboard Pemantauan Fisik Seksi, Visualisasi Kurva S (Realisasi vs KAK), Sprint Burndown Chart, PDF Progress Report Mingguan/Bulanan, Early Warning Delay. | `MOD-11` | 13 | Tinggi |
 | `MOD-13` | **Dokumentasi Rancang Bangun & Infrastruktur Hosting (FI.01 & FI.02)** | `PRD-12A..12C` | `SRS-F-13` | Digital Form FI.01 (Repo, Tag, Changelog, Swagger), Pengajuan Hosting FI.02 (Kritikal P/AP/SP, Subdomain jogjakota.go.id, Kuota VM), Staging Readiness Gate. | `MOD-11`, `MOD-12` | 14 | Sedang |
 | `MOD-14` | **Quality Gate: 5 Pilar Pengujian Mutu SPBE (QA Suite F.UO1-U07)** | `PRD-13A..13G` | `SRS-F-14` | Test Plan F.UO1, Integrasi F.UO2, Fungsional F.UO3, UAT OPD F.UO4/UO5, Pentest CSIRT F.U06, Stress Test k6 F.U07, Mandatory Quality Gate Enforcement. | `MOD-13` | 15 | Sangat Tinggi |
@@ -1655,8 +1655,8 @@ Setiap modul implementasi memiliki spesifikasi teknis mendalam yang mencakup lap
 - **Integrasi**: GitLab / Gitea API Server Pusat Data Pemkot Yogyakarta.
 - **Guard Validation**: Setiap proyek wajib memiliki minimal 1 penanggung jawab teknis pada setiap peran kunci (PM, Backend, Frontend, QA) sebelum papan kerja pengembangan dapat diaktifkan.
 
-### 12. `MOD-11`: Papan Kerja Sprint & Work Packages Ala OpenProject
-- **Peran & Tujuan**: Ruang kerja operasional harian bagi seluruh pengembang bergaya OpenProject/Jira dengan papan kanban interaktif, pembagian 4 jalur kerja multidisiplin (DSI UI-UX, Backend, Frontend, QA), mesin kalkulasi otomatis progres fisik berbasis bobot task, pencatatan jam kerja (*timesheet*), dan integrasi feed commit Git.
+### 12. `MOD-11`: Workspace Pengembangan Tangkas (Agile Sprint & Work Packages)
+- **Peran & Tujuan**: Ruang kerja operasional harian bagi seluruh pengembang berbasis metodologi Agile Scrum & Kanban dengan papan visual interaktif, pembagian 4 jalur kerja multidisiplin (DSI UI-UX, Backend, Frontend, QA), mesin kalkulasi otomatis progres fisik berbasis bobot task, pencatatan jam kerja (*timesheet*), dan integrasi feed commit Git.
 - **Backend Components (Go)**:
   - `internal/handler/work_package_handler.go`: CRUD work packages `/api/v1/dev/work-packages`, pembaruan status kanban (drag & drop).
   - `internal/service/progress_calculator_engine.go`: Kalkulator agregasi progres fisik real-time ($0\% - 100\%$) berdasarkan formula bobot task selesai.
@@ -1891,7 +1891,7 @@ flowchart TD
 
     subgraph KLASTER_DEVELOPMENT["Fase 5: Pengerjaan Proyek & Monitoring Dev"]
         MOD10["MOD-10: Resource Allocation & Manajemen Squad Dev"]
-        MOD11["MOD-11: Papan Kanban Work Packages Ala OpenProject"]
+        MOD11["MOD-11: Workspace Pengembangan Tangkas (Agile Sprint & Work Packages)"]
         MOD12["MOD-12: Monitoring Progres Fisik, Kurva S & Reporting"]
         MOD13["MOD-13: Dokumentasi Rancang Bangun (FI.01) & Hosting (FI.02)"]
     end
