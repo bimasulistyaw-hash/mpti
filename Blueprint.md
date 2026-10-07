@@ -93,13 +93,14 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
        - **Dokumen Cetak Formulir F.A01 PDF:** Ber-KOP naskah dinas resmi Pemkot Yogyakarta lengkap dengan QR-code bukti tanda terima pengajuan.
        - **Bundel 4 Lampiran Dokumen Sah:** Terverifikasi magic bytes PDF dan tersimpan di MinIO Object Storage.
        - **Tiket Masuk Antrean Analis:** Berstatus `Menunggu Telaah Kelayakan (F.A02)` pada dashboard Seksi Perencanaan untuk diproses ke Fase 2.
-  2. **Fase 2: Asesmen Kelayakan & Klarifikasi Teknis (Rapat Klarifikasi Teknis OPD, Joint Clearance 3 Pilar & Form F.A02 Resmi):** Tiket masuk diterima oleh **Ketua Tim Kerja Perencanaan** yang melakukan penugasan resmi (*resource allocation*): menugaskan **Tim Analis Kelayakan (Lead Analis F.A02)**, **Business Analyst (BA Bisnis Proses)**, serta mengundang perwakilan **Bagian Organisasi Setda** dan **Bappeda Kota Yogyakarta** dalam forum Tim Koordinasi SPBE.
+  2. **Fase 2: Asesmen Kelayakan & Klarifikasi Teknis (Rapat Klarifikasi Teknis OPD, Joint Clearance 3 Pilar & Siklus Re-Verifikasi):** Tiket masuk diterima oleh **Ketua Tim Kerja Perencanaan** yang melakukan penugasan resmi (*resource allocation*): menugaskan **Tim Analis Kelayakan (Lead Analis F.A02)**, **Business Analyst (BA Bisnis Proses)**, serta mengundang perwakilan **Bagian Organisasi Setda** dan **Bappeda Kota Yogyakarta** dalam forum Tim Koordinasi SPBE.
      - Tim Analis & BA mengeksekusi **Modul Manajemen Rapat Klarifikasi Teknis OPD (Multi-Sesi)** bersama OPD Pemohon, Bagian Organisasi, dan Bappeda: studio inisiasi rapat terjadwal, validasi *Target Kesepakatan Checklist 100%* (Mandatory Guard), risalah notulensi format dokumen MS Word & bukti foto ke MinIO, pelacak tindak lanjut tugas perbaikan OPD, serta daftar hadir digital & TTE Berita Acara Rapat Klarifikasi.
      - Pelaksanaan **Joint Clearance Asesmen Kelayakan 3 Pilar SPBE Terpadu**:
        1. **Pilar Kelembagaan & Tata Laksana (Bagian Organisasi Setda):** Validasi kesesuaian usulan dengan Tugas Pokok dan Fungsi (Tupoksi) OPD pemohon mengacu pada Peraturan Walikota SOTK (mencegah tumpang tindih urusan antar-dinas) serta verifikasi ketersediaan Peta Proses Bisnis (Peta Probis) dan SOP Pelayanan Publik yang sah.
        2. **Pilar Perencanaan Pembangunan & Anggaran (Bappeda Kota Yogyakarta):** Validasi keselarasan usulan dengan Sasaran RPJMD, Rencana Kerja Pemerintah Daerah (RKPD), Indikator Kinerja Utama (IKU) Kepala Daerah / Renstra OPD, ketersediaan alokasi subkegiatan pada SIPD, dan kesesuaian inisiatif Peta Rencana SPBE Daerah.
        3. **Pilar Teknis & Redundansi (Diskominfo - Form F.A02 Workbench):** Uji Redundansi Katalog Aplikasi Pemkot, Pemetaan Arsitektur SPBE & Regulasi, Rubrik Penilaian Berbobot 12 Bagian & Eviden Sah, serta Kalkulasi Skor Kelayakan (Skor ≥ 70) & Kuadran McFarlan-Peppard.
-     - Seluruh hasil evaluasi 3 pilar disajikan pada panel referensi terpadu, lalu masing-masing penelaah melakukan **Pengisian & Penandatanganan Formulir F.A02 Resmi** sesuai hak akses (SoD RBAC), sebelum diajukan ke Approval Digital Kabid Pengembangan Aplikasi Informatika (Gate 2 Clearance).
+     - **Siklus Evaluasi Ulang / Pengembalian ke OPD (Feedback Loop Re-Verifikasi):** Apabila salah satu atau ketiga pilar menemukan ketidaksesuaian atau dokumen belum lengkap (misal SOP belum terstandarisasi, subkegiatan SIPD belum tertaut, atau eviden teknis kurang), status tiket dialihkan menjadi **`Perbaikan Dokumen / Klarifikasi Diperlukan`** dan **dikembalikan ke antrean OPD Pemohon** disertai daftar rincian catatan revisi dari pilar terkait. OPD mengunggah dokumen perbaikan yang kemudian divalidasi ulang (*re-check*) oleh penelaah hingga status 3 pilar dinyatakan Disetujui/Lolos.
+     - Setelah seluruh 3 pilar dinyatakan Lolos (*Clear*), masing-masing penelaah melakukan **Pengisian & Penandatanganan Formulir F.A02 Resmi Terpadu** sesuai hak akses (SoD RBAC), sebelum diajukan ke Approval Digital Kabid Pengembangan Aplikasi Informatika (Gate 2 Clearance).
   3. **Fase 3: Standardisasi Metadata Satu Data Indonesia / SDI (Walidata Daerah):** Permohonan yang telah lolos telaah F.A02 dan disahkan Kabid diteruskan ke Seksi Data Statistik (Walidata Daerah). **Tahap ini WAJIB CLEAR TERLEBIH DAHULU sebelum masuk ke analisis kebutuhan teknis**: memverifikasi Kamus Data, Standar Data, Kode Referensi Data Induk Pemkot, dan Interoperabilitas SPLP hingga diterbitkannya **Rekomendasi Walidata SDI (Clearance Metadata Sah 100%)**. Bila struktur data belum standar / duplikat, tiket dikembalikan ke OPD untuk perbaikan kamus data.
   4. **Fase 4: Perencanaan Teknis & Penandatanganan KAK Bersama (Form F.A03 & Penandatanganan KAK F.P01 Kedua Belah Pihak):** Setelah Metadata SDI dinyatakan Clear 100%, Tim Bisnis Analis & Arsitek Sistem memproses perencanaan teknis:
      - Penyusunan Formulir **F.A03** Software Requirements (kebutuhan fungsional per role, non-fungsional SLA/keamanan, matriks mitigasi risiko).
@@ -163,7 +164,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
       OutFase1 -->|"➡️ Diteruskan ke Tahap Berikutnya"| Next["🔬 FASE 2: ASESMEN KELAYAKAN & KLARIFIKASI TEKNIS<br/>• Manajemen Rapat Klarifikasi Teknis OPD (Multi-Sesi)<br/>• Kertas Kerja Asesmen Analis F.A02"]
   ```
 
-  **2. Fase 2: Asesmen Kelayakan & Klarifikasi Teknis (Rapat Klarifikasi Teknis OPD & Form F.A02 Resmi)**
+  **2. Fase 2: Asesmen Kelayakan & Klarifikasi Teknis (Rapat Klarifikasi Teknis OPD, Joint Clearance 3 Pilar & Siklus Re-Verifikasi OPD)**
   ```mermaid
   flowchart TD
       A["📥 Tiket Masuk F.A01<br/>(Terverifikasi eOffice)"] --> LeadPlan["👤 Ketua Tim Kerja Perencanaan<br/>(Seksi Perencanaan TI)"]
@@ -197,30 +198,32 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
       subgraph JointClearance ["🏛️ 3 PILAR JOINT CLEARANCE ASESMEN KELAYAKAN SPBE"]
           direction TB
           subgraph PilarOrganisasi ["🏛️ PILAR 1: BAGIAN ORGANISASI SETDA"]
-              O1["• Validasi Kesesuaian Tupoksi (Perwal SOTK OPD)<br/>• Mencegah Tumpang Tindih Kewenangan Antar-Dinas<br/>• Verifikasi Peta Proses Bisnis (Peta Probis) Sah<br/>• Verifikasi SOP Pelayanan Publik yang Didigitalkan<br/>➔ Rekomendasi: DISETUJUI / DITOLAK"]
+              O1["• Validasi Kesesuaian Tupoksi (Perwal SOTK OPD)<br/>• Mencegah Tumpang Tindih Kewenangan Antar-Dinas<br/>• Verifikasi Peta Proses Bisnis (Peta Probis) Sah<br/>• Verifikasi SOP Pelayanan Publik yang Didigitalkan<br/>➔ Status: Disetujui / Butuh Perbaikan / Ditolak"]
           end
           
           subgraph PilarBappeda ["📈 PILAR 2: BAPPEDA KOTA YOGYAKARTA"]
-              B1["• Validasi Keselarasan Sasaran RPJMD & RKPD<br/>• Kesesuaian Indikator Kinerja (IKU/IKD Renstra OPD)<br/>• Verifikasi Alokasi Subkegiatan Anggaran SIPD<br/>• Kesesuaian Inisiatif Peta Rencana SPBE Daerah<br/>➔ Rekomendasi: DISETUJUI / DITOLAK"]
+              B1["• Validasi Keselarasan Sasaran RPJMD & RKPD<br/>• Kesesuaian Indikator Kinerja (IKU/IKD Renstra OPD)<br/>• Verifikasi Alokasi Subkegiatan Anggaran SIPD<br/>• Kesesuaian Inisiatif Peta Rencana SPBE Daerah<br/>➔ Status: Disetujui / Butuh Perbaikan / Ditolak"]
           end
           
           subgraph PilarDiskominfo ["💻 PILAR 3: DISKOMINFO (F.A02 WORKBENCH)"]
-              D1["• Uji Redundansi Katalog Aplikasi Eksisting Pemkot<br/>• Scoring Rubrik Kematangan 12 Bagian & Eviden Sah<br/>• Kalkulasi Skor Kelayakan (0-100) & Kuadran McFarlan<br/>➔ Rekomendasi: LAYAK (Skor ≥ 70) / TIDAK LAYAK"]
+              D1["• Uji Redundansi Katalog Aplikasi Eksisting Pemkot<br/>• Scoring Rubrik Kematangan 12 Bagian & Eviden Sah<br/>• Kalkulasi Skor Kelayakan (0-100) & Kuadran McFarlan<br/>➔ Status: Layak (Skor ≥ 70) / Butuh Perbaikan / Redundan"]
           end
       end
       
-      JointClearance --> FormFA02Combined["✍️ Formulir F.A02 Resmi Terpadu (Single Source of Truth)<br/>• Blok Telaah Organisasi (TTE Verifikator Bagian Organisasi P-10)<br/>• Blok Telaah Perencanaan (TTE Verifikator Bappeda P-11)<br/>• Blok Telaah Teknis & Rekomendasi Akhir (TTE Lead Analis P-02)"]
+      %% LOOP PENGEMBALIAN & PENGECEKAN ULANG KE OPD
+      JointClearance -- "⚠️ Ada Catatan / Dokumen Belum Sesuai" --> RetOPDFix["🔁 Tiket Dikembalikan ke OPD Pemohon<br/>(Daftar Catatan Perbaikan SOP, Peta Probis, Data SIPD, atau Eviden Teknis)"]
+      RetOPDFix --> OPDUploadFix["📤 OPD Pemohon Melakukan Perbaikan Dokumen & Re-Submit ke Sistem"]
+      OPDUploadFix -->|"Kirim Ulang Berkas Perbaikan"| JointClearance
+      
+      JointClearance -->|"✅ 3 Pilar Lolos & Terverifikasi (Clear)"| FormFA02Combined["✍️ Formulir F.A02 Resmi Terpadu (Single Source of Truth)<br/>• Blok Telaah Organisasi (TTE Verifikator Bagian Organisasi P-10)<br/>• Blok Telaah Perencanaan (TTE Verifikator Bappeda P-11)<br/>• Blok Telaah Teknis & Rekomendasi Akhir (TTE Lead Analis P-02)"]
       
       FormFA02Combined --> KabidAppr{"👔 Gate 2: Approval Digital Kabid<br/>Pengembangan Aplikasi"}
       
-      KabidAppr -- "Pilar Organisasi / Bappeda Ditolak" --> RejPilar["Ditolak: Tidak Selaras Tupoksi / RPJMD"]
-      RejPilar -.-> RetOPD["Kembali ke OPD<br/>(Surat F.A02 Rekomendasi Catatan Bersama)"]
+      KabidAppr -- "Penolakan Fatal: Tidak Selaras Tupoksi / RPJMD" --> RejPilar["❌ Ditolak Resmi: Tidak Selaras Kebijakan Daerah"]
+      RejPilar -.-> RetOPDFinal["Kembali ke OPD (Surat Penolakan Resmi F.A02)"]
       
-      KabidAppr -- "Pilar Teknis Redundan / Ditolak" --> RejRedund["Ditolak / Dialihkan ke<br/>Berbagi Pakai Aplikasi Eksisting"]
-      RejRedund -.-> RetOPD
-      
-      KabidAppr -- "Perbaikan Dokumen / SOP (Skor 60-79)" --> ReviseDoc["Dikembalikan untuk Perbaikan Dokumen / SOP"]
-      ReviseDoc -.-> RetOPD
+      KabidAppr -- "Penolakan Teknis: Redundan Penuh" --> RejRedund["❌ Ditolak / Dialihkan ke Berbagi Pakai"]
+      RejRedund -.-> RetOPDFinal
       
       KabidAppr -->|"✅ 3 Pilar Lolos & Skor ≥ 80"| OutFase2["🎯 OUTPUT FASE 2: FORM F.A02 RESMI SAH<br/>• Naskah Dinas F.A02 PDF Ber-KOP Resmi & TTE Multi-Pihak<br/>• Rekomendasi Kelayakan Sah dari Kominfo, Bag. Organisasi & Bappeda"]
       
@@ -533,24 +536,29 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
   6. Mengesahkan daftar hadir digital dan membubuhkan TTE Berita Acara Rapat Klarifikasi Teknis Bersama.
 - **`[Sistem]`**: Menyimpan seluruh riwayat sesi rapat (Sesi #1, #2, dst.), memperbarui status clearance aplikasi menjadi `Clearance Rapat Disahkan`, dan menerbitkan Berita Acara Rapat PDF siap pakai di Kertas Kerja F.A02.
 
-### Probis 2B: Telaah Kelayakan & Approval SPBE (F.A02) - Joint Clearance 3 Pilar
+### Probis 2B: Telaah Kelayakan & Approval SPBE (F.A02) - Joint Clearance 3 Pilar & Siklus Re-Verifikasi OPD
 - **`[Aktor: Tim Analis Diskominfo, Verifikator Bagian Organisasi, & Verifikator Bappeda]`**: Mengeksekusi proses **Joint Clearance Asesmen Kelayakan 3 Pilar** secara paralel berbasis Separation of Duties (SoD):
   1. **Pilar 1 - Tata Laksana & Kelembagaan (`[Verifikator Bagian Organisasi Setda]`):**
      - Membuka blok *Evaluasi Kelembagaan & Proses Bisnis* pada Form F.A02.
      - Memvalidasi kesesuaian usulan dengan Tugas Pokok dan Fungsi (Tupoksi) OPD pemohon berdasarkan Peraturan Walikota SOTK (mencegah tumpang tindih urusan).
      - Memverifikasi kelengkapan Peta Proses Bisnis (Peta Probis) dan SOP pelayanan publik yang akan didigitalkan.
-     - Memberikan status rekomendasi: `DISETUJUI (Sesuai Tupoksi & Probis Sah)` atau `DITOLAK (Tumpang Tindih Urusan)`.
+     - Memberikan keputusan telaah: `DISETUJUI (Sesuai Tupoksi & Probis Sah)`, `BUTUH PERBAIKAN DOKUMEN (SOP / Probis Belum Lengkap)`, atau `DITOLAK (Tumpang Tindih Urusan Fatal)`.
   2. **Pilar 2 - Perencanaan Pembangunan Daerah & Anggaran (`[Verifikator Bappeda]`):**
      - Membuka blok *Evaluasi Keselarasan Perencanaan Daerah* pada Form F.A02.
      - Memvalidasi keselarasan sistem dengan Sasaran RPJMD, RKPD, dan Indikator Kinerja Utama (IKU) Kepala Daerah / Renstra OPD.
      - Memverifikasi nomenklatur subkegiatan dan alokasi anggaran pada SIPD serta keselarasan dengan inisiatif Peta Rencana SPBE Daerah.
-     - Memberikan status rekomendasi: `DISETUJUI (Selaras Sasaran RPJMD & SIPD)` atau `DITOLAK (Di Luar Prioritas Pembangunan Daerah)`.
+     - Memberikan keputusan telaah: `DISETUJUI (Selaras Sasaran RPJMD & SIPD)`, `BUTUH PERBAIKAN DOKUMEN (Penyelarasan SIPD / Indikator Belum Jelas)`, atau `DITOLAK (Di Luar Prioritas Pembangunan Daerah)`.
   3. **Pilar 3 - Asesmen Teknis & Redundansi (`[Tim Analis Diskominfo]`):**
      - Mengeksekusi *Kertas Kerja Asesmen Analis (Form F.A02 Workbench)*: Uji Redundansi Katalog Aplikasi Pemkot, Rubrik Penilaian Berbobot 12 Bagian & Eviden Sah, serta kalkulasi Skor Kelayakan (0-100) dan Kuadran McFarlan-Peppard.
-     - Menetapkan status rekomendasi teknis: `LAYAK (Skor ≥ 70)` atau `TIDAK LAYAK / REDUNDAN`.
-- **`[Sistem]`**: Mengonsolidasikan hasil rekomendasi 3 pilar ke dalam **Formulir F.A02 Resmi Terpadu (Single Source of Truth)**. Sistem menerapkan *Quality Gate Guard*: tombol kirim ke persetujuan Kepala Bidang HANYA aktif jika ketiga pilar telah memberikan penilaian dan menandatangani paraf digital.
+     - Menetapkan keputusan telaah: `LAYAK (Skor ≥ 70)`, `BUTUH PERBAIKAN DOKUMEN (Eviden / Spesifikasi Belum Lengkap)`, atau `TIDAK LAYAK / REDUNDAN`.
+- **`[Sistem & Aktor: Siklus Pengembalian ke OPD & Re-Verifikasi]`**:
+  1. **Deteksi Catatan Perbaikan:** Jika salah satu atau ketiga pilar menetapkan status `BUTUH PERBAIKAN DOKUMEN`, sistem mengalihkan status tiket menjadi `Perbaikan Dokumen / Klarifikasi Diperlukan (Feedback Loop OPD)`.
+  2. **Pengembalian ke Antrean OPD:** Sistem secara otomatis mengirimkan daftar rincian catatan revisi dan rekomendasi perbaikan dari masing-masing pilar ke dashboard PIC OPD Pemohon.
+  3. **Tindakan Perbaikan oleh OPD:** PIC OPD membuka lembar perbaikan, merevisi dokumen (seperti SOP terstandar, penyempurnaan Peta Probis, pemutakhiran data subkegiatan SIPD, atau tambahan eviden teknis), mengunggah berkas revisi ke MinIO, dan menekan tombol *Kirim Ulang Berkas Perbaikan*.
+  4. **Pengecekan Ulang (Re-Verifikasi):** Berkas perbaikan masuk kembali ke antrean pilar terkait untuk diperiksa ulang (*re-check*) hingga seluruh pilar memberikan persetujuan (`DISETUJUI / CLEAR`).
+- **`[Sistem]`**: Mengonsolidasikan hasil rekomendasi 3 pilar yang telah Lolos ke dalam **Formulir F.A02 Resmi Terpadu (Single Source of Truth)**. Sistem menerapkan *Quality Gate Guard*: tombol kirim ke persetujuan Kepala Bidang HANYA aktif jika ketiga pilar telah berstatus `DISETUJUI` dan menandatangani paraf digital.
 - **`[Aktor: Kabid Pengembangan Aplikasi]`**: Memeriksa lembar telaah Form F.A02 terpadu yang memuat rekomendasi Bagian Organisasi, rekomendasi Bappeda, dan hasil skor teknis Diskominfo:
-  - Jika Pilar Organisasi atau Bappeda = `DITOLAK`, Kabid menerbitkan penolakan resmi SPBE (tidak selaras tupoksi / RPJMD).
+  - Jika terjadi penolakan fatal (tidak selaras tupoksi / RPJMD), Kabid menerbitkan penolakan resmi SPBE.
   - Jika Pilar Teknis Redundan, dialihkan ke opsi *Berbagi Pakai* aplikasi eksisting.
   - Jika ketiga pilar merekomendasikan `DISETUJUI` (skor teknis ≥ 80), Kabid membubuhkan TTE digital persetujuan resmi (*Rekomtek SPBE Disetujui*).
 - **`[Sistem]`**: Menerbitkan dokumen resmi Formulir F.A02 PDF ber-KOP naskah dinas Pemkot Yogyakarta lengkap dengan stempel TTE digital Kabid dan lampiran lembar rekomendasi bersama dari Bagian Organisasi dan Bappeda. Tiket bertransisi ke `Tahap Standardisasi Metadata SDI (Fase 3)`.
@@ -863,7 +871,7 @@ SRS-F-06: Formulir F.A02 Resmi Terpadu (Joint Clearance 3 Pilar) & Approval Digi
 │   │   2. Blok Bappeda = 'DISETUJUI' [✓];
 │   │   3. Skor Kelayakan Teknis Diskominfo ≥ 70 dan Bebas Redundansi [✓].
 ├── 3. Penyimpanan Data: Tabel `fa02_official_reviews`, `fa02_organization_reviews`, `fa02_bappeda_reviews`, `approval_logs`; berkas PDF resmi Form F.A02 ber-KOP dinas dan multiseal TTE digital di MinIO bucket `mpsi-fa02-official`.
-├── 4. Status: `FORM_FA02_DRAFT` ➔ `MENUNGGU_JOINT_CLEARANCE` ➔ `MENUNGGU_APPROVAL_KABID` ➔ `DISETUJUI_PERENCANAAN` atau `DIALIHKAN_BERBAGI_PAKAI` / `DITOLAK`.
+├── 4. Status: `FORM_FA02_DRAFT` ➔ `MENUNGGU_JOINT_CLEARANCE` ➔ `PERBAIKAN_DOKUMEN_OPD` (Feedback Loop ke OPD jika dokumen/SOP/SIPD belum sesuai) ➔ `RE_VERIFIKASI_PILAR` ➔ `MENUNGGU_APPROVAL_KABID` ➔ `DISETUJUI_PERENCANAAN` atau `DIALIHKAN_BERBAGI_PAKAI` / `DITOLAK`.
 ├── 5. Error Handling:
 │   ├── 403 Forbidden: Diskominfo mencoba mengisi field evaluasi Bappeda / Bagian Organisasi, atau sebaliknya.
 │   ├── 422 Unprocessable Entity: Kabid mencoba melakukan Approve saat rekomendasi Bappeda atau Bagian Organisasi masih berstatus pending / ditolak.
