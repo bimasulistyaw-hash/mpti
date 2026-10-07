@@ -93,10 +93,13 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
        - **Dokumen Cetak Formulir F.A01 PDF:** Ber-KOP naskah dinas resmi Pemkot Yogyakarta lengkap dengan QR-code bukti tanda terima pengajuan.
        - **Bundel 4 Lampiran Dokumen Sah:** Terverifikasi magic bytes PDF dan tersimpan di MinIO Object Storage.
        - **Tiket Masuk Antrean Analis:** Berstatus `Menunggu Telaah Kelayakan (F.A02)` pada dashboard Seksi Perencanaan untuk diproses ke Fase 2.
-  2. **Fase 2: Asesmen Kelayakan & Klarifikasi Teknis (Rapat Klarifikasi Teknis OPD & Form F.A02 Resmi):** Tiket masuk pertama kali diterima oleh **Ketua Tim Kerja Perencanaan** yang melakukan penugasan resmi (*resource allocation*): menugaskan **Tim Analis Kelayakan (Lead Analis F.A02)** dan **Business Analyst (BA Bisnis Proses)**.
-     - Tim Analis & BA mengeksekusi **Modul Manajemen Rapat Klarifikasi Teknis OPD (Multi-Sesi)**: studio inisiasi rapat terjadwal, validasi *Target Kesepakatan Checklist 100%* (Mandatory Guard), risalah notulensi format dokumen MS Word & bukti foto ke MinIO, pelacak tindak lanjut tugas perbaikan OPD, serta daftar hadir digital & TTE Berita Acara Rapat Klarifikasi.
-     - Tim Analis mengeksekusi **Kertas Kerja Asesmen Analis 4 Pilar (Form F.A02 Workbench)**: Uji Redundansi Katalog Aplikasi Pemkot, Pemetaan Arsitektur & Regulasi, Rubrik Penilaian Berbobot 12 Bagian & Eviden Sah, serta Kalkulasi Skor Kelayakan & Kuadran McFarlan-Peppard.
-     - Seluruh hasil evaluasi kertas kerja disajikan pada panel referensi, lalu Tim Analis melakukan **Pengisian Manual Formulir F.A02 Resmi** (Nomor Surat Dinas Telaah, Ringkasan Eksekutif, Pertimbangan Analis, dan Rekomendasi Resmi) sebelum diajukan ke Approval Digital Kabid Pengembangan Aplikasi.
+  2. **Fase 2: Asesmen Kelayakan & Klarifikasi Teknis (Rapat Klarifikasi Teknis OPD, Joint Clearance 3 Pilar & Form F.A02 Resmi):** Tiket masuk diterima oleh **Ketua Tim Kerja Perencanaan** yang melakukan penugasan resmi (*resource allocation*): menugaskan **Tim Analis Kelayakan (Lead Analis F.A02)**, **Business Analyst (BA Bisnis Proses)**, serta mengundang perwakilan **Bagian Organisasi Setda** dan **Bappeda Kota Yogyakarta** dalam forum Tim Koordinasi SPBE.
+     - Tim Analis & BA mengeksekusi **Modul Manajemen Rapat Klarifikasi Teknis OPD (Multi-Sesi)** bersama OPD Pemohon, Bagian Organisasi, dan Bappeda: studio inisiasi rapat terjadwal, validasi *Target Kesepakatan Checklist 100%* (Mandatory Guard), risalah notulensi format dokumen MS Word & bukti foto ke MinIO, pelacak tindak lanjut tugas perbaikan OPD, serta daftar hadir digital & TTE Berita Acara Rapat Klarifikasi.
+     - Pelaksanaan **Joint Clearance Asesmen Kelayakan 3 Pilar SPBE Terpadu**:
+       1. **Pilar Kelembagaan & Tata Laksana (Bagian Organisasi Setda):** Validasi kesesuaian usulan dengan Tugas Pokok dan Fungsi (Tupoksi) OPD pemohon mengacu pada Peraturan Walikota SOTK (mencegah tumpang tindih urusan antar-dinas) serta verifikasi ketersediaan Peta Proses Bisnis (Peta Probis) dan SOP Pelayanan Publik yang sah.
+       2. **Pilar Perencanaan Pembangunan & Anggaran (Bappeda Kota Yogyakarta):** Validasi keselarasan usulan dengan Sasaran RPJMD, Rencana Kerja Pemerintah Daerah (RKPD), Indikator Kinerja Utama (IKU) Kepala Daerah / Renstra OPD, ketersediaan alokasi subkegiatan pada SIPD, dan kesesuaian inisiatif Peta Rencana SPBE Daerah.
+       3. **Pilar Teknis & Redundansi (Diskominfo - Form F.A02 Workbench):** Uji Redundansi Katalog Aplikasi Pemkot, Pemetaan Arsitektur SPBE & Regulasi, Rubrik Penilaian Berbobot 12 Bagian & Eviden Sah, serta Kalkulasi Skor Kelayakan (Skor ≥ 70) & Kuadran McFarlan-Peppard.
+     - Seluruh hasil evaluasi 3 pilar disajikan pada panel referensi terpadu, lalu masing-masing penelaah melakukan **Pengisian & Penandatanganan Formulir F.A02 Resmi** sesuai hak akses (SoD RBAC), sebelum diajukan ke Approval Digital Kabid Pengembangan Aplikasi Informatika (Gate 2 Clearance).
   3. **Fase 3: Standardisasi Metadata Satu Data Indonesia / SDI (Walidata Daerah):** Permohonan yang telah lolos telaah F.A02 dan disahkan Kabid diteruskan ke Seksi Data Statistik (Walidata Daerah). **Tahap ini WAJIB CLEAR TERLEBIH DAHULU sebelum masuk ke analisis kebutuhan teknis**: memverifikasi Kamus Data, Standar Data, Kode Referensi Data Induk Pemkot, dan Interoperabilitas SPLP hingga diterbitkannya **Rekomendasi Walidata SDI (Clearance Metadata Sah 100%)**. Bila struktur data belum standar / duplikat, tiket dikembalikan ke OPD untuk perbaikan kamus data.
   4. **Fase 4: Perencanaan Teknis & Penandatanganan KAK Bersama (Form F.A03 & Penandatanganan KAK F.P01 Kedua Belah Pihak):** Setelah Metadata SDI dinyatakan Clear 100%, Tim Bisnis Analis & Arsitek Sistem memproses perencanaan teknis:
      - Penyusunan Formulir **F.A03** Software Requirements (kebutuhan fungsional per role, non-fungsional SLA/keamanan, matriks mitigasi risiko).
@@ -167,54 +170,59 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
       
       LeadPlan --> PlanTeamAssign
       
-      subgraph PlanTeamAssign ["👥 PENUGASAN TIM TELAAH PERENCANAAN"]
+      subgraph PlanTeamAssign ["👥 PENUGASAN FORUM ASESMEN KELAYAKAN LINTAS INSTANSI"]
           direction TB
-          AS1["1. Penugasan Lead Analis Kelayakan (F.A02)<br/>• Memimpin Rapat Klarifikasi Teknis OPD<br/>• Pelaksana Kertas Kerja Asesmen 4 Pilar"]
-          AS2["2. Penugasan Business Analyst (BA Bisnis Proses)<br/>• Analisis SOP, Regulasi & Probis Pemohon<br/>• Pendamping Analisis Kebutuhan Sistem"]
+          AS1["1. Diskominfo: Lead Analis Kelayakan (F.A02) & BA Bisnis Proses"]
+          AS2["2. Bagian Organisasi Setda: Verifikator Kelembagaan & Probis (P-10)"]
+          AS3["3. Bappeda Kota Yogyakarta: Verifikator RPJMD & Anggaran (P-11)"]
           
-          AS1 --- AS2
+          AS1 --- AS2 --- AS3
       end
       
       PlanTeamAssign --> RapatKlarifikasi
-      PlanTeamAssign --> Workbench
       
-      subgraph RapatKlarifikasi ["🤝 MANAJEMEN RAPAT KLARIFIKASI TEKNIS OPD (Multi-Sesi)"]
+      subgraph RapatKlarifikasi ["🤝 MANAJEMEN RAPAT KLARIFIKASI TEKNIS OPD (Multi-Sesi & Multi-Pihak)"]
           direction TB
-          H1["1. Studio Inisiasi Rapat (Sesi #1, #2, dst.)<br/>• Penjadwalan rapat & tim hadir lintas instansi<br/>• Penetapan Target Kesepakatan Rapat"]
-          H2["2. Pelaksanaan Rapat & Risalah Rich Text<br/>• Notulensi format dokumen MS Word<br/>• Unggah foto dokumentasi / sketsa ke MinIO"]
-          H3["3. Pelacak Tindak Lanjut / Tugas Hasil Rapat<br/>• Penugasan revisi SOP / dokumen teknis OPD<br/>• Verifikasi dokumen perbaikan OPD"]
-          H4["4. Gate Mandatori: Target Kesepakatan 100%<br/>• Guard: Ditolak jika target rapat belum 100% tercapai<br/>• Daftar Hadir Digital & Berita Acara Rapat TTE"]
+          H1["1. Studio Inisiasi Rapat Terjadwal<br/>• Dihadiri OPD Pemohon, Diskominfo, Bag. Organisasi & Bappeda<br/>• Perumusan Target Kesepakatan Rapat Bersama"]
+          H2["2. Pelaksanaan Rapat & Risalah Rich Text<br/>• Pembahasan teknis TI, tupoksi, probis & keselarasan RPJMD<br/>• Unggah notulensi MS Word & bukti foto ke MinIO"]
+          H3["3. Pelacak Tindak Lanjut Tugas OPD<br/>• Penugasan perbaikan SOP layanan, probis, atau data dukung<br/>• Verifikasi kelengkapan revisi OPD"]
+          H4["4. Gate Mandatori: Target Kesepakatan 100%<br/>• Guard: Wajib disetujui bersama Diskominfo, Bag. Organisasi & Bappeda<br/>• TTE Digital Berita Acara Rapat Klarifikasi Lintas Pihak"]
           
           H1 --> H2 --> H3 --> H4
           H3 -- "Revisi Belum Lengkap" --> H1
       end
       
-      subgraph Workbench ["🔬 KERTAS KERJA ASESMEN ANALIS (Form F.A02 Workbench)"]
+      H4 --> JointClearance
+      
+      subgraph JointClearance ["🏛️ 3 PILAR JOINT CLEARANCE ASESMEN KELAYAKAN SPBE"]
           direction TB
-          W1["1. Uji Redundansi & Katalog Aplikasi<br/>• Scan database aplikasi aktif Pemkot<br/>• Deteksi kemiripan fungsi / probis<br/>• Justifikasi diferensiasi sistem"]
-          W2["2. Pemetaan Arsitektur SPBE & Regulasi<br/>• Validasi Tupoksi/SOTK Pemohon<br/>• Pemetaan Domain Layanan & Probis"]
-          W3["3. Rubrik Penilaian Berbobot 12 Bagian<br/>• Scoring tingkat kematangan (Level 1-4)<br/>• Wajib tautkan bukti dukung (Evidence)<br/>• Knockout Check (Kriteria Gugur)"]
-          W4["4. Scoring Engine & McFarlan Grid<br/>• Integrasi Skor Teknis + Berita Acara Rapat<br/>• Kuadran: Strategic / High Potential /<br/>  Key Operational / Support"]
+          subgraph PilarOrganisasi ["🏛️ PILAR 1: BAGIAN ORGANISASI SETDA"]
+              O1["• Validasi Kesesuaian Tupoksi (Perwal SOTK OPD)<br/>• Mencegah Tumpang Tindih Kewenangan Antar-Dinas<br/>• Verifikasi Peta Proses Bisnis (Peta Probis) Sah<br/>• Verifikasi SOP Pelayanan Publik yang Didigitalkan<br/>➔ Rekomendasi: DISETUJUI / DITOLAK"]
+          end
           
-          W1 --> W2 --> W3 --> W4
+          subgraph PilarBappeda ["📈 PILAR 2: BAPPEDA KOTA YOGYAKARTA"]
+              B1["• Validasi Keselarasan Sasaran RPJMD & RKPD<br/>• Kesesuaian Indikator Kinerja (IKU/IKD Renstra OPD)<br/>• Verifikasi Alokasi Subkegiatan Anggaran SIPD<br/>• Kesesuaian Inisiatif Peta Rencana SPBE Daerah<br/>➔ Rekomendasi: DISETUJUI / DITOLAK"]
+          end
+          
+          subgraph PilarDiskominfo ["💻 PILAR 3: DISKOMINFO (F.A02 WORKBENCH)"]
+              D1["• Uji Redundansi Katalog Aplikasi Eksisting Pemkot<br/>• Scoring Rubrik Kematangan 12 Bagian & Eviden Sah<br/>• Kalkulasi Skor Kelayakan (0-100) & Kuadran McFarlan<br/>➔ Rekomendasi: LAYAK (Skor ≥ 70) / TIDAK LAYAK"]
+          end
       end
       
-      H4 -- "✅ Clearance Rapat Disahkan (Berita Acara Sah)" --> W4
+      JointClearance --> FormFA02Combined["✍️ Formulir F.A02 Resmi Terpadu (Single Source of Truth)<br/>• Blok Telaah Organisasi (TTE Verifikator Bagian Organisasi P-10)<br/>• Blok Telaah Perencanaan (TTE Verifikator Bappeda P-11)<br/>• Blok Telaah Teknis & Rekomendasi Akhir (TTE Lead Analis P-02)"]
       
-      W4 --> SummaryWorkbench["📊 Tampilan Rekapitulasi Hasil Asesmen<br/>• Rekapitulasi Skor Total & Kuadran McFarlan<br/>• Status Redundansi, Regulasi & Eviden Sah<br/>• Status Clearance Rapat Klarifikasi Teknis"]
+      FormFA02Combined --> KabidAppr{"👔 Gate 2: Approval Digital Kabid<br/>Pengembangan Aplikasi"}
       
-      SummaryWorkbench --> FormFA02Manual["✍️ Pengisian Manual Formulir F.A02 Resmi (oleh Analis)<br/>• Input Nomor & Tanggal Surat Dinas Telaah F.A02<br/>• Input Narasi Ringkasan Eksekutif & Pertimbangan Analis<br/>• Penetapan Rekomendasi Resmi (Lanjut Bangun / Berbagi Pakai / Ditolak)"]
+      KabidAppr -- "Pilar Organisasi / Bappeda Ditolak" --> RejPilar["Ditolak: Tidak Selaras Tupoksi / RPJMD"]
+      RejPilar -.-> RetOPD["Kembali ke OPD<br/>(Surat F.A02 Rekomendasi Catatan Bersama)"]
       
-      FormFA02Manual --> KabidAppr{"👔 Approval Digital Kabid<br/>Pengembangan Aplikasi"}
-      KabidAppr -- "Perlu Koreksi Form / Nilai" --> FormFA02Manual
+      KabidAppr -- "Pilar Teknis Redundan / Ditolak" --> RejRedund["Ditolak / Dialihkan ke<br/>Berbagi Pakai Aplikasi Eksisting"]
+      RejRedund -.-> RetOPD
       
-      KabidAppr -- "❌ Ditolak / Alihkan Berbagi Pakai" --> RejRedund["Ditolak / Dialihkan ke<br/>Berbagi Pakai Aplikasi Eksisting"]
-      RejRedund -.-> RetOPD["Kembali ke OPD<br/>(Surat F.A02 Catatan Rekomendasi)"]
-      
-      KabidAppr -- "⚠️ Layak Bersyarat (Skor 60-79)" --> ReviseDoc["Dikembalikan untuk Perbaikan Dokumen / SOP"]
+      KabidAppr -- "Perbaikan Dokumen / SOP (Skor 60-79)" --> ReviseDoc["Dikembalikan untuk Perbaikan Dokumen / SOP"]
       ReviseDoc -.-> RetOPD
       
-      KabidAppr -->|"✅ Disetujui Rekomtek (Skor ≥ 80)"| OutFase2["🎯 OUTPUT FASE 2: FORM F.A02 SAH<br/>• Berita Acara Rapat Klarifikasi Lengkap<br/>• Rekomtek SPBE Ber-TTD Digital Kabid"]
+      KabidAppr -->|"✅ 3 Pilar Lolos & Skor ≥ 80"| OutFase2["🎯 OUTPUT FASE 2: FORM F.A02 RESMI SAH<br/>• Naskah Dinas F.A02 PDF Ber-KOP Resmi & TTE Multi-Pihak<br/>• Rekomendasi Kelayakan Sah dari Kominfo, Bag. Organisasi & Bappeda"]
       
       OutFase2 -->|"➡️ Diteruskan ke Tahap Berikutnya"| NextFase3["📊 FASE 3: STANDARDISASI METADATA SDI<br/>(Walidata Daerah / Seksi Data Statistik)"]
   ```
@@ -511,33 +519,41 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 - **`[Aktor: PIC OPD]`**: Mengajukan surat dinas resmi melalui aplikasi eOffice Pemkot Jogja dengan mencantumkan Nomor Registrasi, lalu menginput nomor surat dan tanggal surat dinas ke dalam sistem.
 - **`[Sistem]`**: Mengubah status permohonan menjadi `Menunggu Telaah Kelayakan (F.A02)` dan mengirim notifikasi ke antrean Tim Analis.
 
-### Probis 2A: Disposisi Tim Telaah & Siklus Rapat Klarifikasi Teknis OPD (Multi-Sesi)
-- **`[Aktor: Ketua Tim Kerja Perencanaan]`**: Menerima tiket permohonan F.A01 yang telah terverifikasi nomor surat eOffice, lalu melakukan **Disposisi Tim Telaah (Resource Allocation Perencanaan)**:
-  1. Menugaskan **Lead Analis Kelayakan (Pranata Komputer Penelaah F.A02)** sebagai koordinator klarifikasi dan pelaksana kertas kerja asesmen.
+### Probis 2A: Disposisi Tim Telaah & Siklus Rapat Klarifikasi Teknis OPD Lintas Instansi (Multi-Sesi)
+- **`[Aktor: Ketua Tim Kerja Perencanaan]`**: Menerima tiket permohonan F.A01 yang telah terverifikasi nomor surat eOffice, lalu melakukan **Disposisi Tim Telaah (Resource Allocation Perencanaan Lintas Instansi)**:
+  1. Menugaskan **Lead Analis Kelayakan (Pranata Komputer Penelaah F.A02)** sebagai koordinator klarifikasi dan pelaksana kertas kerja teknis.
   2. Menugaskan **Business Analyst (BA Bisnis Proses)** untuk mendampingi bedah SOP, regulasi tupoksi, dan formulasi kebutuhan sistem F.A03.
-- **`[Aktor: Lead Analis & Business Analyst (BA)]`**: Mengakses **Manajemen Rapat Klarifikasi Teknis OPD**, memilih aplikasi usulan aktif (atau melalui Master Index Usulan Aplikasi), dan membuka **Studio Inisiasi Rapat**:
-  1. Menetapkan agenda topik, waktu, ruang rapat (hybrid Zoom/luring), dan registrasi tim hadir lintas instansi.
-  2. Merumuskan *Target Kesepakatan Rapat* yang wajib disetujui bersama PIC OPD.
+  3. Mendaftarkan akun penelaah dari **Bagian Organisasi Setda (`Reviewer_Organisasi`)** dan **Bappeda Kota Yogyakarta (`Reviewer_Bappeda`)** ke dalam tim telaah permohonan.
+- **`[Aktor: Lead Analis, BA, Verifikator Bagian Organisasi & Verifikator Bappeda]`**: Mengakses **Manajemen Rapat Klarifikasi Teknis OPD**, memilih usulan aplikasi aktif, dan menyelenggarakan **Studio Inisiasi Rapat Terpadu**:
+  1. Menetapkan agenda topik, waktu, ruang rapat (hybrid Zoom/luring), dan registrasi tim hadir lintas instansi (OPD Pemohon, Diskominfo, Bag. Organisasi, Bappeda).
+  2. Merumuskan *Target Kesepakatan Rapat* yang mencakup 3 aspek: ruang lingkup fungsional sistem, kesesuaian SOP/tupoksi tata laksana, dan keselarasan program prioritas daerah.
   3. Memimpin sesi rapat klarifikasi teknis, mencatat risalah pembahasan menggunakan editor format dokumen MS Word, serta mengunggah foto bukti fisik/sketsa diagram ke MinIO.
-  4. Mendaftarkan *Tindak Lanjut / Tugas Hasil Rapat OPD* (Action Items perbaikan KAK/SOP) dan memantau status penyelesaiannya secara berulang (*multi-session*).
-  5. Memberlakukan *Mandatory Validation Guard*: status *Final Clearance* ditolak sistem bila Target Kesepakatan rapat belum 100% tercapai `[✓]`.
-  6. Mengesahkan daftar hadir digital dan membubuhkan TTE Berita Acara Rapat Klarifikasi Teknis.
+  4. Mendaftarkan *Tindak Lanjut / Tugas Hasil Rapat OPD* (Action Items perbaikan SOP/KAK/pagu) dan memantau status penyelesaiannya secara berulang (*multi-session*).
+  5. Memberlakukan *Mandatory Validation Guard*: status *Final Clearance Rapat* ditolak sistem bila Target Kesepakatan rapat belum 100% tercapai `[✓]` dan belum disepakati bersama oleh ketiga instansi penguji.
+  6. Mengesahkan daftar hadir digital dan membubuhkan TTE Berita Acara Rapat Klarifikasi Teknis Bersama.
 - **`[Sistem]`**: Menyimpan seluruh riwayat sesi rapat (Sesi #1, #2, dst.), memperbarui status clearance aplikasi menjadi `Clearance Rapat Disahkan`, dan menerbitkan Berita Acara Rapat PDF siap pakai di Kertas Kerja F.A02.
 
-### Probis 2B: Telaah Kelayakan & Approval SPBE (F.A02) - Workbench Analis
-- **`[Aktor: Tim Analis]`**: Membuka berkas permohonan, memeriksa surat eOffice, lalu mengeksekusi **Kertas Kerja Asesmen Analis**:
-  1. *Uji Redundansi*: Memindai katalog aplikasi aktif Pemkot Yogyakarta untuk memastikan usulan bebas duplikasi fitur/probis eksisting.
-  2. *Pemetaan Arsitektur & Regulasi*: Memvalidasi landasan hukum tupoksi pemohon (SOTK) serta memetakan domain arsitektur SPBE.
-  3. *Scoring Rubrik 12 Bagian & Eviden*: Mengisi rubrik tingkat kematangan (Level 1-4) pada 12 bagian telaah dan menautkan bukti dukung (evidence) sah.
-  4. *Konsumsi Hasil Rapat Klarifikasi*: Mengintegrasikan Berita Acara & status *Clearance Rapat Disahkan* dari Modul Rapat Klarifikasi Teknis OPD ke dalam rekomendasi akhir.
-- **`[Sistem]`**: Menghitung skor total kelayakan (0-100), menentukan kuadran portofolio McFarlan-Peppard (*Strategic, High Potential, Key Operational, Support*), mengunci isian kertas kerja, dan menyajikan seluruh rekapitulasi evaluasi tersebut pada **Panel Tampilan Hasil Asesmen** sebagai rujukan utama pengisian formulir resmi.
-- **`[Aktor: Tim Analis]`**: Membuka lembar **Pengisian Formulir F.A02 Resmi**, mengonsumsi ringkasan data yang disajikan dari kertas kerja, dan melakukan penginputan secara manual:
-  1. *Identitas Naskah Dinas*: Menginput nomor surat telaah dinas dan tanggal penetapan telaah resmi.
-  2. *Ringkasan & Pertimbangan*: Merumuskan narasi Ringkasan Eksekutif hasil telaah, pertimbangan keselarasan arsitektur/tupoksi, dan justifikasi teknis analis.
-  3. *Penetapan Rekomendasi Resmi*: Memilih dan merumuskan rekomendasi tindak lanjut resmi (Disetujui Bangun Baru / Dialihkan ke Berbagi Pakai / Replikasi / Ditolak / Perbaikan Dokumen).
-  4. *Finalisasi Pengajuan*: Mengunci formulir dan mengirimkan berkas Form F.A02 resmi (beserta lampiran kertas kerja lengkap) ke antrean Kepala Bidang.
-- **`[Aktor: Kabid Pengembangan Aplikasi]`**: Memeriksa lembar telaah Form F.A02 hasil input analis, rincian lampiran kertas kerja, dan riwayat rapat klarifikasi teknis, memberikan arahan/catatan, lalu membubuhkan persetujuan digital (*Approval Action*). Bila ada ketidaksesuaian nilai/pertimbangan, mengembalikan berkas ke Analis untuk perbaikan.
-- **`[Sistem]`**: Menerbitkan dokumen sah Formulir F.A02 PDF ber-KOP naskah dinas resmi Pemkot Yogyakarta lengkap dengan TTD Digital Kabid dan lampiran kertas kerja. Jika disetujui (skor ≥ 80), status bertransisi ke `Tahap Standardisasi Metadata SDI (Gatekeeper 2)`. Jika direkomendasikan berbagi pakai/ditolak, status dialihkan ke `Ditolak / Dialihkan Berbagi Pakai`. Jika syarat kurang (skor 60-79), sistem mengembalikan status beserta catatan telaah perbaikan kepada OPD.
+### Probis 2B: Telaah Kelayakan & Approval SPBE (F.A02) - Joint Clearance 3 Pilar
+- **`[Aktor: Tim Analis Diskominfo, Verifikator Bagian Organisasi, & Verifikator Bappeda]`**: Mengeksekusi proses **Joint Clearance Asesmen Kelayakan 3 Pilar** secara paralel berbasis Separation of Duties (SoD):
+  1. **Pilar 1 - Tata Laksana & Kelembagaan (`[Verifikator Bagian Organisasi Setda]`):**
+     - Membuka blok *Evaluasi Kelembagaan & Proses Bisnis* pada Form F.A02.
+     - Memvalidasi kesesuaian usulan dengan Tugas Pokok dan Fungsi (Tupoksi) OPD pemohon berdasarkan Peraturan Walikota SOTK (mencegah tumpang tindih urusan).
+     - Memverifikasi kelengkapan Peta Proses Bisnis (Peta Probis) dan SOP pelayanan publik yang akan didigitalkan.
+     - Memberikan status rekomendasi: `DISETUJUI (Sesuai Tupoksi & Probis Sah)` atau `DITOLAK (Tumpang Tindih Urusan)`.
+  2. **Pilar 2 - Perencanaan Pembangunan Daerah & Anggaran (`[Verifikator Bappeda]`):**
+     - Membuka blok *Evaluasi Keselarasan Perencanaan Daerah* pada Form F.A02.
+     - Memvalidasi keselarasan sistem dengan Sasaran RPJMD, RKPD, dan Indikator Kinerja Utama (IKU) Kepala Daerah / Renstra OPD.
+     - Memverifikasi nomenklatur subkegiatan dan alokasi anggaran pada SIPD serta keselarasan dengan inisiatif Peta Rencana SPBE Daerah.
+     - Memberikan status rekomendasi: `DISETUJUI (Selaras Sasaran RPJMD & SIPD)` atau `DITOLAK (Di Luar Prioritas Pembangunan Daerah)`.
+  3. **Pilar 3 - Asesmen Teknis & Redundansi (`[Tim Analis Diskominfo]`):**
+     - Mengeksekusi *Kertas Kerja Asesmen Analis (Form F.A02 Workbench)*: Uji Redundansi Katalog Aplikasi Pemkot, Rubrik Penilaian Berbobot 12 Bagian & Eviden Sah, serta kalkulasi Skor Kelayakan (0-100) dan Kuadran McFarlan-Peppard.
+     - Menetapkan status rekomendasi teknis: `LAYAK (Skor ≥ 70)` atau `TIDAK LAYAK / REDUNDAN`.
+- **`[Sistem]`**: Mengonsolidasikan hasil rekomendasi 3 pilar ke dalam **Formulir F.A02 Resmi Terpadu (Single Source of Truth)**. Sistem menerapkan *Quality Gate Guard*: tombol kirim ke persetujuan Kepala Bidang HANYA aktif jika ketiga pilar telah memberikan penilaian dan menandatangani paraf digital.
+- **`[Aktor: Kabid Pengembangan Aplikasi]`**: Memeriksa lembar telaah Form F.A02 terpadu yang memuat rekomendasi Bagian Organisasi, rekomendasi Bappeda, dan hasil skor teknis Diskominfo:
+  - Jika Pilar Organisasi atau Bappeda = `DITOLAK`, Kabid menerbitkan penolakan resmi SPBE (tidak selaras tupoksi / RPJMD).
+  - Jika Pilar Teknis Redundan, dialihkan ke opsi *Berbagi Pakai* aplikasi eksisting.
+  - Jika ketiga pilar merekomendasikan `DISETUJUI` (skor teknis ≥ 80), Kabid membubuhkan TTE digital persetujuan resmi (*Rekomtek SPBE Disetujui*).
+- **`[Sistem]`**: Menerbitkan dokumen resmi Formulir F.A02 PDF ber-KOP naskah dinas Pemkot Yogyakarta lengkap dengan stempel TTE digital Kabid dan lampiran lembar rekomendasi bersama dari Bagian Organisasi dan Bappeda. Tiket bertransisi ke `Tahap Standardisasi Metadata SDI (Fase 3)`.
 
 ### Probis 3: Gatekeeper 2 — Telaah & Standardisasi Metadata Satu Data Indonesia (Walidata Daerah)
 - **`[Aktor: Seksi Data Statistik / Walidata Daerah]`**: Mengakses tiket permohonan yang telah lolos telaah F.A02 & disetujui Kabid, membuka lembar telaah metadata:
@@ -641,6 +657,8 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 | `P-07` | **Superadmin** | Administrator Sentral Diskominfo. | Full Access: User CRUD, RBAC dinamis, permission matrix, tema UI, master data, konfigurasi SLA. |
 | `P-08` | **Publik / Tamu** | Masyarakat umum & pegawai non-login. | Melihat dashboard ringkasan statistik & top 10 aplikasi prioritas beserta stepper progres. |
 | `P-09` | **Auditor Internal SPBE** | Auditor Inspektorat Kota Yogyakarta & Tim Audit Tata Kelola SPBE. | Akses Dashboard Auditor: monitoring rekapitulasi seluruh fase, inspeksi kepatuhan tahap development (milestone KAK, timesheet, git commits), uji integritas audit trail SHA-256, input Lembar Temuan Audit (Form F.AUD01) & rekomendasi perbaikan. |
+| `P-10` | **Verifikator Bagian Organisasi Setda** | Analis Kebijakan / Penata Kelola Tata Laksana Bagian Organisasi Setda Kota Yogyakarta. | Akses Fase 2 (Asesmen Kelayakan): Telaah kesesuaian Tupoksi OPD (Perwal SOTK), verifikasi kelengkapan Peta Proses Bisnis (Peta Probis) dan SOP pelayanan publik, input evaluasi kelembagaan di Form F.A02 resmi, serta paraf Berita Acara Rapat Klarifikasi Teknis. |
+| `P-11` | **Verifikator Bappeda Kota Yogyakarta** | Perencana / Analis Pembangunan Daerah Bappeda Kota Yogyakarta. | Akses Fase 2 (Asesmen Kelayakan): Telaah keselarasan sistem dengan sasaran RPJMD/RKPD, IKU Walikota/Renstra OPD, validasi ketersediaan subkegiatan dan anggaran pada SIPD, kesesuaian Peta Rencana SPBE, input evaluasi perencanaan di Form F.A02 resmi, serta paraf Berita Acara Rapat Klarifikasi Teknis. |
 
 ### Pemetaan Persona ke Role Standar Keycloak Pemkot Yogyakarta
 
@@ -649,6 +667,8 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
 | `Superadmin` | P-07 (Administrator Sentral Diskominfo) | Full Access seluruh modul & konfigurasi sistem, CRUD User, RBAC, Master Data, Tema UI. |
 | `Pengawas` | P-06 (Pimpinan / Walikota / Sekda / Kadis) | Read-Only seluruh modul (hanya method `GET`), dashboard analitik eksekutif, ekspor laporan Excel/PDF, audit trail. |
 | `Auditor` | P-09 (Auditor Internal SPBE Inspektorat) | Akses read-only komprehensif ke seluruh artefak siklus hidup, metrik dev, log audit, serta hak input & penerbitan Lembar Temuan/Rekomendasi Audit F.AUD01. |
+| `Reviewer_Organisasi` | P-10 (Bagian Organisasi Setda) | Telaah kelembagaan & tata laksana pada Fase 2: hak evaluasi & TTE blok validasi Tupoksi, Peta Probis & SOP Layanan pada Form F.A02, serta persetujuan Berita Acara Rapat Klarifikasi. |
+| `Reviewer_Bappeda` | P-11 (Bappeda Kota Yogyakarta) | Telaah perencanaan daerah pada Fase 2: hak evaluasi & TTE blok keselarasan RPJMD/RKPD, IKU Daerah & Pagu SIPD pada Form F.A02, serta persetujuan Berita Acara Rapat Klarifikasi. |
 | `Admin` | P-02 (Tim Analis & Kabid), P-03 (Tim Bisnis Analis & QA), P-05 (Tim CSIRT) | Manajemen permohonan, telaah kelayakan F.A02, approval Kabid, pengujian mutu, evaluasi monev, insiden keamanan. |
 | `Operator` | P-01 (PIC Pemohon OPD), P-04 (Ketua Tim Project & Developer) | Input form permohonan F.A01, upload artefak, update status siklus pengerjaan, pengajuan Change Request, log pemeliharaan. |
 
@@ -828,18 +848,29 @@ SRS-F-05: Kertas Kerja Asesmen Analis: Inspector Redundansi & Rubrik 12 Bagian (
 ```
 
 ```
-SRS-F-06: Formulir F.A02 Resmi, Penetapan Rekomendasi & Approval Digital Kabid
-├── 1. Input Data: DTO Formulir F.A02 Resmi (Application ID, Nomor Naskah Dinas Telaah, Tanggal Penetapan, Narasi Ringkasan Eksekutif, Pertimbangan Teknis Analis, Pilihan Rekomendasi Resmi: 'BANGUN_BARU' / 'BERBAGI_PAKAI' / 'REPLIKASI' / 'PERBAIKAN_DOKUMEN' / 'DITOLAK') + DTO Approval Kabid (Action: Approve/Reject/Request_Revision, Catatan Arahan Pimpinan, Passphrase TTE Digital).
-├── 2. Validasi: Pengisian draf Form F.A02 wajib oleh `Tim Analis`; persetujuan final HANYA oleh role `Kabid Pengembangan Aplikasi` (Admin); kertas kerja F.A02 workbench wajib berstatus `KERTAS_KERJA_SELESAI`; narasi telaah minimal 50 karakter; passphrase TTE wajib terverifikasi ke modul kriptografi.
-├── 3. Penyimpanan Data: Tabel `fa02_official_reviews` dan `approval_logs`; berkas PDF resmi Form F.A02 ber-KOP dinas dan TTE digital di MinIO bucket `mpsi-fa02-official`.
-├── 4. Status: `FORM_FA02_DRAFT` ➔ `MENUNGGU_APPROVAL_KABID` ➔ `DISETUJUI_PERENCANAAN` atau `DIALIHKAN_BERBAGI_PAKAI` / `DITOLAK`.
+SRS-F-06: Formulir F.A02 Resmi Terpadu (Joint Clearance 3 Pilar) & Approval Digital Kabid
+├── 1. Input Data: DTO Formulir F.A02 Terpadu:
+│   ├── Blok 1 (Bagian Organisasi Setda): Status Rekomendasi ('DISETUJUI'/'DITOLAK'), Uraian Evaluasi Tupoksi Perwal SOTK, Checklist Validitas Peta Probis & SOP Pelayanan, TTE Digital Verifikator Organisasi (P-10).
+│   ├── Blok 2 (Bappeda Kota Yogyakarta): Status Rekomendasi ('DISETUJUI'/'DITOLAK'), Uraian Keselarasan Sasaran RPJMD/RKPD & IKU Daerah, Nomenklatur Subkegiatan SIPD, TTE Digital Verifikator Bappeda (P-11).
+│   ├── Blok 3 (Tim Analis Diskominfo): Nomor Naskah Dinas Telaah, Tanggal Penetapan, Narasi Ringkasan Eksekutif, Pertimbangan Teknis Analis, Pilihan Rekomendasi Resmi ('BANGUN_BARU'/'BERBAGI_PAKAI'/'REPLIKASI'/'PERBAIKAN_DOKUMEN'/'DITOLAK'), TTE Digital Lead Analis (P-02).
+│   └── Blok 4 (Approval Kabid): Action (Approve/Reject/Request_Revision), Catatan Arahan Pimpinan, Passphrase Sertifikat Elektronik TTE Digital.
+├── 2. Validasi & Separation of Duties (SoD):
+│   ├── Role `Reviewer_Organisasi` HANYA berwenang memodifikasi dan menandatangani Blok 1.
+│   ├── Role `Reviewer_Bappeda` HANYA berwenang memodifikasi dan menandatangani Blok 2.
+│   ├── Role `Tim Analis` (Admin) HANYA berwenang memodifikasi dan menandatangani Blok 3.
+│   ├── Mandatory Gate 2 Guard: Persetujuan final ('DISETUJUI_PERENCANAAN') oleh `Kabid Pengembangan Aplikasi` HANYA dapat dieksekusi jika:
+│   │   1. Blok Organisasi = 'DISETUJUI' [✓];
+│   │   2. Blok Bappeda = 'DISETUJUI' [✓];
+│   │   3. Skor Kelayakan Teknis Diskominfo ≥ 70 dan Bebas Redundansi [✓].
+├── 3. Penyimpanan Data: Tabel `fa02_official_reviews`, `fa02_organization_reviews`, `fa02_bappeda_reviews`, `approval_logs`; berkas PDF resmi Form F.A02 ber-KOP dinas dan multiseal TTE digital di MinIO bucket `mpsi-fa02-official`.
+├── 4. Status: `FORM_FA02_DRAFT` ➔ `MENUNGGU_JOINT_CLEARANCE` ➔ `MENUNGGU_APPROVAL_KABID` ➔ `DISETUJUI_PERENCANAAN` atau `DIALIHKAN_BERBAGI_PAKAI` / `DITOLAK`.
 ├── 5. Error Handling:
-│   ├── 403 Forbidden: Pengguna selain Kepala Bidang mencoba memanggil endpoint eksekusi persetujuan `/api/v1/analyst/fa02-official/approve`.
-│   ├── 422 Unprocessable Entity: Form F.A02 diajukan saat nomor naskah dinas kosong atau rekomendasi tidak dipilih.
-│   └── 401 Unauthorized: Passphrase TTE digital tidak sesuai dengan sertifikat elektronik Kabid.
+│   ├── 403 Forbidden: Diskominfo mencoba mengisi field evaluasi Bappeda / Bagian Organisasi, atau sebaliknya.
+│   ├── 422 Unprocessable Entity: Kabid mencoba melakukan Approve saat rekomendasi Bappeda atau Bagian Organisasi masih berstatus pending / ditolak.
+│   └── 401 Unauthorized: Passphrase TTE digital tidak sesuai dengan sertifikat elektronik penandatangan.
 └── 6. QA Acceptance:
-    - Positive: Analis menginput naskah F.A02, Kabid membuka modal approval, memasukkan passphrase TTE, sistem membubuhkan stempel digital dan menerbitkan naskah PDF sah serta memajukan tiket ke tahap Metadata SDI.
-    - Negative: Analis mencoba menyetujui rekomendasinya sendiri menghasilkan respon HTTP 403 Forbidden.
+    - Positive: Ketiga instansi (Diskominfo, Bag. Organisasi, Bappeda) melengkapi evaluasi masing-masing, Kabid membubuhkan TTE digital, sistem menerbitkan naskah PDF sah F.A02 ber-KOP resmi lengkap dengan paraf 3 pilar dan memajukan tiket ke Fase 3 (Metadata SDI).
+    - Negative: Kabid menekan tombol Approve saat Bagian Organisasi menyatakan rekomendasi 'DITOLAK (Tumpang Tindih Tupoksi)' ditolak oleh guard engine dengan respon HTTP 422 Unprocessable Entity.
 ```
 
 ```
@@ -1849,7 +1880,7 @@ Setiap keterlambatan pada modul-modul di sepanjang jalur kritis di atas akan sec
 | Titik Gerbang | Posisi Antar-Modul | Kondisi Mutlak Kelulusan Gerbang | Dampak Jika Gagal |
 | :--- | :---: | :--- | :--- |
 | **Gate 1: Klarifikasi Teknis** | `MOD-04` ➔ `MOD-05` | Target Kesepakatan Rapat mencapai 100% dan seluruh action item perbaikan SOP OPD diverifikasi tuntas. | Kertas kerja telaah analis (F.A02 Workbench) terkunci; asesmen tidak dapat dimulai. |
-| **Gate 2: Kelayakan & Legalitas F.A02** | `MOD-06` ➔ `MOD-07` | Skor kelayakan F.A02 $\ge 70$, bebas redundansi fatal, dan naskah dinas F.A02 disetujui digital (*Approved*) oleh Kabid. | Alur permohonan dihentikan; usulan dialihkan ke Berbagi Pakai atau Ditolak. |
+| **Gate 2: Kelayakan 3 Pilar F.A02** | `MOD-06` ➔ `MOD-07` | Lolos Joint Clearance 3 Pilar: Disetujui Bagian Organisasi (Tupoksi & Probis), Disetujui Bappeda (RPJMD & SIPD), Skor Teknis $\ge 70$ bebas redundansi, dan Naskah F.A02 disahkan digital (*Approved*) oleh Kabid. | Alur permohonan dihentikan; usulan dialihkan ke Berbagi Pakai atau Ditolak (Tidak Selaras Kebijakan Daerah). |
 | **Gate 3: Walidata SDI Clearance** | `MOD-07` ➔ `MOD-08` | Kamus data terstandarisasi, kode referensi induk tersinkronisasi, dan terbit Surat Rekomendasi Walidata SDI Sah. | Formulir Perencanaan Kebutuhan Sistem (F.A03) terkunci otomatis oleh sistem. |
 | **Gate 4: Kontrak KAK Dua Pihak** | `MOD-09` ➔ `MOD-10` | Dokumen Kerangka Acuan Kerja F.P01 telah ditandatangani digital oleh KEDUA BELAH PIHAK (Diskominfo & OPD). | Papan sprint dan repositori koding dilarang dibuka; status `Ready for Dev` ditolak. |
 | **Gate 5: QA Suite & BAST Klausul 3 Bulan** | `MOD-14` ➔ `MOD-15` | Kelulusan 100% test fungsional, 0 celah keamanan High/Critical CSIRT, persetujuan UAT, dan BAST memuat klausul 3 bulan. | Deployment ke server produksi diblokir; aplikasi dilarang go-live di JSS. |
@@ -1874,10 +1905,10 @@ flowchart TD
         MOD03["MOD-03: Registrasi Permohonan OPD & eOffice (Form F.A01)"]
     end
 
-    subgraph KLASTER_TELAAH["Fase 2: Klarifikasi Teknis & Asesmen Kelayakan"]
-        MOD04["MOD-04: Rapat Klarifikasi Teknis OPD & Target Kesepakatan Guard"]
-        MOD05["MOD-05: Kertas Kerja Asesmen Analis (F.A02 Workbench)"]
-        MOD06["MOD-06: Formulir F.A02 Resmi & Approval Digital Kabid"]
+    subgraph KLASTER_TELAAH["Fase 2: Klarifikasi Teknis & Asesmen Kelayakan (Joint Clearance)"]
+        MOD04["MOD-04: Rapat Klarifikasi Teknis Bersama (OPD, Kominfo, Bag. Organisasi & Bappeda)"]
+        MOD05["MOD-05: Kertas Kerja Asesmen Analis (F.A02 Workbench Diskominfo)"]
+        MOD06["MOD-06: Formulir F.A02 Terpadu (Clearance 3 Pilar: Organisasi, Bappeda & Kominfo)"]
     end
 
     subgraph KLASTER_PERENCANAAN["Fase 3: SDI & Perencanaan Kebutuhan"]
