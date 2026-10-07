@@ -691,176 +691,304 @@ Daftar kebutuhan produk (PRD) di bawah ini disusun secara komprehensif berdasark
 
 # BAGIAN C — SRS (Software Requirements Specification)
 
-## C.1. Kebutuhan Fungsional Baku (Standar 6 Bagian SSOT)
+## C.1. Kebutuhan Fungsional Baku (Standar 6 Bagian SSOT: 20 Kebutuhan Fungsional `SRS-F-01` s/d `SRS-F-20`)
 
-Setiap kebutuhan fungsional di bawah ini dijabarkan secara lengkap memuat **(1) Input Data, (2) Validasi, (3) Penyimpanan Data, (4) Status, (5) Error Handling, dan (6) QA Testing Acceptance**.
-
-```
-SRS-F-01: Otentikasi Terpusat Keycloak SSO JSS & OIDC
-├── 1. Input Data: Authorization Code OIDC dari sso.jogjakota.go.id, Client ID, Client Secret, Redirect URI.
-├── 2. Validasi: Verifikasi signature JWT Keycloak (RS256), validasi masa aktif token (exp claim), pencocokan audience (aud), dan pengecekan claims NIP/OPD.
-├── 3. Penyimpanan Data: Session token tersimpan di Redis cache (TTL 10 menit auto-refresh) & sync profil user di tabel `users`.
-├── 4. Status: `UNAUTHENTICATED`, `AUTHENTICATED`, `SESSION_EXPIRED`.
-├── 5. Error Handling: 401 Unauthorized bila token tidak valid/kadaluarsa; 403 Forbidden bila role tidak terdaftar di database lokal.
-└── 6. QA Acceptance: 
-    - Positive: Pengguna login via Keycloak JSS berhasil diarahkan ke dashboard sesuai role dalam < 1 detik.
-    - Negative: Token dipalsukan/dimanipulasi menghasilkan HTTP 401 dan redirect ke SSO login.
-```
+Setiap kebutuhan fungsional di bawah ini dijabarkan secara rinci dan terstandarisasi mencakup **(1) Input Data, (2) Validasi, (3) Penyimpanan Data, (4) Status, (5) Error Handling, dan (6) QA Testing Acceptance** (Positive & Negative Test Cases):
 
 ```
-SRS-F-02: Portal Publik & Agregasi Statistik Prioritas
-├── 1. Input Data: HTTP GET Request publik (filter opsional: tahapan, OPD, pencarian nama aplikasi).
-├── 2. Validasi: Sanitasi query string dari karakter injeksi (SQLi/XSS), limit pagination max 50 baris per halaman.
-├── 3. Penyimpanan Data: Read-only query ke tabel `applications` dengan materialized caching di Redis (TTL 60 detik).
-├── 4. Status: `PUBLIC_VIEW_READY`.
-├── 5. Error Handling: HTTP 400 bila query string mengandung karakter tidak valid; HTTP 500 fallback ke graceful empty state.
+SRS-F-01: Otentikasi Terpusat Keycloak SSO JSS & Manajemen Sesi OIDC
+├── 1. Input Data: Authorization Code OIDC dari sso.jogjakota.go.id, Client ID, Client Secret, Redirect URI, Fingerprint Perangkat Browser.
+├── 2. Validasi: Verifikasi signature JWT Keycloak publik (RS256 JWKS), masa aktif token (exp claim), audience match (aud), validasi claims NIP ASN dan kode instansi OPD; rate limiting login maks 5 percobaan per menit per IP.
+├── 3. Penyimpanan Data: Session token tersimpan di Redis cache (Key `session:{user_id}`, TTL 10 menit auto-refresh rolling), sinkronisasi profil instan ke tabel `users`.
+├── 4. Status: `UNAUTHENTICATED`, `AUTHENTICATED`, `SESSION_REFRESHED`, `SESSION_EXPIRED`, `LOCKED_OUT`.
+├── 5. Error Handling: 
+│   ├── 401 Unauthorized: Signature JWT tidak valid atau token kedaluwarsa.
+│   ├── 403 Forbidden: Akun ASN tidak memiliki pemetaan role aktif di database lokal.
+│   └── 429 Too Many Requests: Percobaan login melampaui batas rate limit.
 └── 6. QA Acceptance:
-    - Positive: Tamu dapat melihat 6 card ringkasan statistik dan stepper 10 aplikasi prioritas tanpa token JWT.
-    - Negative: Eksploitasi parameter query dengan payload injection dibersihkan secara aman tanpa error leakage.
+    - Positive: ASN login via SSO JSS berhasil diarahkan ke dashboard sesuai role dalam tempo < 1.0 detik dengan Bearer token tersimpan di memory/cookie terproteksi HTTP-Only.
+    - Negative: Akses menggunakan token JWT hasil manipulasi signature memicu HTTP 401 Unauthorized, sesi dihapus dari Redis, dan pengguna diredireksi ke portal login SSO.
 ```
 
 ```
-SRS-F-03: Pengajuan Permohonan Aplikasi OPD (Form F.A01 & eOffice)
-├── 1. Input Data: DTO F.A01 (Nama App, Jenis Pengajuan, Latar Belakang, Tujuan, Output, Pengguna Akhir, Dampak Tidak Dibangun) + 4 Berkas PDF Lampiran (Dasar Hukum, SOP, Contoh Laporan, Lainnya).
-├── 2. Validasi: Seluruh field teks wajib diisi; validasi file multipart: tipe MIME wajib application/pdf, magic bytes header `%PDF-`, ukuran maks 10MB per berkas.
-├── 3. Penyimpanan Data: Record disimpan di tabel `applications` & `application_attachments`; file binary disimpan di bucket MinIO `spbe-attachments`.
-├── 4. Status: Bertransisi ke `PERMOHONAN_DIAJUKAN` dengan nomor unik `REG-YYYYMMDD-XXXX`.
-├── 5. Error Handling: 422 Unprocessable Entity bila field kosong; 415 Unsupported Media Type bila file bukan PDF asli; 500 bila MinIO gagal menyimpan.
+SRS-F-02: Portal Publik Transparansi & Stepper 10 Aplikasi Prioritas
+├── 1. Input Data: HTTP GET Request publik tanpa token (opsional query params: search keyword, filter OPD pengampu, filter fase siklus hidup, pagination offset/limit).
+├── 2. Validasi: Sanitasi query string dari karakter injeksi (SQLi, NoSQLi, XSS); pembatasan limit pagination maksimal 50 record per halaman; pemblokiran payload metode non-GET (POST/PUT/DELETE ditolak).
+├── 3. Penyimpanan Data: Read-only query ke view database terdenormalisasi pada tabel `applications` dengan materialized cache di Redis (Key `cache:public:stats`, TTL 60 detik).
+├── 4. Status: `PUBLIC_VIEW_READY`, `CACHE_STALE_REFRESHING`.
+├── 5. Error Handling:
+│   ├── 400 Bad Request: Parameter query string mengandung karakter tidak sah atau pagination bernilai negatif.
+│   └── 500 Internal Server Error: Kegagalan koneksi database; fallback graceful ke cache statis darurat.
 └── 6. QA Acceptance:
-    - Positive: Form terkirim sukses, Nomor Registrasi terbentuk otomatis, 4 file tersimpan di MinIO dan dapat diunduh via Presigned URL.
-    - Negative: Pengunggahan file .exe yang di-rename menjadi .pdf ditolak oleh validasi Magic Bytes (HTTP 415).
+    - Positive: Pengguna publik tanpa autentikasi dapat melihat 6 card statistik ringkasan dan stepper visual linimasa Top 10 aplikasi prioritas dengan waktu muat < 200 ms.
+    - Negative: Upaya injeksi SQL `' OR 1=1 --` pada parameter pencarian berhasil dibersihkan dan disanitasi tanpa memicu kebocoran skema database.
 ```
 
 ```
-SRS-F-04A: Manajemen Rapat Klarifikasi Teknis OPD (Multi-Sesi)
-├── 1. Input Data: DTO Sesi Rapat Klarifikasi (Application ID, Nomor Sesi #N, Topik Agenda Rapat, Waktu & Tempat/Link Zoom, Daftar Hadir Peserta Lintas Instansi, Array Target Kesepakatan Rapat [Deskripsi, Status Centang], Rich Text Notulensi HTML, Array Upload Foto Dokumentasi/Sketsa ke MinIO, Array Tindak Lanjut Hasil Rapat [Uraian Tugas, Penanggung Jawab, Deadline]).
-├── 2. Validasi: Target Kesepakatan minimal 1 butir; Mandatori Guard: status Berita Acara Rapat Final Clearance hanya dapat disahkan jika 100% Target Kesepakatan telah dicentang disepakati [✓] dan Tugas Tindak Lanjut terselesaikan; foto bukti rapat berekstensi JPG/PNG maks 5MB.
-├── 3. Penyimpanan Data: Tabel `hearing_sessions` dan `hearing_action_items`; file foto & PDF berita acara di MinIO bucket `spbe-attachments/rapat-klarifikasi`.
+SRS-F-03: Pendaftaran Permohonan OPD, Generator No Reg & Integrasi eOffice (Form F.A01)
+├── 1. Input Data: DTO F.A01 (Nama Aplikasi, Jenis Pengajuan: Baru/Pengembangan, Urgensi & Latar Belakang, Tujuan, Sasaran Pengguna, Estimasi Pengguna Bersamaan, Dampak Tidak Dibangun) + Nomor & Tanggal Naskah Dinas eOffice + 4 Berkas PDF Lampiran Multipart (Dasar Hukum, SOP Layanan, Contoh Laporan/Output, Dokumen Pendukung Lainnya).
+├── 2. Validasi: Role wajib `PIC OPD` (Operator) atau `Superadmin`; seluruh field teks wajib diisi (minimal 30 karakter pada uraian urgensi); verifikasi nomor surat ke API eOffice Pemkot Yogyakarta; berkas wajib format PDF asli (validasi magic bytes header `%PDF-`), ukuran maks 10 MB per file; ke-4 lampiran wajib terunggah lengkap.
+├── 3. Penyimpanan Data: Record disimpan di tabel `applications` dan `application_attachments`; berkas PDF disimpan di MinIO bucket `mpsi-fa01-attachments` dengan enkripsi server-side AES-256.
+├── 4. Status: `DRAFT_PERMOHONAN` ➔ `PERMOHONAN_DIAJUKAN` dengan nomor registrasi unik format `REG-YYYYMMDD-XXXX`.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: Salah satu lampiran wajib belum diunggah atau nomor eOffice tidak ditemukan.
+│   ├── 415 Unsupported Media Type: File yang diunggah bukan PDF asli (misal file .exe atau .docx yang diubah ekstensi).
+│   └── 500 Internal Server Error: Kegagalan koneksi MinIO saat upload; transaksi database di-rollback total.
+└── 6. QA Acceptance:
+    - Positive: Form intake F.A01 dan 4 lampiran terunggah sukses, nomor registrasi terbentuk otomatis, PDF tanda terima ber-QR Code terbit, dan status bertransisi ke 'PERMOHONAN_DIAJUKAN'.
+    - Negative: Mengunggah file PDF korup atau file executable yang di-rename menjadi `.pdf` ditolak oleh pemeriksa magic bytes dengan pesan error HTTP 415.
+```
+
+```
+SRS-F-04: Manajemen Rapat Klarifikasi Teknis OPD & Target Kesepakatan Guard
+├── 1. Input Data: DTO Sesi Rapat Klarifikasi (Application ID, Nomor Sesi #N, Tanggal & Waktu, Lokasi/Link Zoom, Daftar Peserta Presensi Lintas Instansi, Agenda Pembahasan, Array Target Kesepakatan Rapat [ID, Uraian Target, Is_Agreed Boolean], Rich-Text Notulensi Dokumen HTML, Array Upload Foto Bukti MinIO, Array Action Items OPD [Uraian Perbaikan, PIC, Tenggat Waktu]).
+├── 2. Validasi: Role wajib `Tim Analis` (Admin) atau `Superadmin`; aplikasi berstatus `PERMOHONAN_DIAJUKAN`; minimal 1 sesi rapat; foto bukti berformat JPG/PNG maks 5 MB; Mandatori Guard: status 'RAPAT_CLEARANCE_DISAHKAN' HANYA dapat disahkan jika 100% Target Kesepakatan bernilai TRUE [✓] dan seluruh action items berstatus 'RESOLVED'.
+├── 3. Penyimpanan Data: Tabel `clarification_meetings`, `meeting_attendance`, `meeting_action_items`, `meeting_photos`; file gambar & PDF Berita Acara di MinIO bucket `mpsi-meeting-evidence`.
 ├── 4. Status: `RAPAT_DIJADWALKAN` ➔ `RAPAT_BERLANGSUNG` ➔ `TINDAK_LANJUT_PENDING` ➔ `RAPAT_CLEARANCE_DISAHKAN`.
-├── 5. Error Handling: 422 Unprocessable bila mencoba mengesahkan Final Clearance saat target kesepakatan < 100%; 400 Bad Request bila file gambar corrupt.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: Mencoba mengesahkan Berita Acara Rapat saat target kesepakatan masih < 100% atau ada action items pending.
+│   ├── 400 Bad Request: Format gambar dokumentasi tidak valid atau payload presensi kosong.
+│   └── 403 Forbidden: OPD mencoba mengesahkan berita acara rapat sendiri tanpa keterlibatan Analis Kominfo.
 └── 6. QA Acceptance:
-    - Positive: Analis menginput sesi rapat, mengisi target kesepakatan, mencentang 100% target, mengesahkan TTE, dan status aplikasi otomatis berstatus 'Clearance Rapat Disahkan'.
-    - Negative: Upaya pengesahan berita acara rapat dengan target kesepakatan yang belum 100% terceklis diblokir sistem dengan dialog peringatan mandatory guard.
+    - Positive: Analis menyelenggarakan rapat, mencatat notulensi, mengunggah foto MinIO, memvalidasi seluruh target kesepakatan 100%, sistem menerbitkan PDF Berita Acara Rapat resmi dan mengalirkan status ke 'RAPAT_CLEARANCE_DISAHKAN'.
+    - Negative: Tombol pengesahan final diklik saat persentase target kesepakatan masih 80% memicu alert modal guard block dan menolak request dengan HTTP 422.
 ```
 
 ```
-SRS-F-04B: Kertas Kerja Asesmen Analis & Pengisian Formulir F.A02 Resmi
-├── 1. Input Data: DTO Kertas Kerja (Hasil Uji Redundansi JSONB, Pemetaan Arsitektur SPBE JSONB, Rubrik Skor 12 Bagian JSONB, Tautan Bukti Dukung/Eviden JSONB, ID Sesi Rapat Clearance Terverifikasi, Total Skor Terkalkulasi, Kuadran McFarlan) + DTO Formulir F.A02 Resmi Manual (Nomor Surat Telaah Dinas, Tanggal Penetapan Telaah, Narasi Ringkasan Eksekutif, Justifikasi Pertimbangan Analis, Pilihan Rekomendasi Resmi: 'SETUJU_BANGUN' / 'BERBAGI_PAKAI' / 'REPLIKASI' / 'TOLAK_REVISI').
-├── 2. Validasi: Role wajib `Analis` (untuk kertas kerja & pengisian manual F.A02) atau `Superadmin`/`Kabid` (approval final); rapat klarifikasi wajib berstatus `RAPAT_CLEARANCE_DISAHKAN`; seluruh rubrik 12 bagian wajib terisi; nomor surat telaah wajib diisi; narasi pertimbangan minimal 50 karakter; sistem menolak jika ada kriteria knockout.
-├── 3. Penyimpanan Data: Record tersimpan di tabel `feasibility_analyses`; file PDF resmi Form F.A02 di MinIO bucket `spbe-attachments/telaah-fa02`.
-├── 4. Status: `TELAAH_KERTAS_KERJA` ➔ `FORM_FA02_DRAF` ➔ `MENUNGGU_APPROVAL_KABID` ➔ `DISETUJUI_PERENCANAAN` atau `DIALIHKAN_BERBAGI_PAKAI` / `DITOLAK_REVISI`.
-├── 5. Error Handling: 403 Forbidden bila analis mencoba approval mandiri; 422 Unprocessable bila formulir F.A02 diajukan sebelum kertas kerja lengkap atau narasi telaah kosong; 400 Bad Request bila melanggar kriteria knockout.
+SRS-F-05: Kertas Kerja Asesmen Analis: Inspector Redundansi & Rubrik 12 Bagian (Form F.A02 Workbench)
+├── 1. Input Data: DTO Kertas Kerja Asesmen (Application ID, ID Sesi Rapat Clearance, Hasil Pemindaian Redundansi JSONB, Pemetaan Domain Arsitektur SPBE & Tupoksi SOTK JSONB, Rubrik Penilaian 12 Bagian Berbobot JSONB [Aspek 1-12, Level Kematangan 1-4, Skor Parsial, Tautan Eviden Sah], Kriteria Knockout Boolean Flags, Kuadran McFarlan-Peppard Terhitung).
+├── 2. Validasi: Role wajib `Tim Analis` (Admin) atau `Superadmin`; status rapat wajib `RAPAT_CLEARANCE_DISAHKAN`; seluruh 12 aspek rubrik wajib dinilai dan memiliki tautan bukti dukung; jika kriteria knockout aktif (misal redundan penuh dengan aplikasi pusat), sistem secara mutlak melarang penetapan rekomendasi 'Bangun Baru'.
+├── 3. Penyimpanan Data: Tabel `analyst_workbenches`, `assessment_scores`, `rubric_evidence_links`; kalkulasi skor total (skala 0 s/d 100) disimpan atomik.
+├── 4. Status: `TELAAH_KERTAS_KERJA_DRAFT` ➔ `KERTAS_KERJA_SELESAI`.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: Terdapat aspek rubrik yang belum dinilai atau evidence link tidak berupa URI yang valid.
+│   ├── 400 Bad Request: Terjadi pelanggaran aturan kriteria gugur (knockout violation).
+│   └── 404 Not Found: Application ID atau Sesi Rapat tidak terdaftar di sistem.
 └── 6. QA Acceptance:
-    - Positive: Analis menyelesaikan kertas kerja, sistem menampilkan ringkasan skor & kuadran, analis mengisi formulir F.A02 secara manual (rekomendasi: Lanjut Bangun), Kabid menyetujui secara digital, sistem menerbitkan PDF F.A02 ber-KOP resmi lengkap dengan lampiran kertas kerja dan memajukan tahap ke Standardisasi Metadata SDI (Gatekeeper 2).
-    - Negative: Upaya mengajukan Form F.A02 ke Kabid sebelum melengkapi narasi telaah resmi dan nomor surat diblokir oleh validasi sistem.
+    - Positive: Analis melengkapi evaluasi 12 bagian, skor total terakumulasi otomatis (misal 84/100 - Kuadran Strategic), bebas redundansi, dan lembar kerja siap dijadikan rujukan pengisian Form F.A02 resmi.
+    - Negative: Memberikan nilai Level 4 pada aspek Integrasi SPLP tanpa melampirkan tautan bukti dukung ditolak oleh validasi skema DTO (HTTP 422).
 ```
 
 ```
-SRS-F-05A: Standardisasi Metadata Satu Data Indonesia (SDI - Walidata Daerah)
-├── 1. Input Data: DTO Telaah Walidata (Application ID, Daftar Variabel Data Usulan, Kamus Data OPD [Nama Variabel, Tipe Data, Panjang, Format, Definisi], Kode Referensi Terkait, Status Kesiapan API/SPLP, Catatan Verifikasi Walidata, Keputusan Clearance: 'DISETUJUI' / 'REVISI_KAMUS_DATA').
-├── 2. Validasi: Role wajib `Walidata Daerah` / `Seksi Data Statistik` atau `Superadmin`; aplikasi wajib berstatus `DISETUJUI_PERENCANAAN` (lolos Rekomtek F.A02); seluruh variabel data wajib memiliki padanan definisi baku dan kode referensi; mandatori clearance sebelum form F.A03 dapat dibuka.
-├── 3. Penyimpanan Data: Record tersimpan di tabel `metadata_sdi_analyses`; lampiran rekomendasi Walidata di MinIO bucket `spbe-attachments/sdi-clearance`.
-├── 4. Status: `METADATA_SDI_MENUNGGU_TELAAH` ➔ `METADATA_SDI_REVISI` atau `METADATA_SDI_CLEARANCE_DISAHKAN`.
-├── 5. Error Handling: 403 Forbidden bila non-walidata mencoba mengesahkan clearance; 422 Unprocessable bila terdapat variabel tanpa definisi baku/konflik kode referensi; 400 bila permohonan belum disetujui F.A02.
+SRS-F-06: Formulir F.A02 Resmi, Penetapan Rekomendasi & Approval Digital Kabid
+├── 1. Input Data: DTO Formulir F.A02 Resmi (Application ID, Nomor Naskah Dinas Telaah, Tanggal Penetapan, Narasi Ringkasan Eksekutif, Pertimbangan Teknis Analis, Pilihan Rekomendasi Resmi: 'BANGUN_BARU' / 'BERBAGI_PAKAI' / 'REPLIKASI' / 'PERBAIKAN_DOKUMEN' / 'DITOLAK') + DTO Approval Kabid (Action: Approve/Reject/Request_Revision, Catatan Arahan Pimpinan, Passphrase TTE Digital).
+├── 2. Validasi: Pengisian draf Form F.A02 wajib oleh `Tim Analis`; persetujuan final HANYA oleh role `Kabid Pengembangan Aplikasi` (Admin); kertas kerja F.A02 workbench wajib berstatus `KERTAS_KERJA_SELESAI`; narasi telaah minimal 50 karakter; passphrase TTE wajib terverifikasi ke modul kriptografi.
+├── 3. Penyimpanan Data: Tabel `fa02_official_reviews` dan `approval_logs`; berkas PDF resmi Form F.A02 ber-KOP dinas dan TTE digital di MinIO bucket `mpsi-fa02-official`.
+├── 4. Status: `FORM_FA02_DRAFT` ➔ `MENUNGGU_APPROVAL_KABID` ➔ `DISETUJUI_PERENCANAAN` atau `DIALIHKAN_BERBAGI_PAKAI` / `DITOLAK`.
+├── 5. Error Handling:
+│   ├── 403 Forbidden: Pengguna selain Kepala Bidang mencoba memanggil endpoint eksekusi persetujuan `/api/v1/analyst/fa02-official/approve`.
+│   ├── 422 Unprocessable Entity: Form F.A02 diajukan saat nomor naskah dinas kosong atau rekomendasi tidak dipilih.
+│   └── 401 Unauthorized: Passphrase TTE digital tidak sesuai dengan sertifikat elektronik Kabid.
 └── 6. QA Acceptance:
-    - Positive: Walidata memvalidasi seluruh variabel, mengesahkan clearance, status aplikasi bertransisi ke 'METADATA_SDI_CLEARANCE_DISAHKAN', dan membuka akses form F.A03 bagi Tim Bisnis Analis.
-    - Negative: Tim Analis mencoba submit Form F.A03 sebelum rekomendasi Walidata SDI disahkan menghasilkan error HTTP 403 / Guard Lock ("Tahap Metadata SDI Belum Clear").
+    - Positive: Analis menginput naskah F.A02, Kabid membuka modal approval, memasukkan passphrase TTE, sistem membubuhkan stempel digital dan menerbitkan naskah PDF sah serta memajukan tiket ke tahap Metadata SDI.
+    - Negative: Analis mencoba menyetujui rekomendasinya sendiri menghasilkan respon HTTP 403 Forbidden.
 ```
 
 ```
-SRS-F-05B: Analisis Kebutuhan Sistem & Penandatanganan KAK Bersama (Form F.A03 & KAK F.P01)
-├── 1. Input Data: DTO F.A03 (Kebutuhan Fungsional per Role Pengguna, Kebutuhan Non-Fungsional [SLA, Beban, Security], Matriks Manajemen Risiko SPBE) + File PDF Kerangka Acuan Kerja KAK (Form F.P01) dan Dokumen Blueprint Rancang Bangun + TTE Digital Pihak I (Kepala Bidang Diskominfo) + TTE Digital Pihak II (Kepala OPD / PPK Pemohon).
-├── 2. Validasi: Role wajib `Bisnis Analis` / `Superadmin` (untuk penyusunan draf), `Kabid Pengembangan Aplikasi` (Pihak I), dan `Kepala OPD / PPK` (Pihak II); status aplikasi wajib `METADATA_SDI_CLEARANCE_DISAHKAN`; modul fungsional terisi minimal 1 role; validasi magic bytes PDF berkas KAK & Blueprint; Dokumen KAK F.P01 wajib ditandatangani secara digital oleh kedua belah pihak sebagai kontrak ruang lingkup kerja.
-├── 3. Penyimpanan Data: Record di tabel `system_requirements` dan `application_attachments` (kategori: `KAK_FP01`, `BLUEPRINT`); file PDF di MinIO bucket `spbe-attachments/perencanaan`.
-├── 4. Status: `PERENCANAAN_DRAF` ➔ `HARMONISASI_KAK_OPD` ➔ `MENUNGGU_TTD_KAK_DUA_PIHAK` ➔ `KAK_DISAHKAN_DUA_PIHAK` ➔ `READY_FOR_DEV`.
-├── 5. Error Handling: 422 jika rincian modul fungsional kosong atau berkas KAK belum ditandatangani kedua belah pihak; 403 jika tahap Metadata SDI belum disahkan; 500 jika gagal generate PDF F.A03 atau proses enkripsi TTE digital.
+SRS-F-07: Standardisasi Metadata SDI (Walidata Daerah) & Gatekeeper Clearance
+├── 1. Input Data: DTO Metadata SDI (Application ID, Array Kamus Data OPD [Nama Kolom/Variabel, Tipe Data, Panjang Field, Format, Definisi Operasional, Nilai Domain], Kode Referensi Induk Pemkot, Kesiapan Endpoint SPLP, Lembar Catatan Walidata, Keputusan Clearance: 'CLEARANCE_DISETUJUI' / 'REVISI_KAMUS_DATA') + Surat Rekomendasi Walidata PDF.
+├── 2. Validasi: Role wajib `Walidata Daerah` (Seksi Data Statistik) atau `Superadmin`; status aplikasi wajib `DISETUJUI_PERENCANAAN`; seluruh variabel wajib memiliki padanan definisi baku dan bebas duplikasi kodifikasi; Gatekeeper Mandatori: Tahap Perencanaan Kebutuhan F.A03 dilarang dibuka sebelum Surat Rekomendasi Walidata berstatus 'CLEARANCE_DISETUJUI'.
+├── 3. Penyimpanan Data: Tabel `sdi_metadata_reviews`, `data_dictionaries`, `reference_code_mappings`; berkas rekomendasi di MinIO bucket `mpsi-sdi-clearance`.
+├── 4. Status: `METADATA_SDI_PENDING` ➔ `METADATA_SDI_REVISI` ➔ `METADATA_SDI_CLEARANCE_DISAHKAN`.
+├── 5. Error Handling:
+│   ├── 403 Forbidden: Staf non-walidata mencoba mengesahkan clearance metadata.
+│   ├── 422 Unprocessable Entity: Terdapat variabel data tanpa definisi operasional atau kodifikasi induk bertentangan dengan standar Satu Data.
+│   └── 400 Bad Request: Permohonan diajukan ke Walidata sebelum lulus Form F.A02.
 └── 6. QA Acceptance:
-    - Positive: Analis mengisi form F.A03, mengunggah draf KAK, diadakan harmonisasi, Kabid Kominfo dan Kepala OPD menandatangani KAK secara digital, dokumen terkunci permanen di MinIO dan status tiket bertransisi ke 'READY_FOR_DEV' (masuk antrean Seksi Perangkat Lunak).
-    - Negative: Upaya mengalirkan tiket ke Seksi Perangkat Lunak (Ready for Dev) sebelum dokumen KAK ditandatangani oleh kedua belah pihak diblokir oleh sistem dengan error HTTP 422 Guard Contract Lock.
+    - Positive: Walidata Daerah memvalidasi kamus data, mengesahkan clearance, status aplikasi bertransisi ke 'METADATA_SDI_CLEARANCE_DISAHKAN', dan membuka kunci akses formulir F.A03.
+    - Negative: Tim Bisnis Analis mencoba mengakses endpoint submit Form F.A03 saat status SDI masih pending diblokir oleh middleware Gatekeeper dengan pesan HTTP 403 ("Gatekeeper Lock: Metadata SDI Belum Dinyatakan Clear").
 ```
 
 ```
-SRS-F-06: Manajemen Proyek Pengembangan Ala OpenProject & Infrastruktur (FI.01 & FI.02)
-├── 1. Input Data: DTO Squad Allocation (Ketua Tim Kerja assign PM ID, DSI ID, Backend Dev IDs, Frontend Dev IDs, QA IDs), DTO Sprint Kickoff (Milestones, Tech Stack, Repositori Git URL), DTO Work Package Task (Judul Task, Jalur: DSI/Backend/Frontend/QA, Assignee, Status Kanban, Bobot %, Estimasi Jam), DTO Form FI.01 (Dokumentasi Rancang Bangun, Changelog, Endpoint API), DTO Form FI.02 (Kategori Kritikal P/AP/SP, usulan subdomain `*.jogjakota.go.id`, kebutuhan container/RAM/storage).
-├── 2. Validasi: Role wajib `Ketua Tim Kerja Perangkat Lunak` (untuk alokasi tim) atau `PM`/`Developer` (untuk task dan FI.01/FI.02); total akumulasi progres fisik terhitung 0-100%; validasi URL Git dan konvensi penamaan subdomain alfanumerik.
-├── 3. Penyimpanan Data: Record di tabel `project_squads`, `work_packages`, `development_records`, dan `hosting_requests`.
-├── 4. Status: `SQUAD_TERBENTUK` ➔ `PENGEMBANGAN_BERJALAN` ➔ `DEVELOPMENT_SELESAI_100%` ➔ `SIAP_UJI_MUTU`.
-├── 5. Error Handling: 400 bila format subdomain tidak valid; 422 bila mencoba submit Form FI.01 tanpa tautan commit Git; 403 bila bukan anggota squad yang mengupdate task.
+SRS-F-08: Perencanaan Kebutuhan Sistem & Matriks Manajemen Risiko SPBE (Form F.A03)
+├── 1. Input Data: DTO Perencanaan F.A03 (Application ID, Matriks Spesifikasi Fungsional per Role [Modul, User Story, Use Case, Input/Output, Acceptance Criteria], Spesifikasi Non-Fungsional [Target SLA Availability $\ge 99\%$, Response Time $\le 2$ detik, Peak Concurrency, Enkripsi TLS 1.3], Matriks Manajemen Risiko SPBE [Uraian Risiko, Level Dampak 1-5, Level Probabilitas 1-5, Tingkat Risiko, Rencana Mitigasi Teknis & Operasional]).
+├── 2. Validasi: Role wajib `Bisnis Analis` atau `Superadmin`; status aplikasi wajib `METADATA_SDI_CLEARANCE_DISAHKAN`; modul fungsional terisi minimal untuk 1 role pengguna; mandatori: seluruh risiko berlevel 'Tinggi' atau 'Ekstrem' wajib menyertakan rencana mitigasi konkret.
+├── 3. Penyimpanan Data: Tabel `system_requirements`, `functional_specs`, `spbe_risk_assessments`; generator PDF F.A03 di MinIO bucket `mpsi-planning-documents`.
+├── 4. Status: `PERENCANAAN_FA03_DRAFT` ➔ `PERENCANAAN_FA03_DISETUJUI`.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: Spesifikasi fungsional kosong atau terdapat risiko berlevel tinggi tanpa uraian mitigasi.
+│   └── 403 Forbidden: Analis mencoba submit F.A03 saat tahap Walidata SDI belum clear.
 └── 6. QA Acceptance:
-    - Positive: Ketua Tim mengalokasikan squad, PM menginput work packages, developer mengupdate status task hingga progres 100%, sistem men-generate Form FI.01 dan FI.02, dan tiket bertransisi ke tahap Pengujian Mutu (QA Suite).
-    - Negative: Tiket tidak dapat dimajukan ke tahap Pengujian Mutu QA jika progres fisik task development belum mencapai 100%.
+    - Positive: Analis mengisi form F.A03, matriks fungsional dan risiko terpetakan valid, sistem men-generate dokumen PDF F.A03 ber-KOP resmi dan memajukan tahap ke Penyusunan KAK F.P01.
+    - Negative: Submit form F.A03 dengan skor risiko bernilai 25 (Ekstrem) namun kolom mitigasi dibiarkan kosong memicu error validasi HTTP 422.
 ```
 
 ```
-SRS-F-07: 5 Pilar Pengujian Mutu SPBE (Form F.UO1 s/d F.U07)
-├── 1. Input Data: DTO F.UO1 (Test Plan), DTO F.UO2 (Integrasi), DTO F.UO3 (Fungsional), DTO F.UO4/UO5 (UAT & Berita Acara), File PDF Pentest CSIRT F.U06, DTO Stress Test F.U07 (k6 baseline & log resource).
-├── 2. Validasi: Pengujian fungsional F.UO3 wajib mencakup seluruh modul; file Pentest CSIRT wajib valid; UAT wajib ada status Diterima oleh OPD.
-├── 3. Penyimpanan Data: Tabel `functional_tests`, `uat_tests`, `security_pentests`, `load_tests`.
-├── 4. Status: `PENGUJIAN_BERJALAN` ➔ `PENGUJIAN_LULUS_MUTU` atau `PENGUJIAN_REVISI`.
-├── 5. Error Handling: 400 Bad Request jika mencoba rilis aplikasi saat hasil UAT masih 'Ditolak' atau terdapat temuan Pentest High.
+SRS-F-09: Kerangka Acuan Kerja (KAK F.P01) & Penandatanganan Digital Dua Pihak (Mandatory Contract Lock)
+├── 1. Input Data: DTO Kerangka Acuan Kerja F.P01 (Application ID, Ruang Lingkup Sistem, Batasan Modul Anti Scope-Creep, Estimasi Timeline Sprint, Kebutuhan Sumber Daya, Blueprint Arsitektur Sistem) + TTE Digital Pihak I (Kepala Bidang Diskominfo) + TTE Digital Pihak II (Kepala OPD / PPK Pemohon) + Berkas Kontrak KAK PDF.
+├── 2. Validasi: Role Pihak I wajib `Kabid Pengembangan Aplikasi Diskominfo`; Role Pihak II wajib `Kepala OPD / PPK Pemohon`; status aplikasi wajib `PERENCANAAN_FA03_DISETUJUI`; validasi integritas hash SHA-256 dokumen PDF kontrak; Mandatory Contract Lock: Sistem memblokir inisialisasi repositori Git dan penugasan squad pengerjaan SEBELUM dokumen KAK resmi ditandatangani oleh KEDUA BELAH PIHAK.
+├── 3. Penyimpanan Data: Tabel `kak_contracts`, `kak_milestones`, `contract_signatures`; file kontrak KAK sah tersimpan terenkripsi di MinIO bucket `mpsi-signed-kak-contracts`.
+├── 4. Status: `DRAF_KAK_DISUSUN` ➔ `HARMONISASI_RUANG_LINGKUP` ➔ `MENUNGGU_TTD_DUA_PIHAK` ➔ `KAK_DISAHKAN_DUA_PIHAK` ➔ `READY_FOR_DEV`.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: Tiket dipaksa bertransisi ke `Ready for Dev` saat salah satu pihak belum menandatangani dokumen KAK.
+│   ├── 401 Unauthorized: Kegagalan otentikasi sertifikat elektronik atau PIN TTE salah.
+│   └── 403 Forbidden: Pengguna tidak berwenang mencoba menandatangani atas nama Pihak I atau Pihak II.
 └── 6. QA Acceptance:
-    - Positive: Seluruh 5 instrumen pengujian terverifikasi lulus, sistem mengizinkan transisi ke tahap Serah Terima.
-    - Negative: Transisi status ke Serah Terima diblokir otomatis oleh sistem jika form F.UO3 memiliki status Gagal > 0.
+    - Positive: Draf KAK disepakati, Kabid Diskominfo dan Kepala OPD menandatangani secara digital, dokumen terkunci sah di MinIO, dan tiket otomatis bertransisi ke status 'READY_FOR_DEV' (siap dialokasikan squad).
+    - Negative: Ketua Tim Software mencoba membuat repositori atau task kanban sebelum KAK ditandatangani kedua belah pihak diblokir mutlak oleh sistem dengan error HTTP 422 ("Mandatory Contract Guard Lock: KAK Belum Ditandatangani 2 Pihak").
 ```
 
 ```
-SRS-F-08: Serah Terima, TOT & Checklist Kesiapan Rilis (F.SR01, F.R01, F.R04)
-├── 1. Input Data: DTO BAST F.SR01 (Pihak I & II, klausul 3 bulan), DTO TOT F.R01 (Daftar peserta, materi), DTO Checklist Rilis F.R04 (20 item checklist), Upload Foto Dokumentasi.
-├── 2. Validasi: 20 butir checklist F.R04 wajib terverifikasi (Status: Lulus/Ada/Ya); BAST wajib memuat klausul pemanfaatan 3 bulan.
-├── 3. Penyimpanan Data: Tabel `handover_bast`, `tot_records`, `release_checklists`, `release_photos`.
-├── 4. Status: `SERAH_TERIMA_SELESAI` ➔ `APLIKASI_RILIS_PRODUKSI`.
-├── 5. Error Handling: 422 bila salah satu item checklist kritis (HTTPS, SSO, Backup) bernilai 'Tidak'.
+SRS-F-10: Resource Allocation Squad Dev, Kickoff Sprint & Repositori Git Webhook
+├── 1. Input Data: DTO Squad Assignment (Application ID, Penugasan Anggota Tim: Project Manager ID, Desainer UI-UX DSI ID, Backend Dev IDs, Frontend Dev IDs, QA Tester IDs) + DTO Kickoff Sprint (Target Rilis Sprint, Arsitektur Tech Stack, Notulensi Rapat Kickoff Dev) + DTO Repositori Git (URL Repositori Internal Pemkot, Default Branch, Webhook Secret Key).
+├── 2. Validasi: Role wajib `Ketua Tim Kerja Perangkat Lunak` atau `Superadmin`; status aplikasi wajib `READY_FOR_DEV` (lolos Gatekeeper KAK); penugasan wajib memuat minimal 1 PM, 1 Backend Dev, 1 Frontend Dev, dan 1 QA Tester; URL repositori wajib merujuk ke domain GitLab/Gitea resmi Pemkot Yogyakarta.
+├── 3. Penyimpanan Data: Tabel `project_squads`, `squad_members`, `git_repositories`; webhook secret disimpan terenkripsi dengan AES-GCM.
+├── 4. Status: `SQUAD_TERBENTUK` ➔ `DEV_KICKOFF_SELESAI` ➔ `SPRINT_ACTIVE`.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: Penugasan squad tidak lengkap (misal tanpa penanggung jawab QA atau Backend).
+│   ├── 400 Bad Request: Format URL repositori Git tidak valid atau webhook secret terlalu lemah (< 16 karakter).
+│   └── 403 Forbidden: Staf biasa mencoba melakukan alokasi tim mandiri.
 └── 6. QA Acceptance:
-    - Positive: Dokumen BAST F.SR01, TOT F.R01, dan Rilis F.R04 ter-generate PDF, status berubah menjadi Rilis Produksi.
-    - Negative: Checklist F.R04 yang belum lengkap memunculkan pesan peringatan dan menonaktifkan tombol submit rilis.
+    - Positive: Ketua Tim menugaskan squad lengkap, menginput URL repositori, webhook aktif terhubung, dan papan kerja proyek terbuka bagi squad yang ditunjuk.
+    - Negative: Mencoba memulai sprint pengerjaan tanpa mengalokasikan staf QA ditolak oleh validasi kelengkapan squad (HTTP 422).
 ```
 
 ```
-SRS-F-09: Manajemen Pemeliharaan & Change Request Pasca-Rilis (F.P01, F.P02, F.P03)
-├── 1. Input Data: DTO Pemeliharaan F.P01 (Jenis: Perfektif/Adaptif/Korektif/Preventif, modul diperbaiki), DTO CSIRT F.P02 (Insiden Keamanan), DTO Change Request F.P03 (Justifikasi dampak 5 aspek).
-├── 2. Validasi: ID Aplikasi berstatus Rilis Produksi; justifikasi dampak CR wajib terisi kuadran persentase.
-├── 3. Penyimpanan Data: Tabel `maintenance_logs`, `security_incidents`, `change_requests`.
-├── 4. Status: `CR_DIAJUKAN` ➔ `CR_DISETUJUI` ➔ `PEMELIHARAAN_SELESAI`.
-├── 5. Error Handling: 404 jika ID aplikasi tidak ditemukan; 400 jika jenis pemeliharaan di luar 4 kategori Kepwal.
+SRS-F-11: Papan Kerja Kanban Work Packages Multidisiplin Ala OpenProject & Engine Progres Fisik
+├── 1. Input Data: DTO Work Package Task (Squad ID, Judul Pekerjaan, Deskripsi Rinci, Track Disiplin: 'DSI_UI_UX' / 'BACKEND_API' / 'FRONTEND_UI' / 'QA_TESTING', Assignee ID, Status Kanban: 'Backlog' / 'To Do' / 'In Progress' / 'In Review' / 'Done', Bobot Persentase Task %, Estimasi Jam, Logged Hours Jam Kerja, Checklists Sub-Task, Commit Hash Git Terkait).
+├── 2. Validasi: Role wajib anggota squad yang ditugaskan; total penjumlahan bobot task pada proyek wajib tepat 100%; perpindahan kartu ke kolom 'Done' pada track QA wajib melampirkan referensi test case ID; pembaruan posisi kanban wajib atomic via transaksi database.
+├── 3. Penyimpanan Data: Tabel `work_packages`, `work_package_logs`, `timesheets`, `git_commits`; kalkulasi agregat progres fisik riil:
+     $$\text{Progres Fisik} = \sum (\text{Bobot Task}_i \times \text{Status Progress}_i) \quad [0\% - 100\%]$$
+├── 4. Status: `TASK_BACKLOG` ➔ `TASK_TODO` ➔ `TASK_IN_PROGRESS` ➔ `TASK_IN_REVIEW` ➔ `TASK_DONE`.
+├── 5. Error Handling:
+│   ├── 403 Forbidden: Staf di luar anggota squad mencoba mengubah status kartu pekerjaan.
+│   ├── 422 Unprocessable Entity: Total pembobotan seluruh task melebihi atau kurang dari 100%.
+│   └── 409 Conflict: Terjadi tabrakan konkurensi drag-and-drop antar-pengembang pada kartu yang sama (optimistic locking conflict).
 └── 6. QA Acceptance:
-    - Positive: OPD berhasil mengajukan CR F.P03, Tim Kominfo mencatat tiket pemeliharaan F.P01, riwayat versi aplikasi terupdate.
-    - Negative: Pengajuan CR untuk aplikasi yang belum berstatus Rilis ditolak sistem.
+    - Positive: Pengembang memindahkan kartu ke 'Done', jam kerja tercatat di timesheet, commit Git tertaut, dan mesin progres fisik secara instan memperbarui persentase kemajuan aplikasi secara real-time via WebSocket.
+    - Negative: Pengembang yang tidak terdaftar dalam squad proyek mencoba memindahkan status task ditolak dengan HTTP 403 Forbidden.
 ```
 
 ```
-SRS-F-10: Monitoring, Evaluasi Berkala & Kebijakan Idle 3 Bulan (F.E01)
-├── 1. Input Data: Input evaluasi F.E01 (Ketercapaian SLA %, Kepuasan Pengguna, Kendala Operasional, Rekomendasi) + Cron Job agregasi bulanan data transaksi.
-├── 2. Validasi: Nilai SLA numeric 0–100%; verifikasi data transaksi via query metrik backend.
-├── 3. Penyimpanan Data: Tabel `monev_records` dan snapshot `application_monthly_metrics`.
-├── 4. Status: `STATUS_AKTIF`, `PERINGATAN_IDLE_3_BULAN`, `REKOMENDASI_NONAKTIF`.
-├── 5. Error Handling: 500 bila cron job agregasi data gagal; sistem mencatat failed audit event.
+SRS-F-12: Monitoring Progres Pengerjaan: Kurva S, Burndown Chart, Progress Report & Early Warning Delay
+├── 1. Input Data: Query Parameter Application ID, Target Jadwal Milestone KAK, Data Realisasi Work Packages Selesai Mingguan, DTO Input Catatan Kendala Teknis PM, DTO Rencana Catch-up Sprint.
+├── 2. Validasi: Role `Ketua Tim Kerja`, `Kabid`, `PM`, atau `Pengawas`; kalkulasi deviasi: $\Delta = \text{Target Fisik Rencana} - \text{Realisasi Fisik Riil}$; jika $\Delta \ge 10\%$, sistem secara otomatis memicu Early Warning Delay Banner; jika $\Delta \ge 15\%$, PM wajib mengunggah form mitigasi hambatan.
+├── 3. Penyimpanan Data: Tabel `progress_milestones`, `dev_progress_reports`, `delay_alerts`; berkas PDF Progress Report Mingguan/Bulanan di MinIO bucket `mpsi-dev-reports`.
+├── 4. Status: `PROGRESS_ON_TRACK`, `DELAY_WARNING_TRIGGERED`, `CRITICAL_DELAY_REQUIRES_ACTION`.
+├── 5. Error Handling:
+│   ├── 404 Not Found: Proyek aplikasi tidak ditemukan atau belum memiliki work packages aktif.
+│   └── 500 Internal Server Error: Kegagalan kalkulasi fungsi interpolasi kurva S atau rendering PDF report.
 └── 6. QA Acceptance:
-    - Positive: Aplikasi tanpa pertumbuhan data selama 3 bulan otomatis ditandai status 'PERINGATAN_IDLE_3_BULAN' pada dashboard Pengawas.
-    - Negative: Nilai input SLA > 100% ditolak validasi batas numerik (boundary violation).
+    - Positive: Dashboard menyajikan kurva S real-time (garis rencana vs riil), sprint burndown chart, generator PDF mencetak Laporan Kemajuan Mingguan ber-KOP resmi.
+    - Negative: Terjadi deviasi keterlambatan fisik 12% memicu status alert 'DELAY_WARNING_TRIGGERED' dan mengirimkan notifikasi instan ke PM dan Ketua Tim Kerja.
 ```
 
 ```
-SRS-F-11: Replikasi Aplikasi SPBE Antar-Instansi (F.RA01 & F.RA02)
-├── 1. Input Data: DTO F.RA01 Assessment Replikasi (Instansi Pemohon, Kesiapan Server, Jaringan, SDM), DTO F.RA02 Kelayakan Replikasi (Hasil uji teknis & operasional), Nomor Surat PKS.
-├── 2. Validasi: Aplikasi target wajib berstatus *Selesai/Open for Replication*; form F.RA01 terisi lengkap.
-├── 3. Penyimpanan Data: Tabel `replication_requests` dan `replication_feasibility`.
-├── 4. Status: `REPLIKASI_DIAJUKAN` ➔ `REPLIKASI_LAYAK` ➔ `REPLIKASI_PKS_AKTIF`.
-├── 5. Error Handling: 400 jika target aplikasi berstatus ditolak/ditunda.
+SRS-F-13: Dokumentasi Rancang Bangun (FI.01), Usulan Hosting/Subdomain (FI.02) & Staging Readiness
+├── 1. Input Data: DTO Form FI.01 (Application ID, Tag Versi Rilis Git, Commit Hash Final Staging, URL Spesifikasi OpenAPI/Swagger, Changelog Fitur, Diagram Arsitektur Komponen) + DTO Form FI.02 (Kategori Kritikalitas Sistem: 'P' Strategis / 'AP' Operasional / 'SP' Pendukung, Usulan Subdomain `[nama].jogjakota.go.id`, Alokasi vCPU, RAM, dan Kuota Storage MinIO/PostgreSQL, Port Binding Staging).
+├── 2. Validasi: Progres fisik work packages wajib telah mencapai 100%; spesifikasi OpenAPI wajib valid format JSON/YAML; nama subdomain wajib alfanumerik dan bebas konflik di server DNS internal Pemkot; verifikasi kelulusan checklist staging sandbox.
+├── 3. Penyimpanan Data: Tabel `architecture_documentations_fi01`, `hosting_requests_fi02`, `staging_deployments`; file diagram arsitektur di MinIO bucket `mpsi-architecture-diagrams`.
+├── 4. Status: `DOC_FI01_FI02_SUBMITTED` ➔ `HOSTING_STAGING_PROVISIONED` ➔ `READY_FOR_QA_SUITE`.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: FI.01 diajukan saat progres fisik dev < 100% atau OpenAPI spec korup.
+│   ├── 409 Conflict: Usulan nama subdomain `*.jogjakota.go.id` telah digunakan oleh aplikasi lain.
+│   └── 403 Forbidden: Pengembang non-anggota squad mencoba mengajukan permohonan hosting.
 └── 6. QA Acceptance:
-    - Positive: Permohonan replikasi F.RA01 terkirim, formulir kelayakan F.RA02 terbit, dan PDF rekomendasi replikasi terbentuk.
-    - Negative: Pengajuan replikasi tanpa menyertakan kontak PIC instansi pemohon gagal divalidasi.
+    - Positive: Pengembang melengkapi FI.01 dan FI.02, subdomain staging aktif, aplikasi ter-deploy di server sandbox, dan tiket bertransisi ke tahap Pengujian Mutu (QA Suite).
+    - Negative: Mengajukan FI.02 dengan subdomain yang sudah terdaftar di database DNS menghasilkan HTTP 409 Conflict beserta saran nama subdomain alternatif.
 ```
 
 ```
-SRS-F-12: 4 Modul Pengaturan Sistem (User, RBAC, 8 Tema UI, Master Data)
-├── 1. Input Data: DTO User CRUD, Matriks Permission (Role ID ➔ Modul Action), Konfigurasi Tema Aktif (1 dari 8 tema terstandarisasi), Master OPD & Kategori.
-├── 2. Validasi: Khusus role `Superadmin`; integritas foreign key master data; validasi palet hex warna tema anti-clash.
-├── 3. Penyimpanan Data: Tabel `users`, `roles`, `permissions`, `theme_settings`, `mst_organizations`, `mst_categories`.
-├── 4. Status: `CONFIG_ACTIVE`.
-├── 5. Error Handling: 403 Forbidden bila non-superadmin mengakses; 409 Conflict bila duplikasi kode master data.
+SRS-F-14: Quality Gate 5 Pilar Pengujian Mutu SPBE (QA Suite Form F.UO1 s/d F.U07)
+├── 1. Input Data: DTO Rencana Uji F.UO1 (Ruang Lingkup, Tester, Jadwal) + DTO Uji Integrasi F.UO2 (Endpoint API, Respon JSON, Status SPLP) + DTO Uji Fungsional F.UO3 (Test Cases per Modul, Status: Pass/Fail/Blocked, Tangkapan Layar Bug) + DTO UAT Bersama OPD F.UO4/UO5 (Skenario Acceptance, Rekomendasi OPD, TTE Digital Berita Acara UAT) + Laporan Hasil Pentest CSIRT F.U06 PDF + DTO Stress Test k6 F.U07 (Output JSON k6: Throughput, Latensi P95, Error Rate).
+├── 2. Validasi: Role wajib `Tim QA Tester` (untuk UO1-UO3), `PIC OPD & Analis` (untuk UO4-UO5), `Tim CSIRT` (untuk U06), dan `DevOps` (untuk U07); Mandatory Quality Gate Block: Aplikasi SECARA MUTLAK DILARANG masuk tahap Serah Terima jika terdapat minimal 1 Test Case Fungsional Gagal, Celah Keamanan Pentest level 'High/Critical' belum dipatch, atau UAT ditolak OPD.
+├── 3. Penyimpanan Data: Tabel `qa_test_plans_fuo1`, `integration_tests_fuo2`, `functional_tests_fuo3`, `uat_sessions_fuo4`, `uat_signoffs_fuo5`, `csirt_pentests_fu06`, `stress_tests_fu07`; berkas laporan di MinIO bucket `mpsi-qa-evidence`.
+├── 4. Status: `QA_SUITE_IN_PROGRESS` ➔ `QA_DEFECTS_FOUND` (Tiket Bug dikirim ke Kanban) ➔ `QA_SUITE_PASSED_100%`.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: Menandai QA Suite lulus padahal masih terdapat tiket bug berstatus 'Open' atau 'Failed'.
+│   ├── 400 Bad Request: File Pentest CSIRT tidak valid atau file log k6 korup.
+│   └── 403 Forbidden: Pengembang mencoba meloloskan test case fungsionalnya sendiri.
 └── 6. QA Acceptance:
-    - Positive: Superadmin mengubah tema ke 'Dark Forest Emerald', antarmuka berubah seketika tanpa color clash dan kontras WCAG AA/AAA terpenuhi.
-    - Negative: Perubahan role tanpa hak akses ditolak oleh middleware otorisasi.
+    - Positive: Seluruh 5 pilar pengujian terpenuhi (Fungsional 100% Pass, Pentest bersih, UAT ditandatangani, k6 lulus beban), sistem membuka gerbang Serah Terima.
+    - Negative: Aplikasi dengan 1 celah keamanan SQL injection High pada laporan CSIRT F.U06 memblokir transisi status dengan pesan HTTP 422 ("Mandatory Quality Gate Block: Temuan CSIRT Belum Selesai").
+```
+
+```
+SRS-F-15: Serah Terima, TOT Pelatihan & Legalitas Rilis Layanan (F.SR01, F.R01 s/d F.R04)
+├── 1. Input Data: DTO Berita Acara Serah Terima F.SR01 (Pihak I Kominfo, Pihak II OPD, Klausul Mandatori Aktif Transaksi 3 Bulan di JSS, TTE Digital) + DTO Pelatihan TOT F.R01 (Daftar Hadir Peserta TOT, Modul Pelatihan, Foto Dokumentasi MinIO) + DTO SK Tim Pengelola F.R02/R03 (Nomor SK Kepala OPD, Susunan Tim Admin/Operator) + DTO Checklist Kesiapan Rilis F.R04 (20 Butir Audit: SSL, DNS, Firewall, Backup Otomatis, SSO JSS, Monitoring Agent).
+├── 2. Validasi: Role wajib `Pihak I & Pihak II` (untuk BAST), `Tim Rilis & DevOps` (untuk checklist F.R04); seluruh 20 butir checklist rilis wajib terverifikasi 'Ya/Lulus'; BAST wajib memuat klausul pemanfaatan 3 bulan; foto TOT wajib terunggah ke MinIO.
+├── 3. Penyimpanan Data: Tabel `bast_documents_fsr01`, `tot_trainings_fr01`, `app_management_decrees_fr02`, `release_checklists_fr04`; dokumen naskah dinas dan foto bukti di MinIO bucket `mpsi-handover-evidence`.
+├── 4. Status: `SERAH_TERIMA_PROSES` ➔ `BAST_DITANDATANGANI` ➔ `CHECKLIST_RILIS_VERIFIED` ➔ `AKTIF_BEROPERASI_PRODUKSI`.
+├── 5. Error Handling:
+│   ├── 422 Unprocessable Entity: Mencoba mengaktifkan status rilis produksi saat salah satu checklist kritis (SSL/SSO/Backup) bernilai 'Tidak'.
+│   ├── 401 Unauthorized: Kegagalan otentikasi TTE digital pada penandatanganan dokumen BAST.
+│   └── 403 Forbidden: OPD mencoba mempublikasikan aplikasi ke direktori produksi tanpa verifikasi Tim Rilis Kominfo.
+└── 6. QA Acceptance:
+    - Positive: BAST ditandatangani kedua pihak, TOT tercatat, 20 checklist terverifikasi, sistem mengaktifkan status aplikasi ke 'AKTIF_BEROPERASI_PRODUKSI' dan mendaftarkannya ke direktori layanan JSS.
+    - Negative: Menyerahkan form rilis saat item 'Konfigurasi Auto-Backup Database Harian' belum tercentang menghasilkan error HTTP 422 dan penolakan rilis produksi.
+```
+
+```
+SRS-F-16: Pemeliharaan Sistem 4 Kategori (F.P01), Tiket Insiden CSIRT (F.P02) & Change Request (F.P03)
+├── 1. Input Data: DTO Log Pemeliharaan F.P01 (Application ID, Jenis Pemeliharaan: 'Perfektif' / 'Adaptif' / 'Korektif' / 'Preventif', Modul Diperbaiki, Deskripsi Patch, Tautan Git Commit) + DTO Insiden CSIRT F.P02 (Tingkat Keparahan Severity, Deskripsi Kerentanan, Langkah Mitigasi Darurat) + DTO Change Request F.P03 (Permohonan Perubahan Fitur OPD, Justifikasi Analisis Dampak: Revenue, Efisiensi, UX, Regulasi, Estimasi Anggaran).
+├── 2. Validasi: Aplikasi target wajib berstatus `AKTIF_BEROPERASI_PRODUKSI`; jenis pemeliharaan wajib sesuai 4 kategori standar SPBE; pengajuan Change Request wajib menyertakan justifikasi dampak lengkap; jika CR berkategori 'Perubahan Arsitektur Mayor', tiket secara otomatis dialihkan ke alur telaah ulang (F.A02 & F.A03).
+├── 3. Penyimpanan Data: Tabel `maintenance_logs_fp01`, `security_incidents_fp02`, `change_requests_fp03`, `cr_impact_evaluations`.
+├── 4. Status: `TIKET_PEMELIHARAAN_AKTIF`, `INSIDEN_DALAM_PENANGANAN`, `CR_MENUNGGU_TELAAH` ➔ `CR_DISETUJUI` / `CR_DITOLAK`.
+├── 5. Error Handling:
+│   ├── 404 Not Found: Application ID tidak ditemukan di master katalog sistem aktif.
+│   ├── 400 Bad Request: Klasifikasi pemeliharaan tidak sesuai dengan 4 jenis standar Kepwal 108/2026.
+│   └── 403 Forbidden: PIC OPD mencoba menutup tiket insiden keamanan tanpa clearance Tim CSIRT.
+└── 6. QA Acceptance:
+    - Positive: Tim Pemeliharaan mencatat log F.P01, CSIRT mendaftarkan insiden F.P02, dan OPD mengajukan CR F.P03 dengan kalkulasi dampak yang tersimpan valid di riwayat siklus hidup aplikasi.
+    - Negative: Mengajukan Change Request untuk aplikasi yang masih dalam tahap pengujian dev (belum berstatus rilis produksi) ditolak dengan HTTP 400 Bad Request.
+```
+
+```
+SRS-F-17: Monitoring SLA >= 90%, Telemetri Transaksi 30 Hari & Deteksi Aplikasi Mangkrak (F.E01)
+├── 1. Input Data: Cron Job Telemetri Transaksi (Agregasi Hitung Delta Row Database per 30 Hari Kalender), Telemetri Server (Uptime %, Latensi Rata-rata, Resolusi Keluhan), DTO Formulir Evaluasi Triwulan F.E01 (Capaian SLA %, Skor Kepuasan Pengguna, Kendala Operasional, Rekomendasi Resmi: 'Lanjut_Operasi' / 'Optimalisasi' / 'Deaktivasi_Pusat_Data').
+├── 2. Validasi: SLA numeric terhitung berkisar 0.00% s/d 100.00%; Algoritma Deteksi Mangkrak Mandatori: Jika delta pertumbuhan data transaksi sama dengan 0 selama kurun waktu 3 bulan berturut-turut ($\Delta T_1 = 0 \land \Delta T_2 = 0 \land \Delta T_3 = 0$), sistem secara otomatis menerbitkan label peringatan `PERINGATAN_IDLE_3_BULAN`.
+├── 3. Penyimpanan Data: Tabel `app_telemetry_logs`, `sla_monthly_metrics`, `monev_evaluations_fe01`; generator naskah dinas Laporan Evaluasi F.E01 di MinIO bucket `mpsi-monev-reports`.
+├── 4. Status: `OPERASIONAL_NORMAL_SLA_MEMENUHI`, `SLA_WARNING_DIBAWAH_90`, `PERINGATAN_IDLE_3_BULAN`, `REKOMENDASI_NONAKTIF_PUSAT_DATA`.
+├── 5. Error Handling:
+│   ├── 500 Internal Server Error: Worker telemetri gagal terkoneksi ke agen database; sistem mencatat failed job event dan retry backoff.
+│   └── 422 Unprocessable Entity: Input persentase SLA di luar batas numerik (boundary error).
+└── 6. QA Acceptance:
+    - Positive: Worker telemetri mengumpulkan metrik 30 hari, menghitung kepatuhan SLA 96.5%, aplikasi aktif normal; saat data 3 bulan kosong, sistem otomatis menerbitkan banner 'PERINGATAN_IDLE_3_BULAN' pada dashboard pimpinan.
+    - Negative: Evaluator mencoba memasukkan angka capaian SLA 105% ditolak oleh validator batas numerik dengan pesan error HTTP 422.
+```
+
+```
+SRS-F-18: Katalog Portofolio Berbagi Pakai & Replikasi Aplikasi SPBE Antar-Instansi (F.RA01, F.RA02 & PKS)
+├── 1. Input Data: DTO Katalog Replikasi (Pilihan Aplikasi Matang dari Master SPBE, Deskripsi Fitur, Panduan Replikasi, Prasyarat Teknis) + DTO Permohonan Asesmen Replikasi F.RA01 (Identitas Instansi Pemohon Luar Daerah, Kesiapan Server, Jaringan, Pranata Komputer, Regulasi Daerah) + DTO Kelayakan Replikasi F.RA02 (Hasil Telaah Teknis, Operasional, Keamanan Diskominfo, Nomor Register PKS / MoU).
+├── 2. Validasi: Aplikasi target wajib berstatus `AKTIF_BEROPERASI_PRODUKSI` minimal 6 bulan dan memiliki dokumentasi arsitektur FI.01 lengkap; permohonan F.RA01 wajib mencantumkan kontak resmi instansi pemohon; penerbitan surat rekomendasi replikasi wajib mencatat nomor register dokumen PKS yang valid.
+├── 3. Penyimpanan Data: Tabel `replication_catalog_items`, `replication_requests_fra01`, `replication_feasibility_fra02`, `replication_mou_records`; berkas PKS di MinIO bucket `mpsi-replication-mou`.
+├── 4. Status: `REPLIKASI_DIAJUKAN` ➔ `REPLIKASI_DALAM_TELAAH` ➔ `REPLIKASI_LAYAK_DISETUJUI` ➔ `PKS_TERDAFTAR_SELESAI`.
+├── 5. Error Handling:
+│   ├── 400 Bad Request: Memohon replikasi untuk aplikasi yang belum berstatus operasional stabil atau masih dalam pengembangan.
+│   ├── 422 Unprocessable Entity: Form penilaian mandiri F.RA01 belum diisi lengkap oleh instansi pemohon.
+│   └── 404 Not Found: Nomor dokumen PKS tidak terdaftar di sistem persuratan kerja sama daerah.
+└── 6. QA Acceptance:
+    - Positive: Instansi luar daerah mengajukan replikasi via F.RA01, Tim Analis memverifikasi kelayakan teknis via F.RA02, nomor register PKS tercatat, dan Surat Rekomendasi Replikasi SPBE terbit sah.
+    - Negative: Mengajukan replikasi terhadap aplikasi yang sedang berstatus 'PERINGATAN_IDLE_3_BULAN' ditolak otomatis oleh sistem dengan alasan sistem target tidak layak replikasi.
+```
+
+```
+SRS-F-19: Pengawasan Eksekutif (Read-Only), Kompilasi Laporan Excel/PDF & Tamper-Proof Audit Trail SHA-256
+├── 1. Input Data: HTTP GET Request dashboard pimpinan (filter parameter: rentang tahun anggaran, semester/triwulan, klaster OPD), Request Ekspor Laporan (Pilihan format: `.xlsx` Spreadsheet / `.pdf` Dokumen Resmi ber-KOP Garuda), Payload Log Mutasi Sistem Otomatis (Aktor, NIP, Aksi, Entitas, Nilai Sebelum, Nilai Sesudah, Alamat IP, User Agent).
+├── 2. Validasi: Wewenang role `Pengawas` (Pimpinan: Walikota, Sekda, Asisten, Kadis) STRICTLY READ-ONLY (seluruh metode mutasi HTTP POST/PUT/PATCH/DELETE ditolak mutlak); integritas log diaudit dengan hashing SHA-256 berantai (*blockchain-like log chaining*: $\text{Hash}_n = \text{SHA256}(\text{Data}_n + \text{Hash}_{n-1})$).
+├── 3. Penyimpanan Data: View analitik teragregasi di Redis cache (TTL 120 detik); tabel append-only `audit_logs` (tidak dapat di-update atau di-delete bahkan oleh database admin).
+├── 4. Status: `EXECUTIVE_DATA_SERVED`, `AUDIT_LOG_TAMPER_VERIFIED`.
+├── 5. Error Handling:
+│   ├── 403 Forbidden: Akun dengan role Pengawas mencoba mengeksekusi operasi modifikasi data (HTTP POST/PUT/DELETE).
+│   └── 500 Internal Server Error: Terdeteksi ketidakcocokan checksum SHA-256 pada audit trail chain (indikasi manipulasi basis data).
+└── 6. QA Acceptance:
+    - Positive: Pimpinan dapat melihat dashboard eksekutif, peta risiko, sebaran fase aplikasi, serta mengekspor laporan komprehensif ke Excel dan PDF resmi dalam hitungan detik.
+    - Negative: Akun Pengawas mencoba mengirimkan payload HTTP POST ke endpoint permohonan langsung diblokir oleh middleware dengan status HTTP 403 Forbidden dan insiden dicatat di audit log.
+```
+
+```
+SRS-F-20: Pengaturan Sistem Terpadu: User Directory, Dynamic RBAC, Switcher 8 Tema Apple HIG & Master Data SPBE
+├── 1. Input Data: DTO User Management (CRUD Pengguna, NIP, Nama, Email, OPD ID, Mapping Role Keycloak: Superadmin/Pengawas/Admin/Operator) + DTO Permission Matrix (Role ID ➔ Granular Action Matrix Toggle) + DTO Preferensi Tema (Pilihan 1 dari 8 tema terstandarisasi Apple HIG, Mode Gelap/Terang) + DTO Master Data SPBE (Direktori OPD, Klasifikasi Domain SPBE, Master Server Klaster Data Center, Konfigurasi Bobot Rubrik Asesmen).
+├── 2. Validasi: Khusus role `Superadmin`; integritas referensial foreign key master data; validasi kontras palet warna tema wajib memenuhi rasio WCAG AA/AAA ($\ge 4.5:1$); pelarangan penghapusan akun superadmin terakhir (*self-lockout prevention*).
+├── 3. Penyimpanan Data: Tabel `users`, `roles`, `permissions`, `role_permissions`, `theme_settings`, `opd_directory`, `spbe_domains`, `server_clusters`, `user_theme_preferences`.
+├── 4. Status: `CONFIG_APPLIED`, `USER_ACTIVE`, `USER_SUSPENDED`.
+├── 5. Error Handling:
+│   ├── 403 Forbidden: Pengguna non-Superadmin mencoba mengakses endpoint pengaturan sistem `/api/v1/admin/*`.
+│   ├── 409 Conflict: Duplikasi kode unik master data atau duplikasi NIP pengguna.
+│   └── 422 Unprocessable Entity: Superadmin mencoba menghapus atau mencabut wewenangnya sendiri yang berpotensi memicu sistem tanpa administrator.
+└── 6. QA Acceptance:
+    - Positive: Superadmin mengonfigurasi matriks izin baru, mengganti palet tema aktif ke 'Dark Midnight Slate', seluruh antarmuka menerapkan tema seketika tanpa color clash dan kontras teks terbaca sempurna.
+    - Negative: Pengguna dengan role Operator mencoba mengakses endpoint modifikasi RBAC ditolak dengan error HTTP 403 Forbidden.
 ```
 
 ---
@@ -1220,26 +1348,26 @@ Tabel berikut memetakan ke-20 modul implementasi, relasi terhadap modul PRD (Bag
 
 | ID Modul | Nama Modul Implementasi & Ruang Lingkup | PRD Terkait | SRS-F Terkait | Komponen & Deliverables Kunci | Prasyarat (Dependencies) | Urutan Build | Bobot Teknis |
 | :---: | :--- | :---: | :---: | :--- | :---: | :---: | :---: |
-| `MOD-00` | **Core Foundation, Keycloak SSO JSS & Base Layout** | `PRD-01A`, `PRD-19A` | `SRS-F-01`, `SRS-NF-01..06` | Auth Gateway OIDC, RS256 JWT Validator, Shell App, Frosted Glass Header/Sidebar, Interceptor HTTP, Session Store. | - | 1 | Tinggi |
-| `MOD-01` | **Dynamic RBAC, User Directory & Master Data Terpadu** | `PRD-19B`, `PRD-19D` | `SRS-F-12` | Matrix Wewenang 4 Role Keycloak, Master OPD SOTK, Master Urusan SPBE, Master Server/Cluster Data Center, Konfigurasi Bobot. | `MOD-00` | 2 | Sedang |
+| `MOD-00` | **Core Foundation, Keycloak SSO JSS & Base Layout** | `PRD-01A`, `PRD-19A` | `SRS-F-01`, `SRS-NF-01..07` | Auth Gateway OIDC, RS256 JWT Validator, Shell App, Frosted Glass Header/Sidebar, Interceptor HTTP, Session Store. | - | 1 | Tinggi |
+| `MOD-01` | **Dynamic RBAC, User Directory & Master Data Terpadu** | `PRD-19B`, `PRD-19D` | `SRS-F-20` | Matrix Wewenang 4 Role Keycloak, Master OPD SOTK, Master Urusan SPBE, Master Server/Cluster Data Center, Konfigurasi Bobot. | `MOD-00` | 2 | Sedang |
 | `MOD-02` | **Portal Publik & Monitoring Usulan Prioritas** | `PRD-01A..01C` | `SRS-F-02` | Hero Banner Publik, 6 Card Status Agregat, Interactive Stepper Top 10 Prioritas, Search & Filter Katalog Tanpa Autentikasi. | `MOD-00`, `MOD-01` | 3 | Rendah |
 | `MOD-03` | **Registrasi Permohonan OPD & Integrasi eOffice (Form F.A01)** | `PRD-02A..02E` | `SRS-F-03` | Wizard Intake 5 Langkah, Generator No Reg `REG-YYYYMMDD-XXXX`, Uploader 4 Berkas MinIO, Validator No Surat eOffice, PDF Generator F.A01. | `MOD-00`, `MOD-01` | 4 | Tinggi |
-| `MOD-04` | **Manajemen Rapat Klarifikasi Teknis OPD Multi-Sesi** | `PRD-03A..03E` | `SRS-F-04A` | Studio Sesi Rapat (#1, #2, dst), Mandatory Guard Target Kesepakatan (100%), Rich-Text Notulensi, Galeri Bukti MinIO, Action Items OPD, TTE Berita Acara. | `MOD-03` | 5 | Tinggi |
-| `MOD-05` | **Kertas Kerja Asesmen Analis & Telaah Kelayakan (Form F.A02 Workbench)** | `PRD-04A..04E` | `SRS-F-04B` | Anti-Duplication Redundancy Inspector, Pemetaan Domain SPBE, Rubrik 12 Bagian Berbobot, Scoring Engine Otomatis, McFarlan Strategic Matrix. | `MOD-03`, `MOD-04` | 6 | Sangat Tinggi |
-| `MOD-06` | **Formulir F.A02 Resmi & Approval Digital Kabid** | `PRD-05A..05D` | `SRS-F-04B` | Editor Naskah Dinas F.A02, Formulasi 5 Status Rekomendasi, Kabid Approval Review Modal, TTE Digital, Generator PDF Ber-KOP Resmi & Lampiran Kerja. | `MOD-05` | 7 | Sedang |
-| `MOD-07` | **Standardisasi Metadata SDI (Walidata Daerah)** | `PRD-06A..06D` | `SRS-F-05A` | Data Dictionary Validator, Harmonisasi Kode Referensi Induk, Uji Interoperabilitas SPLP, Surat Rekomendasi Walidata, Gatekeeper F.A03 Lock. | `MOD-06` | 8 | Sedang |
-| `MOD-08` | **Perencanaan Kebutuhan Sistem & Matriks Risiko (Form F.A03)** | `PRD-07A..07D` | `SRS-F-05B` | Matriks User Story & Use Case, SLA Non-Fungsional Parameters, Matriks Manajemen Risiko SPBE (Dampak vs Probabilitas), Generator PDF F.A03. | `MOD-07` | 9 | Sedang |
-| `MOD-09` | **Kerangka Acuan Kerja (KAK F.P01) & Penandatanganan Digital 2 Pihak** | `PRD-08A..08D` | `SRS-F-05B` | Builder Draf KAK Teknis & Blueprint, Studio Harmonisasi Ruang Lingkup, Digital Dual-Signature (Pihak I Kominfo & Pihak II OPD), Mandatory Contract Lock. | `MOD-08` | 10 | Sangat Tinggi |
-| `MOD-10` | **Resource Allocation & Manajemen Squad Pengembang** | `PRD-09A..09C` | `SRS-F-06` | Squad Assignment Panel (Ketua Tim, PM, DSI UI-UX, BE Dev, FE Dev, QA Tester), Kickoff Sprint Studio, Git Repo Linker & Webhook Listener. | `MOD-09` | 11 | Sedang |
-| `MOD-11` | **Papan Kerja Sprint & Work Packages Ala OpenProject** | `PRD-10A..10E` | `SRS-F-06` | Kanban Board Interaktif (Backlog ➔ Done), 4 Track Multidisiplin (DSI, BE, FE, QA), Real-Time Physical Progress Engine, Timesheet Logger, Git Feed Stream. | `MOD-10` | 12 | Sangat Tinggi |
-| `MOD-12` | **Monitoring Progres Development & Progress Reporting** | `PRD-11A..11D` | `SRS-F-06` | Dashboard Pemantauan Fisik Seksi, Visualisasi Kurva S (Realisasi vs KAK), Sprint Burndown Chart, PDF Progress Report Mingguan/Bulanan, Early Warning Delay. | `MOD-11` | 13 | Tinggi |
-| `MOD-13` | **Dokumentasi Rancang Bangun & Infrastruktur Hosting (FI.01 & FI.02)** | `PRD-12A..12C` | `SRS-F-06` | Digital Form FI.01 (Repo, Tag, Changelog, Swagger), Pengajuan Hosting FI.02 (Kritikal P/AP/SP, Subdomain jogjakota.go.id, Kuota VM), Staging Readiness Gate. | `MOD-11`, `MOD-12` | 14 | Sedang |
-| `MOD-14` | **Quality Gate: 5 Pilar Pengujian Mutu SPBE (QA Suite F.UO1-U07)** | `PRD-13A..13G` | `SRS-F-07` | Test Plan F.UO1, Integrasi F.UO2, Fungsional F.UO3, UAT OPD F.UO4/UO5, Pentest CSIRT F.U06, Stress Test k6 F.U07, Mandatory Quality Gate Enforcement. | `MOD-13` | 15 | Sangat Tinggi |
-| `MOD-15` | **Serah Terima, TOT Pelatihan & Legalitas Rilis Layanan** | `PRD-14A..14E` | `SRS-F-08` | BAST Klausul Wajib Aktif 3 Bulan (F.SR01), BA Pelatihan TOT (F.R01), SK Tim Pengelola (F.R02/R03), Checklist 20 Rilis (F.R04), MinIO Evidence, Go-Live JSS. | `MOD-14` | 16 | Tinggi |
-| `MOD-16` | **Pemeliharaan Sistem, CSIRT & Pengelolaan Change Request** | `PRD-15A..15C` | `SRS-F-09` | Log Pemeliharaan 4 Kategori (F.P01), Tiket Insiden CSIRT (F.P02), Form Permohonan Change Request OPD & Analisis Dampak 4 Pilar (F.P03), Patch Changelog. | `MOD-15` | 17 | Sedang |
-| `MOD-17` | **Monitoring, Evaluasi Operasional & Deteksi SLA 3 Bulan** | `PRD-16A..16D` | `SRS-F-10` | Sinkronisasi Telemetri Transaksi 30 Hari, Pelacak SLA Kepatuhan $\ge 90\%$, Deteksi Mangkrak (Zero Data 3 Bulan Berturut-turut), Evaluasi Triwulan F.E01. | `MOD-15` | 18 | Sedang |
-| `MOD-18` | **Katalog Portofolio & Replikasi Aplikasi SPBE** | `PRD-17A..17C` | `SRS-F-11` | Etalase Publik Katalog Berbagi Pakai, Self-Assessment Kesiapan Pemohon (F.RA01), Telaah Kelayakan 4 Aspek (F.RA02), Registrasi PKS Antar-Pemerintah Daerah. | `MOD-15` | 19 | Sedang |
-| `MOD-19` | **Pengawasan Eksekutif, Dashboard Analitik & Audit Trail** | `PRD-18A..18C`, `PRD-19C` | `SRS-F-12` | Dashboard Eksekutif Read-Only (Walikota/Sekda/Kadis), Generator Laporan Excel & PDF Resmi, Tamper-Proof Audit Trail Logger, 8 Palet Tema Apple HIG Switcher. | `MOD-00..MOD-18`| 20 | Tinggi |
+| `MOD-04` | **Manajemen Rapat Klarifikasi Teknis OPD Multi-Sesi** | `PRD-03A..03E` | `SRS-F-04` | Studio Sesi Rapat (#1, #2, dst), Mandatory Guard Target Kesepakatan (100%), Rich-Text Notulensi, Galeri Bukti MinIO, Action Items OPD, TTE Berita Acara. | `MOD-03` | 5 | Tinggi |
+| `MOD-05` | **Kertas Kerja Asesmen Analis & Telaah Kelayakan (Form F.A02 Workbench)** | `PRD-04A..04E` | `SRS-F-05` | Anti-Duplication Redundancy Inspector, Pemetaan Domain SPBE, Rubrik 12 Bagian Berbobot, Scoring Engine Otomatis, McFarlan Strategic Matrix. | `MOD-03`, `MOD-04` | 6 | Sangat Tinggi |
+| `MOD-06` | **Formulir F.A02 Resmi & Approval Digital Kabid** | `PRD-05A..05D` | `SRS-F-06` | Editor Naskah Dinas F.A02, Formulasi 5 Status Rekomendasi, Kabid Approval Review Modal, TTE Digital, Generator PDF Ber-KOP Resmi & Lampiran Kerja. | `MOD-05` | 7 | Sedang |
+| `MOD-07` | **Standardisasi Metadata SDI (Walidata Daerah)** | `PRD-06A..06D` | `SRS-F-07` | Data Dictionary Validator, Harmonisasi Kode Referensi Induk, Uji Interoperabilitas SPLP, Surat Rekomendasi Walidata, Gatekeeper F.A03 Lock. | `MOD-06` | 8 | Sedang |
+| `MOD-08` | **Perencanaan Kebutuhan Sistem & Matriks Risiko (Form F.A03)** | `PRD-07A..07D` | `SRS-F-08` | Matriks User Story & Use Case, SLA Non-Fungsional Parameters, Matriks Manajemen Risiko SPBE (Dampak vs Probabilitas), Generator PDF F.A03. | `MOD-07` | 9 | Sedang |
+| `MOD-09` | **Kerangka Acuan Kerja (KAK F.P01) & Penandatanganan Digital 2 Pihak** | `PRD-08A..08D` | `SRS-F-09` | Builder Draf KAK Teknis & Blueprint, Studio Harmonisasi Ruang Lingkup, Digital Dual-Signature (Pihak I Kominfo & Pihak II OPD), Mandatory Contract Lock. | `MOD-08` | 10 | Sangat Tinggi |
+| `MOD-10` | **Resource Allocation & Manajemen Squad Pengembang** | `PRD-09A..09C` | `SRS-F-10` | Squad Assignment Panel (Ketua Tim, PM, DSI UI-UX, BE Dev, FE Dev, QA Tester), Kickoff Sprint Studio, Git Repo Linker & Webhook Listener. | `MOD-09` | 11 | Sedang |
+| `MOD-11` | **Papan Kerja Sprint & Work Packages Ala OpenProject** | `PRD-10A..10E` | `SRS-F-11` | Kanban Board Interaktif (Backlog ➔ Done), 4 Track Multidisiplin (DSI, BE, FE, QA), Real-Time Physical Progress Engine, Timesheet Logger, Git Feed Stream. | `MOD-10` | 12 | Sangat Tinggi |
+| `MOD-12` | **Monitoring Progres Development & Progress Reporting** | `PRD-11A..11D` | `SRS-F-12` | Dashboard Pemantauan Fisik Seksi, Visualisasi Kurva S (Realisasi vs KAK), Sprint Burndown Chart, PDF Progress Report Mingguan/Bulanan, Early Warning Delay. | `MOD-11` | 13 | Tinggi |
+| `MOD-13` | **Dokumentasi Rancang Bangun & Infrastruktur Hosting (FI.01 & FI.02)** | `PRD-12A..12C` | `SRS-F-13` | Digital Form FI.01 (Repo, Tag, Changelog, Swagger), Pengajuan Hosting FI.02 (Kritikal P/AP/SP, Subdomain jogjakota.go.id, Kuota VM), Staging Readiness Gate. | `MOD-11`, `MOD-12` | 14 | Sedang |
+| `MOD-14` | **Quality Gate: 5 Pilar Pengujian Mutu SPBE (QA Suite F.UO1-U07)** | `PRD-13A..13G` | `SRS-F-14` | Test Plan F.UO1, Integrasi F.UO2, Fungsional F.UO3, UAT OPD F.UO4/UO5, Pentest CSIRT F.U06, Stress Test k6 F.U07, Mandatory Quality Gate Enforcement. | `MOD-13` | 15 | Sangat Tinggi |
+| `MOD-15` | **Serah Terima, TOT Pelatihan & Legalitas Rilis Layanan** | `PRD-14A..14E` | `SRS-F-15` | BAST Klausul Wajib Aktif 3 Bulan (F.SR01), BA Pelatihan TOT (F.R01), SK Tim Pengelola (F.R02/R03), Checklist 20 Rilis (F.R04), MinIO Evidence, Go-Live JSS. | `MOD-14` | 16 | Tinggi |
+| `MOD-16` | **Pemeliharaan Sistem, CSIRT & Pengelolaan Change Request** | `PRD-15A..15C` | `SRS-F-16` | Log Pemeliharaan 4 Kategori (F.P01), Tiket Insiden CSIRT (F.P02), Form Permohonan Change Request OPD & Analisis Dampak 4 Pilar (F.P03), Patch Changelog. | `MOD-15` | 17 | Sedang |
+| `MOD-17` | **Monitoring, Evaluasi Operasional & Deteksi SLA 3 Bulan** | `PRD-16A..16D` | `SRS-F-17` | Sinkronisasi Telemetri Transaksi 30 Hari, Pelacak SLA Kepatuhan $\ge 90\%$, Deteksi Mangkrak (Zero Data 3 Bulan Berturut-turut), Evaluasi Triwulan F.E01. | `MOD-15` | 18 | Sedang |
+| `MOD-18` | **Katalog Portofolio & Replikasi Aplikasi SPBE** | `PRD-17A..17C` | `SRS-F-18` | Etalase Publik Katalog Berbagi Pakai, Self-Assessment Kesiapan Pemohon (F.RA01), Telaah Kelayakan 4 Aspek (F.RA02), Registrasi PKS Antar-Pemerintah Daerah. | `MOD-15` | 19 | Sedang |
+| `MOD-19` | **Pengawasan Eksekutif, Dashboard Analitik & Audit Trail** | `PRD-18A..18C`, `PRD-19C` | `SRS-F-19` | Dashboard Eksekutif Read-Only (Walikota/Sekda/Kadis), Generator Laporan Excel & PDF Resmi, Tamper-Proof Audit Trail Logger, 8 Palet Tema Apple HIG Switcher. | `MOD-00..MOD-18`| 20 | Tinggi |
 
 ---
 
