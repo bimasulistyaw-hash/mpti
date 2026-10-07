@@ -1208,40 +1208,484 @@ erDiagram
 
 ---
 
-# BAGIAN D — RENCANA IMPLEMENTASI MODULAR LENGKAP (`MOD-00` s/d `MOD-09`)
+# BAGIAN D — RENCANA IMPLEMENTASI MODULAR LENGKAP (20 MODUL: `MOD-00` s/d `MOD-19`)
 
-## D.1. Peta 10 Modul Implementasi & Dependensi
+Rencana implementasi sistem MPSI SPBE Kota Yogyakarta didekomposisi ke dalam **20 Modul Implementasi Mandiri (`MOD-00` s/d `MOD-19`)**. Seluruh modul dirancang mengikuti kaidah *Clean & Hexagonal Architecture*, pemisahan tanggung jawab yang ketat (*Separation of Concerns*), penegakan *Mandatory Quality Gates*, serta kompatibilitas penuh terhadap regulasi Kepwal 108/2026.
 
-| ID Modul | Nama Modul Implementasi | PRD Terkait | SRS-F Terkait | Dependency | Urutan Build |
-| :---: | :--- | :---: | :---: | :---: | :---: |
-| `MOD-00` | **Core Infrastructure, Keycloak SSO JSS & Base Layout** | `PRD-01`, `PRD-11` | `SRS-F-01`, `SRS-NF-01..06` | - | 1 |
-| `MOD-01` | **Sistem Pengaturan Terpadu & Master Data Dinamis** | `PRD-11` | `SRS-F-12` | `MOD-00` | 2 |
-| `MOD-02` | **Portal Publik & Monitoring Prioritas** | `PRD-01` | `SRS-F-02` | `MOD-00`, `MOD-01` | 3 |
-| `MOD-03` | **Modul Permohonan OPD, F.A01 & eOffice Sync** | `PRD-02` | `SRS-F-03` | `MOD-00`, `MOD-01` | 4 |
-| `MOD-04` | **Modul Analisis Kelayakan (F.A02) & Rapat Klarifikasi Teknis OPD** | `PRD-03A`, `PRD-03B` | `SRS-F-04A`, `SRS-F-04B` | `MOD-03` | 5 |
-| `MOD-05A`| **Modul Standardisasi Metadata SDI (Walidata Daerah)** | `PRD-04A` | `SRS-F-05A` | `MOD-04` | 6 |
-| `MOD-05B`| **Modul Analisis Kebutuhan Sistem & Dokumen Perencanaan (F.A03 & KAK F.P01)** | `PRD-04B` | `SRS-F-05B` | `MOD-05A` | 7 |
-| `MOD-05C`| **Modul Manajemen Proyek Pengembangan (Ala OpenProject - FI.01 & FI.02)** | `PRD-05` | `SRS-F-06` | `MOD-05B` | 8 |
-| `MOD-06` | **Modul QA Suite & 5 Pilar Pengujian Mutu (F.UO1-U07)**| `PRD-06` | `SRS-F-07` | `MOD-05C` | 9 |
-| `MOD-07` | **Modul Serah Terima (BAST/TOT), Rilis & Foto MinIO** | `PRD-07` | `SRS-F-08` | `MOD-06` | 10 |
-| `MOD-08` | **Modul Pemeliharaan, CSIRT & Change Request (F.P01-P03)**| `PRD-08` | `SRS-F-09` | `MOD-07` | 11 |
-| `MOD-09` | **Modul Monev SLA (F.E01), Replikasi SPBE & Audit Eksekutif**| `PRD-09`, `PRD-10`, `PRD-12`| `SRS-F-10`, `SRS-F-11` | `MOD-08` | 12 |
+---
 
-## D.2. Diagram Alur Kerja Dependensi Antar-Modul
+## D.1. Peta 20 Modul Implementasi & Dependensi Sistem
+
+Tabel berikut memetakan ke-20 modul implementasi, relasi terhadap modul PRD (Bagian B.2), spesifikasi kebutuhan SRS-F (Bagian C.1), deliverables kunci, dependensi prasyarat, urutan prioritas pembuatan (*build order*), dan estimasi kompleksitas teknis:
+
+| ID Modul | Nama Modul Implementasi & Ruang Lingkup | PRD Terkait | SRS-F Terkait | Komponen & Deliverables Kunci | Prasyarat (Dependencies) | Urutan Build | Bobot Teknis |
+| :---: | :--- | :---: | :---: | :--- | :---: | :---: | :---: |
+| `MOD-00` | **Core Foundation, Keycloak SSO JSS & Base Layout** | `PRD-01A`, `PRD-19A` | `SRS-F-01`, `SRS-NF-01..06` | Auth Gateway OIDC, RS256 JWT Validator, Shell App, Frosted Glass Header/Sidebar, Interceptor HTTP, Session Store. | - | 1 | Tinggi |
+| `MOD-01` | **Dynamic RBAC, User Directory & Master Data Terpadu** | `PRD-19B`, `PRD-19D` | `SRS-F-12` | Matrix Wewenang 4 Role Keycloak, Master OPD SOTK, Master Urusan SPBE, Master Server/Cluster Data Center, Konfigurasi Bobot. | `MOD-00` | 2 | Sedang |
+| `MOD-02` | **Portal Publik & Monitoring Usulan Prioritas** | `PRD-01A..01C` | `SRS-F-02` | Hero Banner Publik, 6 Card Status Agregat, Interactive Stepper Top 10 Prioritas, Search & Filter Katalog Tanpa Autentikasi. | `MOD-00`, `MOD-01` | 3 | Rendah |
+| `MOD-03` | **Registrasi Permohonan OPD & Integrasi eOffice (Form F.A01)** | `PRD-02A..02E` | `SRS-F-03` | Wizard Intake 5 Langkah, Generator No Reg `REG-YYYYMMDD-XXXX`, Uploader 4 Berkas MinIO, Validator No Surat eOffice, PDF Generator F.A01. | `MOD-00`, `MOD-01` | 4 | Tinggi |
+| `MOD-04` | **Manajemen Rapat Klarifikasi Teknis OPD Multi-Sesi** | `PRD-03A..03E` | `SRS-F-04A` | Studio Sesi Rapat (#1, #2, dst), Mandatory Guard Target Kesepakatan (100%), Rich-Text Notulensi, Galeri Bukti MinIO, Action Items OPD, TTE Berita Acara. | `MOD-03` | 5 | Tinggi |
+| `MOD-05` | **Kertas Kerja Asesmen Analis & Telaah Kelayakan (Form F.A02 Workbench)** | `PRD-04A..04E` | `SRS-F-04B` | Anti-Duplication Redundancy Inspector, Pemetaan Domain SPBE, Rubrik 12 Bagian Berbobot, Scoring Engine Otomatis, McFarlan Strategic Matrix. | `MOD-03`, `MOD-04` | 6 | Sangat Tinggi |
+| `MOD-06` | **Formulir F.A02 Resmi & Approval Digital Kabid** | `PRD-05A..05D` | `SRS-F-04B` | Editor Naskah Dinas F.A02, Formulasi 5 Status Rekomendasi, Kabid Approval Review Modal, TTE Digital, Generator PDF Ber-KOP Resmi & Lampiran Kerja. | `MOD-05` | 7 | Sedang |
+| `MOD-07` | **Standardisasi Metadata SDI (Walidata Daerah)** | `PRD-06A..06D` | `SRS-F-05A` | Data Dictionary Validator, Harmonisasi Kode Referensi Induk, Uji Interoperabilitas SPLP, Surat Rekomendasi Walidata, Gatekeeper F.A03 Lock. | `MOD-06` | 8 | Sedang |
+| `MOD-08` | **Perencanaan Kebutuhan Sistem & Matriks Risiko (Form F.A03)** | `PRD-07A..07D` | `SRS-F-05B` | Matriks User Story & Use Case, SLA Non-Fungsional Parameters, Matriks Manajemen Risiko SPBE (Dampak vs Probabilitas), Generator PDF F.A03. | `MOD-07` | 9 | Sedang |
+| `MOD-09` | **Kerangka Acuan Kerja (KAK F.P01) & Penandatanganan Digital 2 Pihak** | `PRD-08A..08D` | `SRS-F-05B` | Builder Draf KAK Teknis & Blueprint, Studio Harmonisasi Ruang Lingkup, Digital Dual-Signature (Pihak I Kominfo & Pihak II OPD), Mandatory Contract Lock. | `MOD-08` | 10 | Sangat Tinggi |
+| `MOD-10` | **Resource Allocation & Manajemen Squad Pengembang** | `PRD-09A..09C` | `SRS-F-06` | Squad Assignment Panel (Ketua Tim, PM, DSI UI-UX, BE Dev, FE Dev, QA Tester), Kickoff Sprint Studio, Git Repo Linker & Webhook Listener. | `MOD-09` | 11 | Sedang |
+| `MOD-11` | **Papan Kerja Sprint & Work Packages Ala OpenProject** | `PRD-10A..10E` | `SRS-F-06` | Kanban Board Interaktif (Backlog ➔ Done), 4 Track Multidisiplin (DSI, BE, FE, QA), Real-Time Physical Progress Engine, Timesheet Logger, Git Feed Stream. | `MOD-10` | 12 | Sangat Tinggi |
+| `MOD-12` | **Monitoring Progres Development & Progress Reporting** | `PRD-11A..11D` | `SRS-F-06` | Dashboard Pemantauan Fisik Seksi, Visualisasi Kurva S (Realisasi vs KAK), Sprint Burndown Chart, PDF Progress Report Mingguan/Bulanan, Early Warning Delay. | `MOD-11` | 13 | Tinggi |
+| `MOD-13` | **Dokumentasi Rancang Bangun & Infrastruktur Hosting (FI.01 & FI.02)** | `PRD-12A..12C` | `SRS-F-06` | Digital Form FI.01 (Repo, Tag, Changelog, Swagger), Pengajuan Hosting FI.02 (Kritikal P/AP/SP, Subdomain jogjakota.go.id, Kuota VM), Staging Readiness Gate. | `MOD-11`, `MOD-12` | 14 | Sedang |
+| `MOD-14` | **Quality Gate: 5 Pilar Pengujian Mutu SPBE (QA Suite F.UO1-U07)** | `PRD-13A..13G` | `SRS-F-07` | Test Plan F.UO1, Integrasi F.UO2, Fungsional F.UO3, UAT OPD F.UO4/UO5, Pentest CSIRT F.U06, Stress Test k6 F.U07, Mandatory Quality Gate Enforcement. | `MOD-13` | 15 | Sangat Tinggi |
+| `MOD-15` | **Serah Terima, TOT Pelatihan & Legalitas Rilis Layanan** | `PRD-14A..14E` | `SRS-F-08` | BAST Klausul Wajib Aktif 3 Bulan (F.SR01), BA Pelatihan TOT (F.R01), SK Tim Pengelola (F.R02/R03), Checklist 20 Rilis (F.R04), MinIO Evidence, Go-Live JSS. | `MOD-14` | 16 | Tinggi |
+| `MOD-16` | **Pemeliharaan Sistem, CSIRT & Pengelolaan Change Request** | `PRD-15A..15C` | `SRS-F-09` | Log Pemeliharaan 4 Kategori (F.P01), Tiket Insiden CSIRT (F.P02), Form Permohonan Change Request OPD & Analisis Dampak 4 Pilar (F.P03), Patch Changelog. | `MOD-15` | 17 | Sedang |
+| `MOD-17` | **Monitoring, Evaluasi Operasional & Deteksi SLA 3 Bulan** | `PRD-16A..16D` | `SRS-F-10` | Sinkronisasi Telemetri Transaksi 30 Hari, Pelacak SLA Kepatuhan $\ge 90\%$, Deteksi Mangkrak (Zero Data 3 Bulan Berturut-turut), Evaluasi Triwulan F.E01. | `MOD-15` | 18 | Sedang |
+| `MOD-18` | **Katalog Portofolio & Replikasi Aplikasi SPBE** | `PRD-17A..17C` | `SRS-F-11` | Etalase Publik Katalog Berbagi Pakai, Self-Assessment Kesiapan Pemohon (F.RA01), Telaah Kelayakan 4 Aspek (F.RA02), Registrasi PKS Antar-Pemerintah Daerah. | `MOD-15` | 19 | Sedang |
+| `MOD-19` | **Pengawasan Eksekutif, Dashboard Analitik & Audit Trail** | `PRD-18A..18C`, `PRD-19C` | `SRS-F-12` | Dashboard Eksekutif Read-Only (Walikota/Sekda/Kadis), Generator Laporan Excel & PDF Resmi, Tamper-Proof Audit Trail Logger, 8 Palet Tema Apple HIG Switcher. | `MOD-00..MOD-18`| 20 | Tinggi |
+
+---
+
+## D.2. Rincian Arsitektur Teknis & Komponen per Modul Implementasi
+
+Setiap modul implementasi memiliki spesifikasi teknis mendalam yang mencakup lapisan backend (*clean architecture*), frontend (*vanilla ES6 & Apple HIG components*), struktur penyimpanan (*database & object store*), titik integrasi (*APIs & external services*), serta logika pengaman (*guard validation & business constraints*):
+
+### 1. `MOD-00`: Core Foundation, Keycloak SSO JSS & Base Layout
+- **Peran & Tujuan**: Fondasi infrastruktur sistem, gerbang autentikasi tunggal OIDC terintegrasi ke Keycloak SSO Jogja Smart Service (JSS), manajemen sesi token JWT RS256, serta shell tata letak antarmuka responsif berbasis standar Apple Human Interface Guidelines.
+- **Backend Components (Go)**:
+  - `pkg/auth/oidc_client.go`: Inisialisasi OIDC flow, penanganan authorization code exchange, verifikasi RS256 JWKS public key dari SSO JSS.
+  - `pkg/middleware/jwt_auth.go`: Middleware validasi Authorization header, ekstraksi claims (`sub`, `nip`, `opd_id`, `resource_access`).
+  - `pkg/middleware/cors_security.go`: Pengamanan header CORS, Content-Security-Policy (CSP), HSTS, X-Frame-Options, dan sanitasi input.
+  - `internal/handler/auth_handler.go`: Endpoint `/api/v1/auth/login`, `/api/v1/auth/callback`, `/api/v1/auth/refresh`, `/api/v1/auth/logout`.
+- **Frontend Components**:
+  - `assets/js/core/app-shell.js`: Router navigasi halaman, state session pengguna, interceptor fetch API otomatis (penyisipan Bearer token).
+  - `assets/css/core-design-system.css`: Variabel CSS tokens Apple HIG (color tokens, spacing 4px-grid, frosted glass blur, elevation shadows).
+  - `views/layout/sidebar.html` & `views/layout/navbar.html`: Navigasi modular dinamis sesuai izin peran pengguna, indikator online/offline, user dropdown.
+- **Database & Data Store**:
+  - Tabel: `users`, `sessions`.
+  - Cache: Redis Key `session:{user_id}` dengan TTL 10 menit ber-mekanisme rolling refresh.
+- **Integrasi**: Identity Provider Keycloak Pemkot Yogyakarta (`https://sso.jogjakota.go.id/auth/realms/jogjakota`).
+- **Guard Validation**: Akses ditolak (HTTP 401) jika token JWT kadaluarsa, issuer tidak sah, atau fingerprint browser mengalami manipulasi.
+
+### 2. `MOD-01`: Dynamic RBAC, User Directory & Master Data Terpadu
+- **Peran & Tujuan**: Manajemen direktori pengguna ASN/tenaga ahli, matriks hak akses fungsional dinamis (Role-Based Access Control) yang dipetakan ke 4 role baku Pemkot (`Superadmin`, `Pengawas`, `Admin`, `Operator`), serta sentralisasi pengelolaan master data referensi SPBE.
+- **Backend Components (Go)**:
+  - `internal/handler/master_handler.go`: CRUD master data instansi OPD, master klasifikasi urusan SPBE, master server data center, master rubrik penilaian.
+  - `internal/handler/rbac_handler.go`: Endpoint konfigurasi permission matrix `/api/v1/admin/rbac/permissions`.
+  - `internal/service/rbac_service.go`: Evaluasi wewenang granular per aksi (`can_create_fa01`, `can_approve_fa02`, `can_sign_kak`, dsb.).
+- **Frontend Components**:
+  - `views/admin/user-directory.html`: Tabel direktori pengguna ASN, filter pencarian berdasarkan NIP, OPD, dan status keaktifan.
+  - `views/admin/rbac-matrix.html`: Antarmuka matriks centang hak akses dinamis dengan toggle izin fungsional per peran.
+  - `views/admin/master-data.html`: Tabbed pane manajemen data instansi, master klaster server, dan ambang batas SLA.
+- **Database & Data Store**:
+  - Tabel: `roles`, `permissions`, `role_permissions`, `opd_directory`, `spbe_domains`, `server_clusters`.
+- **Integrasi**: API Sinkronisasi SIMPEG / SIASN BKPSDM Kota Yogyakarta untuk direktori ASN terverifikasi.
+- **Guard Validation**: Penegakan proteksi aksi level controller: hanya role dengan izin eksplisit yang diizinkan melakukan mutasi data (HTTP 403 Forbidden).
+
+### 3. `MOD-02`: Portal Publik & Monitoring Usulan Prioritas
+- **Peran & Tujuan**: Halaman muka publik tanpa keharusan login untuk mendukung transparansi keterbukaan informasi publik pembangunan SPBE Pemkot Yogyakarta, menampilkan statistik agregat usulan, dan pelacakan progres 10 aplikasi prioritas.
+- **Backend Components (Go)**:
+  - `internal/handler/public_portal_handler.go`: Endpoint `/api/v1/public/statistics`, `/api/v1/public/priority-stepper`, `/api/v1/public/portfolio`.
+  - `internal/service/public_analytics_service.go`: Agregasi metrik riil status permohonan, penghitungan indeks efisiensi dan transparansi.
+- **Frontend Components**:
+  - `views/public/index.html`: Hero visual interaktif dengan tipografi Apple HIG, 6 kartu metrik status permohonan dengan animasi hitung (*count-up*).
+  - `assets/js/components/stepper-tracker.js`: Komponen visual pelacak linimasa 10 permohonan prioritas (tahap intake, klarifikasi, asesmen, dev, QA, rilis).
+  - `assets/js/components/portfolio-catalog.js`: Tampilan kartu portofolio aplikasi terindeks dengan filter OPD instan dan pencarian instan debounce.
+- **Database & Data Store**:
+  - Tabel: `applications` (Read-only query dengan proyeksi kolom publik aman non-rahasia).
+  - Cache: Redis Key `cache:public:stats` (TTL 60 detik) untuk menjamin waktu respon $\le 150$ ms di bawah beban konkurensi tinggi.
+- **Integrasi**: Open Data Yogyakarta Portal (`https://opendata.jogjakota.go.id`) via JSON feed ekspor.
+- **Guard Validation**: Seluruh endpoint publik disanitasi dari SQL injection dan XSS; payload response memfilter seluruh data sensitif (tanpa NIP, credential, atau notulensi internal).
+
+### 4. `MOD-03`: Registrasi Permohonan OPD & Integrasi eOffice (Form F.A01)
+- **Peran & Tujuan**: Pintu gerbang utama (fase intake) bagi OPD di lingkungan Pemkot Yogyakarta untuk mendaftarkan usulan aplikasi baru/pengembangan melalui wizard bertahap Form F.A01, verifikasi legalitas naskah dinas eOffice, dan pengelolaan unggahan berkas lampiran resmi.
+- **Backend Components (Go)**:
+  - `internal/handler/application_intake_handler.go`: Endpoint registrasi `/api/v1/intake/fa01`, upload lampiran, pencarian status pengajuan.
+  - `internal/service/registration_number_generator.go`: Mesin pencetak nomor registrasi atomik berformat `REG-YYYYMMDD-XXXX`.
+  - `internal/service/eoffice_verification_service.go`: Layanan pengecekan integritas nomor dan tanggal surat naskah dinas eOffice Pemkot Yogyakarta.
+  - `pkg/storage/minio_uploader.go`: Handler penyimpanan berkas PDF terenkripsi ke bucket MinIO `mpsi-fa01-attachments`.
+  - `pkg/pdf/fa01_generator.go`: Generator naskah dinas cetak formulir F.A01 lengkap dengan KOP resmi dan QR Code validasi tanda terima.
+- **Frontend Components**:
+  - `views/fase-hulu/fa01-wizard.html`: Formulir multi-step wizard (Langkah 1: Identitas Pemohon; Langkah 2: Urgensi & Latar Belakang; Langkah 3: Probis & Target Pengguna; Langkah 4: Referensi eOffice & Upload Lampiran; Langkah 5: Pratinjau & Submit).
+  - `assets/js/components/attachment-dropzone.js`: Widget drag-and-drop unggah 4 berkas lampiran dengan validasi ukuran file ($\le 10$ MB) dan tipe berkas PDF.
+- **Database & Data Store**:
+  - Tabel: `applications`, `application_attachments`.
+  - Objek: MinIO Bucket `mpsi-fa01-attachments`.
+- **Integrasi**: REST API eOffice Naskah Dinas Pemkot Yogyakarta untuk verifikasi silang keaslian surat dinas.
+- **Guard Validation**: Tiket permohonan berstatus `Draft` tidak dapat dikirim (*Submit Blocked*) sebelum ke-4 lampiran wajib terunggah dan nomor eOffice terverifikasi valid.
+
+### 5. `MOD-04`: Manajemen Rapat Klarifikasi Teknis OPD Multi-Sesi
+- **Peran & Tujuan**: Fasilitasi penyelenggaraan rapat klarifikasi teknis antara Tim Analis Diskominfo dan delegasi teknis OPD pemohon, pengelolaan multi-sesi pembahasan (Sesi 1, 2, dst.), notulensi rich-text bergaya MS Word, dokumentasi foto fisik MinIO, pelacakan action items OPD, dan penegakan target kesepakatan 100%.
+- **Backend Components (Go)**:
+  - `internal/handler/clarification_meeting_handler.go`: CRUD sesi rapat `/api/v1/meetings/sessions`, upload foto bukti, pencatatan daftar hadir presensi.
+  - `internal/service/meeting_agreement_guard.go`: Validasi kepatuhan target kesepakatan (*Target Kesepakatan Guard*).
+  - `internal/handler/action_items_handler.go`: Manajemen tiket tindak lanjut OPD `/api/v1/meetings/action-items`.
+  - `pkg/pdf/meeting_minutes_generator.go`: Generator Berita Acara Rapat Klarifikasi Teknis berformat PDF resmi beserta lembar presensi TTE.
+- **Frontend Components**:
+  - `views/fase-tengah/meeting-studio.html`: Studio manajemen rapat dengan timeline multi-sesi, indikator persentase kesepakatan, dan daftar peserta.
+  - `assets/js/components/meeting-editor.js`: Rich text editor notulensi rapat dengan fungsionalitas auto-save setiap 30 detik.
+  - `assets/js/components/photo-evidence-gallery.js`: Widget pratinjau dan upload multi-foto bukti rapat fisik/papan tulis ke MinIO.
+  - `assets/js/components/action-items-tracker.js`: Tabel interaktif pemantauan status perbaikan dokumen regulasi/SOP oleh OPD.
+- **Database & Data Store**:
+  - Tabel: `clarification_meetings`, `meeting_attendance`, `meeting_action_items`, `meeting_photos`.
+  - Objek: MinIO Bucket `mpsi-meeting-evidence`.
+- **Integrasi**: Zoom Meeting API untuk rapat hybrid, SMS/WhatsApp Gateway Pemkot untuk notifikasi pengingat jadwal rapat.
+- **Guard Validation**: Tombol pengesahan final dan penerbitan Berita Acara terkunci (*Locked*) jika indikator target kesepakatan masih di bawah 100% atau terdapat *action item* mandatori yang belum terselesaikan.
+
+### 6. `MOD-05`: Kertas Kerja Asesmen Analis & Telaah Kelayakan (Form F.A02 Workbench)
+- **Peran & Tujuan**: Meja kerja komprehensif (*Analyst Workbench*) bagi Pranata Komputer/Analis Diskominfo untuk melakukan telaah kelayakan teknis SPBE: pemindaian anti-duplikasi katalog, pemetaan domain arsitektur SOTK, evaluasi rubrik 12 bagian berbobot, kalkulasi skor otomatis, dan penentuan kuadran McFarlan-Peppard.
+- **Backend Components (Go)**:
+  - `internal/handler/feasibility_workbench_handler.go`: Endpoint `/api/v1/analyst/workbench/{app_id}`, simpan draft kertas kerja telaah.
+  - `internal/service/redundancy_inspector_service.go`: Algoritma pencarian kemiripan fungsi semantik terhadap master katalog portofolio aplikasi eksisting.
+  - `internal/service/scoring_engine_service.go`: Mesin kalkulasi skor kelayakan berbobot 12 aspek (rentang nilai 0 s/d 100) dan penegakan kriteria gugur (*knockout rules*).
+  - `internal/service/mcfarlan_classifier_service.go`: Klasifikasi matriks kuadran strategis (*Strategic*, *High Potential*, *Key Operational*, *Support*).
+- **Frontend Components**:
+  - `views/fase-tengah/fa02-workbench.html`: Antarmuka workbench analis terpadu dengan navigasi tab 12 bagian telaah.
+  - `assets/js/components/redundancy-inspector.js`: Widget pemindai redundansi real-time dengan status indikator badge (Aman / Potensi Duplikasi / Redundan).
+  - `assets/js/components/rubric-evaluator.js`: Formulir penilaian interaktif 12 bagian dengan selector level kematangan (Level 1-4) dan input tautan bukti dukung (*evidence link*).
+  - `assets/js/components/mcfarlan-matrix-chart.js`: Visualisasi grafik kuadran matriks McFarlan menggunakan SVG interaktif responsif.
+- **Database & Data Store**:
+  - Tabel: `analyst_workbenches`, `assessment_scores`, `rubric_evidence_links`.
+- **Integrasi**: Full-text search engine PostgreSQL untuk pemindaian kemiripan katalog aplikasi.
+- **Guard Validation**: Jika salah satu kriteria knockout bernilai fatal (misal ketiadaan dasar hukum atau duplikasi 100% dengan aplikasi nasional), kalkulator skor secara otomatis mengunci rekomendasi ke opsi *Ditolak / Berbagi Pakai*.
+
+### 7. `MOD-06`: Formulir F.A02 Resmi & Approval Digital Kabid
+- **Peran & Tujuan**: Penginputan dokumen naskah dinas resmi Form F.A02 oleh Analis berdasarkan hasil rekapitulasi Kertas Kerja Telaah, perumusan rekomendasi formal SPBE, mekanisme telaah dan persetujuan digital (*approval review*) oleh Kepala Bidang Pengembangan Aplikasi, serta penerbitan naskah dinas PDF sah.
+- **Backend Components (Go)**:
+  - `internal/handler/fa02_official_handler.go`: Endpoint pembuatan dan pengesahan `/api/v1/analyst/fa02-official`.
+  - `internal/service/fa02_approval_service.go`: Alur kerja persetujuan digital Kabid (Approve / Request Revision / Reject) dengan pencatatan audit log.
+  - `pkg/pdf/fa02_official_generator.go`: Generator naskah dinas Form F.A02 lengkap dengan KOP Garuda/Pemkot, TTD digital Kabid, nomor naskah dinas, dan lampiran kertas kerja lengkap.
+- **Frontend Components**:
+  - `views/fase-tengah/fa02-form.html`: Formulir penginputan naskah dinas resmi (Nomor Surat, Tanggal Telaah, Ringkasan Eksekutif, Pertimbangan Teknis, Pilihan Rekomendasi).
+  - `views/fase-tengah/kabid-approval-modal.html`: Dialog modal khusus Kabid untuk memverifikasi telaah, memasukkan catatan arahan pimpinan, dan membubuhkan TTE.
+- **Database & Data Store**:
+  - Tabel: `fa02_official_reviews`, `approval_logs`.
+- **Integrasi**: Modul TTE BSrE / Sertifikat Elektronik Pemkot Yogyakarta untuk legalitas tanda tangan naskah dinas.
+- **Guard Validation**: Status permohonan tidak dapat dinaikkan ke Fase Perencanaan (F.A03/SDI) jika naskah Form F.A02 belum berstatus `APPROVED` oleh Kepala Bidang.
+
+### 8. `MOD-07`: Standardisasi Metadata SDI (Walidata Daerah)
+- **Peran & Tujuan**: Pengawalan kepatuhan tata kelola Satu Data Indonesia (SDI) oleh Walidata Daerah (Seksi Data Statistik Diskominfo) terhadap kamus data usulan aplikasi, standardisasi variabel, harmonisasi kode referensi data induk, verifikasi interoperabilitas SPLP, dan penegakan kunci gerbang (*Gatekeeper Lock*).
+- **Backend Components (Go)**:
+  - `internal/handler/sdi_metadata_handler.go`: Endpoint registrasi dan evaluasi kamus data `/api/v1/sdi/metadata/{app_id}`.
+  - `internal/service/data_dictionary_validator.go`: Pemeriksa validitas struktur variabel (tipe data, panjang, format, definisi operasional, domain nilai).
+  - `internal/service/reference_code_harmonizer.go`: Penyelarasan variabel terhadap kode referensi induk Pemkot (misal: Kode Wilayah Kemendagri, NIK, NIP).
+  - `internal/service/splp_interop_checker.go`: Verifikasi kesiapan arsitektur API bagi pakai data pada Sistem Penghubung Layanan Pemerintah.
+- **Frontend Components**:
+  - `views/fase-tengah/sdi-metadata-workbench.html`: Antarmuka telaah kamus data terstruktur untuk Walidata Daerah dengan tabel data dictionary interaktif.
+  - `assets/js/components/data-dictionary-grid.js`: Editor kisi kamus data dengan validasi inline dan indikator harmonisasi kode referensi.
+  - `assets/js/components/splp-readiness-checklist.js`: Lembar verifikasi kesiapan interoperabilitas data dan integrasi API.
+- **Database & Data Store**:
+  - Tabel: `sdi_metadata_reviews`, `data_dictionaries`, `reference_code_mappings`.
+- **Integrasi**: Portal Satu Data Kota Yogyakarta & Bus Integrasi SPLP Daerah.
+- **Guard Validation**: *Gatekeeper Lock*: Tahap Perencanaan Kebutuhan Sistem (Form F.A03) terkunci otomatis dan tidak dapat diakses sebelum Surat Rekomendasi Walidata berstatus `CLEARED_100%`.
+
+### 9. `MOD-08`: Perencanaan Kebutuhan Sistem & Matriks Risiko (Form F.A03)
+- **Peran & Tujuan**: Modul perumusan spesifikasi kebutuhan perangkat lunak (Software Requirements Specification) terperinci oleh Analis Sistem & Bisnis Analis, mencakup matriks kebutuhan fungsional per role, parameterisasi non-fungsional (SLA & reliabilitas), matriks mitigasi risiko SPBE, serta penerbitan dokumen resmi Form F.A03.
+- **Backend Components (Go)**:
+  - `internal/handler/system_planning_handler.go`: Endpoint CRUD dokumen perencanaan `/api/v1/planning/fa03`.
+  - `internal/service/functional_matrix_builder.go`: Penyusun struktur hierarki modul, user stories, use cases, dan kriteria penerimaan fungsional.
+  - `internal/service/spbe_risk_matrix_service.go`: Pemetaan matriks risiko (Skor Dampak 1-5 $\times$ Probabilitas 1-5), penentuan level risiko, dan rekomendasi mitigasi.
+  - `pkg/pdf/fa03_generator.go`: Generator dokumen spesifikasi perencanaan Form F.A03 berformat PDF resmi.
+- **Frontend Components**:
+  - `views/fase-tengah/fa03-editor.html`: Editor spesifikasi kebutuhan sistem dengan pembagian segmen fungsional, non-fungsional, dan mitigasi risiko.
+  - `assets/js/components/functional-matrix-tree.js`: Tampilan pohon hierarki spesifikasi kebutuhan fungsional per peran pengguna.
+  - `assets/js/components/risk-matrix-grid.js`: Matriks visual risiko $5 \times 5$ interaktif dengan penempatan kartu risiko secara dinamis.
+- **Database & Data Store**:
+  - Tabel: `system_requirements`, `functional_specs`, `spbe_risk_assessments`.
+- **Integrasi**: MinIO Bucket `mpsi-planning-documents` untuk penyimpanan draf lampiran teknis dan diagram alur.
+- **Guard Validation**: Dokumen F.A03 dilarang disahkan jika masih terdapat risiko berlevel *High* atau *Critical* yang belum memiliki rencana mitigasi penanggulangan terdefinisi.
+
+### 10. `MOD-09`: Kerangka Acuan Kerja (KAK F.P01) & Penandatanganan Digital 2 Pihak
+- **Peran & Tujuan**: Penyusunan Kerangka Acuan Kerja (KAK) pengembangan teknis, blueprint arsitektur, estimasi kebutuhan sumber daya, fasilitasi harmonisasi ruang lingkup bersama OPD, penandatanganan digital kontrak kerja oleh kedua belah pihak (Diskominfo & OPD), serta penegakan *Mandatory Contract Guard Lock*.
+- **Backend Components (Go)**:
+  - `internal/handler/kak_contract_handler.go`: Endpoint draf dan penandatanganan KAK `/api/v1/planning/kak`.
+  - `internal/service/kak_signature_service.go`: Layanan orkestrasi penandatanganan digital dua pihak (Pihak I: Kepala Bidang Diskominfo, Pihak II: Kepala OPD / PPK Pemohon).
+  - `internal/service/mandatory_contract_guard.go`: Pemeriksa status legalitas KAK sebelum izin eksekusi pengembangan diterbitkan.
+  - `pkg/pdf/kak_contract_generator.go`: Generator dokumen KAK F.P01 lengkap dengan lembar pengesahan ganda dan QR Code verifikasi kontrak.
+- **Frontend Components**:
+  - `views/fase-tengah/kak-builder.html`: Antarmuka penyusunan draf KAK teknis, ruang lingkup batasan modul, dan jadwal milestone pengerjaan.
+  - `views/fase-tengah/kak-signature-room.html`: Ruang penandatanganan digital interaktif yang menampilkan pratinjau dokumen dan status tanda tangan Pihak I & Pihak II.
+- **Database & Data Store**:
+  - Tabel: `kak_contracts`, `kak_milestones`, `contract_signatures`.
+  - Objek: MinIO Bucket `mpsi-signed-kak-contracts`.
+- **Integrasi**: Layanan TTE BSrE dan e-Sign Pemkot Yogyakarta.
+- **Guard Validation**: *Mandatory Contract Guard Lock*: Sistem secara mutlak memblokir inisialisasi repositori Git dan pembukaan sprint pengerjaan proyek (`Ready for Dev`) sebelum dokumen KAK resmi ditandatangani oleh KEDUA BELAH PIHAK.
+
+### 11. `MOD-10`: Resource Allocation & Manajemen Squad Pengembang
+- **Peran & Tujuan**: Pengelolaan pembentukan squad proyek pengembangan oleh Ketua Tim Kerja Perangkat Lunak, penugasan peran teknis spesifik (PM, DSI UI-UX, BE Dev, FE Dev, QA Tester), studio kickoff sprint, penentuan arsitektur tech stack, serta inisialisasi tautan repositori Git Pemkot dan webhook listener.
+- **Backend Components (Go)**:
+  - `internal/handler/squad_management_handler.go`: Endpoint alokasi tim `/api/v1/dev/squads/{app_id}`.
+  - `internal/service/squad_allocator_service.go`: Validasi beban kerja staf pengembang (*workload balance*) dan penugasan peran proyek.
+  - `internal/handler/git_webhook_handler.go`: Penerima event webhook commit, branch, dan merge request dari GitLab/Gitea internal Pemkot.
+- **Frontend Components**:
+  - `views/fase-development/squad-allocation.html`: Antarmuka penugasan tim proyek bergaya kartu profil dengan badge spesialisasi peran.
+  - `views/fase-development/kickoff-meeting-modal.html`: Dialog pencatatan risalah rapat kickoff pengembangan dan penetapan target sprint.
+  - `assets/js/components/repo-config-card.js`: Formulir konfigurasi repositori Git (URL repo, branch staging, credential webhook secret).
+- **Database & Data Store**:
+  - Tabel: `project_squads`, `squad_members`, `git_repositories`.
+- **Integrasi**: GitLab / Gitea API Server Pusat Data Pemkot Yogyakarta.
+- **Guard Validation**: Setiap proyek wajib memiliki minimal 1 penanggung jawab teknis pada setiap peran kunci (PM, Backend, Frontend, QA) sebelum papan kerja pengembangan dapat diaktifkan.
+
+### 12. `MOD-11`: Papan Kerja Sprint & Work Packages Ala OpenProject
+- **Peran & Tujuan**: Ruang kerja operasional harian bagi seluruh pengembang bergaya OpenProject/Jira dengan papan kanban interaktif, pembagian 4 jalur kerja multidisiplin (DSI UI-UX, Backend, Frontend, QA), mesin kalkulasi otomatis progres fisik berbasis bobot task, pencatatan jam kerja (*timesheet*), dan integrasi feed commit Git.
+- **Backend Components (Go)**:
+  - `internal/handler/work_package_handler.go`: CRUD work packages `/api/v1/dev/work-packages`, pembaruan status kanban (drag & drop).
+  - `internal/service/progress_calculator_engine.go`: Kalkulator agregasi progres fisik real-time ($0\% - 100\%$) berdasarkan formula bobot task selesai.
+  - `internal/handler/timesheet_handler.go`: Pencatatan log jam kerja staf `/api/v1/dev/timesheets`.
+- **Frontend Components**:
+  - `views/fase-development/kanban-board.html`: Papan kanban responsif 5 kolom status (`Backlog`, `To Do`, `In Progress`, `In Review`, `Done`) dengan drag-and-drop HTML5.
+  - `assets/js/components/discipline-lane-filter.js`: Pengelompokan baris kanban berdasarkan track kerja (Track DSI Figma, Track Backend API, Track Frontend UI, Track QA Testing).
+  - `assets/js/components/work-package-modal.js`: Dialog detail kartu pekerjaan: deskripsi markdown, checklist sub-tasks, estimasi vs logged hours, dan histori aktivitas.
+  - `assets/js/components/git-activity-feed.js`: Widget linimasa real-time commit hash dan pesan merge request yang terhubung ke nomor task.
+- **Database & Data Store**:
+  - Tabel: `work_packages`, `work_package_logs`, `timesheets`, `git_commits`.
+- **Integrasi**: WebSocket Server untuk sinkronisasi pembaruan posisi kartu kanban secara real-time antar-pengembang.
+- **Guard Validation**: Kartu pekerjaan pada track QA tidak dapat dipindahkan ke status `Done` jika belum dilampirkan bukti test case yang berstatus lulus (*Passed*).
+
+### 13. `MOD-12`: Monitoring Progres Development & Progress Reporting
+- **Peran & Tujuan**: Instrumen kendali dan pengawasan kemajuan pengerjaan aplikasi bagi pimpinan seksi dan Kepala Bidang, menyediakan visualisasi kurva S perbandingan rencana vs realisasi fisik, grafik sprint burndown, sistem peringatan dini keterlambatan, serta generator laporan kemajuan periodik resmi.
+- **Backend Components (Go)**:
+  - `internal/handler/dev_monitoring_handler.go`: Endpoint analitik progres `/api/v1/monitoring/dev-progress`.
+  - `internal/service/s_curve_generator_service.go`: Pembuat dataset kurva S mingguan berdasarkan jadwal target KAK vs realisasi work packages.
+  - `internal/service/delay_early_warning_service.go`: Detektor otomatis deviasi keterlambatan $\ge 10\%$ yang memicu notifikasi peringatan.
+  - `pkg/pdf/progress_report_generator.go`: Generator Laporan Progres Mingguan/Bulanan berformat PDF naskah dinas resmi.
+- **Frontend Components**:
+  - `views/fase-development/monitoring-dashboard.html`: Dashboard analitik pengembang dengan ringkasan status seluruh aplikasi yang sedang dikerjakan.
+  - `assets/js/components/s-curve-chart.js`: Visualisasi grafik kurva S interaktif (garis target rencana vs garis realisasi riil) dengan tooltip tanggal milestone.
+  - `assets/js/components/burndown-chart.js`: Grafik burndown deliverable sprint harian.
+  - `assets/js/components/early-warning-banner.js`: Banner peringatan visual dinamis untuk proyek yang mengalami deviasi jadwal di atas batas toleransi.
+- **Database & Data Store**:
+  - Tabel: `progress_milestones`, `dev_progress_reports`, `delay_alerts`.
+- **Integrasi**: Notifikasi bot internal Telegram / WhatsApp Tim Pengembangan Pemkot Yogyakarta.
+- **Guard Validation**: Jika keterlambatan melampaui $15\%$ dari jadwal KAK, sistem secara otomatis mewajibkan PM untuk menginput dokumen justifikasi hambatan dan rencana *catch-up sprint*.
+
+### 14. `MOD-13`: Dokumentasi Rancang Bangun & Infrastruktur Hosting (FI.01 & FI.02)
+- **Peran & Tujuan**: Inventarisasi dokumentasi rancang bangun teknis sistem (Form FI.01), pengajuan kebutuhan hosting dan infrastruktur server ke Bidang Infrastruktur Telematika (Form FI.02), konfigurasi subdomain resmi `*.jogjakota.go.id`, penentuan kategori kritikal sistem, serta verifikasi kesiapan deployment lingkungan staging.
+- **Backend Components (Go)**:
+  - `internal/handler/fi01_documentation_handler.go`: Pengelolaan formulir rancang bangun FI.01 `/api/v1/dev/fi01`.
+  - `internal/handler/fi02_hosting_handler.go`: Pengajuan formulir hosting FI.02 `/api/v1/dev/fi02`.
+  - `internal/service/subdomain_validator_service.go`: Validator ketersediaan nama subdomain resmi di zona DNS `jogjakota.go.id`.
+  - `internal/service/staging_readiness_checker.go`: Verifikasi kelayakan build staging sebelum memasuki pengujian mutu.
+- **Frontend Components**:
+  - `views/fase-development/fi01-editor.html`: Formulir dokumentasi rancang bangun (versi tag rilis, spesifikasi arsitektur, OpenAPI doc URL, changelog).
+  - `views/fase-development/fi02-hosting-request.html`: Formulir pengajuan infrastruktur (pilihan kategori sistem: P/AP/SP, alokasi vCPU/RAM/Storage, usulan nama subdomain).
+  - `assets/js/components/staging-checklist-card.js`: Kartu checklist verifikasi deployment aplikasi di server staging sandbox.
+- **Database & Data Store**:
+  - Tabel: `architecture_documentations_fi01`, `hosting_requests_fi02`, `staging_deployments`.
+- **Integrasi**: API DNS Management Server & Cloud Virtualization Platform (Proxmox/Kubernetes) Diskominfo.
+- **Guard Validation**: Pengajuan FI.02 dilarang dikirim jika formulir rancang bangun FI.01 belum dilengkapi dokumentasi API OpenAPI/Swagger yang valid.
+
+### 15. `MOD-14`: Quality Gate: 5 Pilar Pengujian Mutu SPBE (QA Suite F.UO1-U07)
+- **Peran & Tujuan**: Benteng pengujian mutu menyeluruh sebelum aplikasi diserahterimakan, mengelola 5 pilar pengujian terstandarisasi: Rencana Uji (F.UO1), Pengujian Integrasi (F.UO2), Pengujian Fungsional (F.UO3), UAT Bersama OPD (F.UO4/UO5), Pentest CSIRT (F.U06), dan Stress Test k6 (F.U07), serta penegakan gerbang mutlak *Mandatory Quality Gate*.
+- **Backend Components (Go)**:
+  - `internal/handler/qa_suite_handler.go`: Endpoint pengujian mutu `/api/v1/qa/suite/{app_id}`.
+  - `internal/service/test_execution_service.go`: Pengelolaan hasil uji fungsional, pencatatan bug report, dan penautan tiket perbaikan ke kanban.
+  - `internal/service/uat_orchestrator_service.go`: Penyelenggaraan sesi UAT OPD dan penandatanganan digital Berita Acara UAT F.UO5.
+  - `internal/service/security_pentest_service.go`: Verifikasi unggah Laporan Hasil Pentest CSIRT dan klasifikasi temuan kerentanan (OWASP).
+  - `internal/service/load_test_parser_service.go`: Parser file metrik hasil uji beban k6 (throughput req/sec, p95 response time, error rate).
+  - `internal/service/mandatory_quality_gate.go`: Mesin penegakan gerbang mutu mandatori.
+- **Frontend Components**:
+  - `views/fase-pengujian/qa-dashboard.html`: Dashboard 5 pilar pengujian mutu dengan status indikator kelulusan per instrumen.
+  - `assets/js/components/functional-test-grid.js`: Tabel eksekusi test case fungsional dengan aksi centang cepat (Pass / Fail / Blocked) dan upload bukti screenshot bug.
+  - `assets/js/components/uat-signoff-modal.js`: Antarmuka review UAT bersama pemohon dan lembar TTE Berita Acara UAT.
+  - `assets/js/components/k6-metrics-visualizer.js`: Grafik visual visualisasi hasil pengujian beban (response time distribution & virtual users load).
+- **Database & Data Store**:
+  - Tabel: `qa_test_plans_fuo1`, `integration_tests_fuo2`, `functional_tests_fuo3`, `uat_sessions_fuo4`, `uat_signoffs_fuo5`, `csirt_pentests_fu06`, `stress_tests_fu07`.
+  - Objek: MinIO Bucket `mpsi-qa-evidence` (Laporan Pentest PDF, raw logs k6, tangkapan layar bug).
+- **Integrasi**: Runner tool pengujian otomatis k6 CLI / Postman Newman reporter.
+- **Guard Validation**: *Mandatory Quality Gate*: Sistem memblokir secara permanen pembukaan fase Serah Terima jika terdapat minimal 1 test case fungsional gagal, celah keamanan *High/Critical* belum ditutup, atau UAT belum disetujui OPD pemohon.
+
+### 16. `MOD-15`: Serah Terima, TOT Pelatihan & Legalitas Rilis Layanan
+- **Peran & Tujuan**: Pelaksanaan serah terima resmi hasil pengembangan kepada OPD pemohon, penandatanganan Berita Acara Serah Terima (BAST F.SR01) dengan klausul wajib aktif minimal 3 bulan di JSS, pelaksanaan pelatihan pengguna (TOT F.R01), registrasi SK Tim Pengelola (F.R02/R03), audit kesiapan rilis 20 butir (F.R04), dan go-live produksi.
+- **Backend Components (Go)**:
+  - `internal/handler/handover_release_handler.go`: Endpoint serah terima `/api/v1/release/handover`.
+  - `internal/service/bast_signature_service.go`: Orkestrasi penandatanganan digital dokumen BAST dua pihak dengan validasi klausul aktif 3 bulan.
+  - `internal/service/tot_recording_service.go`: Pencatatan Berita Acara TOT dan penyimpanan bukti foto pelatihan ke MinIO.
+  - `internal/service/release_checklist_evaluator.go`: Evaluator checklist kesiapan rilis produksi 20 butir mandatori.
+  - `internal/service/golive_activation_service.go`: Pembaruan status aplikasi menjadi `Aktif Beroperasi` dan publikasi listing ke direktori JSS.
+- **Frontend Components**:
+  - `views/fase-serah-terima/bast-signing-room.html`: Antarmuka penandatanganan digital BAST resmi berformat naskah dinas.
+  - `views/fase-serah-terima/tot-documentation.html`: Formulir pencatatan kegiatan TOT, daftar peserta, modul materi, dan galeri foto bukti MinIO.
+  - `views/fase-serah-terima/release-checklist.html`: Antarmuka verifikasi 20 checklist kesiapan rilis (SSL, DNS, Backup, SSO JSS, WAF).
+- **Database & Data Store**:
+  - Tabel: `bast_documents_fsr01`, `tot_trainings_fr01`, `app_management_decrees_fr02`, `release_checklists_fr04`.
+  - Objek: MinIO Bucket `mpsi-handover-evidence` (Foto TOT, SK Tim Pengelola PDF, Bukti Checklist Rilis).
+- **Integrasi**: API Direktori Layanan Jogja Smart Service (JSS) untuk sinkronisasi ketersediaan layanan publik.
+- **Guard Validation**: Transisi ke status `Aktif Beroperasi` dilarang jika Checklist Kesiapan Rilis belum tercentang 100% atau dokumen BAST belum ditandatangani oleh kedua belah pihak.
+
+### 17. `MOD-16`: Pemeliharaan Sistem, CSIRT & Pengelolaan Change Request
+- **Peran & Tujuan**: Penatausahaan kegiatan operasional pasca-rilis, pencatatan log pemeliharaan sistem terpadu (F.P01) berdasarkan 4 klasifikasi standar SPBE (Perfektif, Adaptif, Korektif, Preventif), penanganan tiket insiden keamanan siber oleh CSIRT (F.P02), serta pengelolaan intake permohonan Change Request (F.P03) disertai analisis dampak 4 pilar.
+- **Backend Components (Go)**:
+  - `internal/handler/maintenance_handler.go`: Endpoint log pemeliharaan `/api/v1/maintenance/logs`.
+  - `internal/handler/csirt_incident_handler.go`: Manajemen tiket insiden siber `/api/v1/maintenance/incidents`.
+  - `internal/handler/change_request_handler.go`: Alur pengajuan dan asesmen Change Request `/api/v1/maintenance/change-requests`.
+  - `internal/service/cr_impact_assessment_service.go`: Analisis dampak pengajuan perubahan fitur (dampak proses bisnis, anggaran, arsitektur data, dan keamanan).
+- **Frontend Components**:
+  - `views/pasca-rilis/maintenance-log.html`: Antarmuka pencatatan riwayat pemeliharaan berkala dengan filter 4 tipe klasifikasi pemeliharaan.
+  - `views/pasca-rilis/csirt-incident-desk.html`: Meja kerja pelaporan insiden keamanan CSIRT dengan penentuan tingkat keparahan insiden (*Severity Level*).
+  - `views/pasca-rilis/change-request-form.html`: Formulir permohonan modifikasi/penambahan fitur oleh OPD dan lembar telaah dampak perubahan.
+- **Database & Data Store**:
+  - Tabel: `maintenance_logs_fp01`, `security_incidents_fp02`, `change_requests_fp03`, `cr_impact_evaluations`.
+- **Integrasi**: Sistem Tiket CSIRT Pemkot Yogyakarta (`jogjakota-csirt`).
+- **Guard Validation**: Tiket Change Request yang diklasifikasikan sebagai *Perubahan Mayor* secara otomatis dialihkan untuk melalui tahapan klarifikasi teknis dan asesmen ulang (Form F.A02 & F.A03).
+
+### 18. `MOD-17`: Monitoring, Evaluasi Operasional & Deteksi SLA 3 Bulan
+- **Peran & Tujuan**: Pengawasan kesehatan operasional aplikasi secara berkelanjutan pasca-rilis, sinkronisasi telemetri volume transaksi database setiap 30 hari, pelacakan kepatuhan indikator kinerja Service Level Agreement ($\ge 90\%$), sistem deteksi dini aplikasi mangkrak (*Zero Transaction 3 Bulan Alert*), dan penyelenggaraan evaluasi berkala Form F.E01.
+- **Backend Components (Go)**:
+  - `internal/handler/monev_handler.go`: Endpoint telemetri dan evaluasi `/api/v1/monev/evaluations`.
+  - `internal/service/telemetry_sync_worker.go`: Background worker berkala untuk mengumpulkan dan mencatat agregat log transaksi per 30 hari.
+  - `internal/service/sla_compliance_calculator.go`: Penghitung persentase ketercapaian SLA operasional (ketersediaan server, respon sistem, waktu resolusi insiden).
+  - `internal/service/idle_app_detector.go`: Algoritma pendeteksi aplikasi pasif: jika delta pertambahan transaksi sama dengan 0 selama 3 periode berturut-turut, sistem menerbitkan status `IDLE_WARNING`.
+  - `pkg/pdf/monev_fe01_generator.go`: Generator naskah dinas Laporan Evaluasi Triwulan Form F.E01 beserta rekomendasi resmi keberlanjutan aplikasi.
+- **Frontend Components**:
+  - `views/pasca-rilis/monev-dashboard.html`: Antarmuka evaluasi operasional dengan grafik riwayat volume transaksi dan indikator SLA.
+  - `assets/js/components/sla-gauge-meter.js`: Widget meteran visual pencapaian SLA dengan ambang batas target hijau ($\ge 90\%$) dan merah ($< 90\%$).
+  - `assets/js/components/idle-warning-modal.js`: Dialog notifikasi peringatan aplikasi mangkrak dan formulir rekomendasi tindak lanjut (Optimalisasi / Deaktivasi Pusat Data).
+- **Database & Data Store**:
+  - Tabel: `app_telemetry_logs`, `sla_monthly_metrics`, `monev_evaluations_fe01`.
+- **Integrasi**: Prometheus & Grafana Monitoring Metrics Server Pusat Data Pemkot Yogyakarta.
+- **Guard Validation**: Aplikasi yang menerima peringatan *IDLE WARNING* dan tidak memperoleh perbaikan selama 30 hari kalender secara otomatis direkomendasikan masuk ke daftar evaluasi penonaktifan dari Pusat Data.
+
+### 19. `MOD-18`: Katalog Portofolio & Replikasi Aplikasi SPBE
+- **Peran & Tujuan**: Pengelolaan etalase katalog aplikasi SPBE Pemkot Yogyakarta yang telah matang dan berstatus siap dibagipakaikan ke instansi pemerintah lain, penatausahaan penilaian mandiri kesiapan instansi pemohon (Form F.RA01), pelaksanaan telaah kelayakan replikasi teknis (Form F.RA02), dan registrasi naskah Perjanjian Kerja Sama (PKS / MoU).
+- **Backend Components (Go)**:
+  - `internal/handler/replication_catalog_handler.go`: Endpoint etalase katalog replikasi `/api/v1/replication/catalog`.
+  - `internal/handler/replication_request_handler.go`: Form permohonan asesmen replikasi F.RA01 `/api/v1/replication/requests`.
+  - `internal/service/replication_feasibility_service.go`: Lembar kerja telaah kelayakan replikasi F.RA02 (kesiapan server, infrastruktur jaringan, SDM, dan regulasi).
+  - `pkg/pdf/replication_recommendation_generator.go`: Generator Surat Rekomendasi Kelayakan Replikasi dan register dokumen PKS.
+- **Frontend Components**:
+  - `views/pasca-rilis/replication-catalog.html`: Galeri etalase aplikasi siap replikasi dengan kartu profil sistem, fitur utama, dan pratinjau antarmuka.
+  - `views/pasca-rilis/fra01-self-assessment.html`: Formulir evaluasi mandiri kesiapan instansi luar daerah yang mengajukan permohonan replikasi.
+  - `views/pasca-rilis/fra02-feasibility-review.html`: Meja telaah kelayakan replikasi bagi Tim Analis Diskominfo Kota Yogyakarta.
+- **Database & Data Store**:
+  - Tabel: `replication_catalog_items`, `replication_requests_fra01`, `replication_feasibility_fra02`, `replication_mou_records`.
+- **Integrasi**: Portal Satu Data Replikasi SPBE Nasional Kementerian PANRB.
+- **Guard Validation**: Rekomendasi replikasi dilarang diterbitkan jika aplikasi yang diajukan belum berstatus operasional minimal 6 bulan dan belum memiliki dokumen dokumentasi teknis (FI.01) yang lengkap.
+
+### 20. `MOD-19`: Pengawasan Eksekutif, Dashboard Analitik & Audit Trail
+- **Peran & Tujuan**: Menyediakan antarmuka pemantauan tingkat tinggi (*Executive Dashboard*) yang ramah pimpinan (Walikota, Sekda, Asisten Sekda, Kepala Dinas) secara *Read-Only*, kompilasi laporan berkala terintegrasi ke format Excel dan PDF resmi, pencatatan jejak audit sistem yang tidak dapat dimanipulasi (*tamper-proof audit trail*), serta konfigurasi preferensi antarmuka dengan 8 palet tema visual terstandarisasi Apple HIG.
+- **Backend Components (Go)**:
+  - `internal/handler/executive_dashboard_handler.go`: Endpoint analitik pimpinan `/api/v1/executive/summary`, `/api/v1/executive/risk-map`, `/api/v1/executive/sla-overview`.
+  - `internal/service/report_export_engine.go`: Mesin kompilasi laporan berkala multi-format (Spreadsheet Excel menggunakan XLSX generator & Laporan Resmi PDF ber-KOP Garuda/Pemkot).
+  - `pkg/audit/tamper_proof_logger.go`: Logger audit mutasi data dengan hashing SHA-256 berantai (*blockchain-like log chaining*) untuk menjamin integritas rekam jejak.
+  - `internal/handler/theme_preference_handler.go`: Manajemen preferensi tema UI pengguna `/api/v1/users/preferences/theme`.
+- **Frontend Components**:
+  - `views/eksekutif/executive-dashboard.html`: Dashboard analitik mewah bergaya Apple macOS Analytics: diagram donat sebaran status fase, peta risiko strategis, dan grafik tren efisiensi anggaran.
+  - `assets/js/components/executive-filter-panel.js`: Panel filter waktu (tahunan, semesteran, triwulanan) dan pemilih klaster urusan OPD.
+  - `assets/js/components/theme-switcher-modal.js`: Antarmuka visual pemilih 8 palet tema warna Apple HIG dengan pratinjau kontras real-time dan toggle mode gelap/terang.
+  - `views/admin/audit-trail-viewer.html`: Penampil log aktivitas sistem dengan filter pencarian aktor, alamat IP, jenis operasi (INSERT/UPDATE/DELETE), dan verifikasi checksum hash.
+- **Database & Data Store**:
+  - Tabel: `audit_logs` (Dilengkapi kolom `previous_hash` dan `current_hash`), `user_theme_preferences`.
+  - Cache: Redis Key `cache:executive:summary` (TTL 120 detik).
+- **Integrasi**: Integrasi pelaporan statistik ke Executive Information System (EIS) Pemerintah Kota Yogyakarta.
+- **Guard Validation**: Seluruh interaksi pengguna pada role Pengawas strictly dibatasi hanya pada method HTTP `GET`; setiap aksi mutasi atau bypass langsung menghasilkan error HTTP 403 dan terekam di Security Alert CSIRT.
+
+---
+
+## D.3. Matriks Dependensi & Analisis Jalur Kritis (Critical Path)
+
+Implementasi sistem MPSI SPBE mengikuti metodologi sekuensial terarah pada jalur kritis (*Critical Path*), di mana setiap fase keberlanjutan bergantung penuh pada kelulusan verifikasi fase sebelumnya.
+
+### 1. Analisis Jalur Kritis Pembangunan Sistem (Critical Path Flow)
+Jalur kritis implementasi yang menentukan kecepatan penyelesaian dan keabsahan hukum sistem adalah sebagai berikut:
+
+$$\mathbf{MOD\text{-}00} \longrightarrow \mathbf{MOD\text{-}01} \longrightarrow \mathbf{MOD\text{-}03} \longrightarrow \mathbf{MOD\text{-}04} \longrightarrow \mathbf{MOD\text{-}05} \longrightarrow \mathbf{MOD\text{-}06} \longrightarrow \mathbf{MOD\text{-}07} \longrightarrow \mathbf{MOD\text{-}08} \longrightarrow \mathbf{MOD\text{-}09} \longrightarrow \mathbf{MOD\text{-}10} \longrightarrow \mathbf{MOD\text{-}11} \longrightarrow \mathbf{MOD\text{-}13} \longrightarrow \mathbf{MOD\text{-}14} \longrightarrow \mathbf{MOD\text{-}15}$$
+
+Setiap keterlambatan pada modul-modul di sepanjang jalur kritis di atas akan secara langsung menggeser jadwal go-live operasional SPBE Pemkot Yogyakarta.
+
+### 2. Lima Titik Gerbang Mutlak (*Mandatory Quality & Governance Gates*)
+
+| Titik Gerbang | Posisi Antar-Modul | Kondisi Mutlak Kelulusan Gerbang | Dampak Jika Gagal |
+| :--- | :---: | :--- | :--- |
+| **Gate 1: Klarifikasi Teknis** | `MOD-04` ➔ `MOD-05` | Target Kesepakatan Rapat mencapai 100% dan seluruh action item perbaikan SOP OPD diverifikasi tuntas. | Kertas kerja telaah analis (F.A02 Workbench) terkunci; asesmen tidak dapat dimulai. |
+| **Gate 2: Kelayakan & Legalitas F.A02** | `MOD-06` ➔ `MOD-07` | Skor kelayakan F.A02 $\ge 70$, bebas redundansi fatal, dan naskah dinas F.A02 disetujui digital (*Approved*) oleh Kabid. | Alur permohonan dihentikan; usulan dialihkan ke Berbagi Pakai atau Ditolak. |
+| **Gate 3: Walidata SDI Clearance** | `MOD-07` ➔ `MOD-08` | Kamus data terstandarisasi, kode referensi induk tersinkronisasi, dan terbit Surat Rekomendasi Walidata SDI Sah. | Formulir Perencanaan Kebutuhan Sistem (F.A03) terkunci otomatis oleh sistem. |
+| **Gate 4: Kontrak KAK Dua Pihak** | `MOD-09` ➔ `MOD-10` | Dokumen Kerangka Acuan Kerja F.P01 telah ditandatangani digital oleh KEDUA BELAH PIHAK (Diskominfo & OPD). | Papan sprint dan repositori koding dilarang dibuka; status `Ready for Dev` ditolak. |
+| **Gate 5: QA Suite & BAST Klausul 3 Bulan** | `MOD-14` ➔ `MOD-15` | Kelulusan 100% test fungsional, 0 celah keamanan High/Critical CSIRT, persetujuan UAT, dan BAST memuat klausul 3 bulan. | Deployment ke server produksi diblokir; aplikasi dilarang go-live di JSS. |
+
+---
+
+## D.4. Diagram Alur Kerja Dependensi Antar-Modul
+
+Diagram alur dependensi di bawah ini memvisualisasikan keterkaitan struktural seluruh 20 modul implementasi (`MOD-00` s/d `MOD-19`), dikelompokkan ke dalam 8 klaster fase siklus hidup SPBE:
 
 ```mermaid
-flowchart LR
-    MOD00["MOD-00: Core & Auth SSO"] --> MOD01["MOD-01: Settings & Master Data"]
-    MOD01 --> MOD02["MOD-02: Portal Publik & Prioritas"]
-    MOD01 --> MOD03["MOD-03: Permohonan F.A01 & eOffice"]
-    MOD03 --> MOD04["MOD-04: Analisis Kelayakan F.A02 & Rapat Klarifikasi"]
-    MOD04 --> MOD05A["MOD-05A: Standardisasi Metadata SDI Walidata"]
-    MOD05A --> MOD05B["MOD-05B: Perencanaan F.A03 & KAK F.P01"]
-    MOD05B --> MOD05C["MOD-05C: Dev Workspace OpenProject & FI.01/FI.02"]
-    MOD05C --> MOD06["MOD-06: 5 Pilar QA (F.UO1-U07)"]
-    MOD06 --> MOD07["MOD-07: Serah Terima & Rilis (F.SR01, F.R01-R04)"]
-    MOD07 --> MOD08["MOD-08: Pemeliharaan & Change Request (F.P01-P03)"]
-    MOD08 --> MOD09["MOD-09: Monev SLA, Replikasi SPBE & Audit"]
+flowchart TD
+    %% SUBGRAPH KELOMPOK FONDASI & INTAKE
+    subgraph KLASTER_FONDASI["Fondasi Sistem & Layanan Publik"]
+        MOD00["MOD-00: Core Foundation & Keycloak SSO JSS"]
+        MOD01["MOD-01: Dynamic RBAC & Master Data Terpadu"]
+        MOD02["MOD-02: Portal Publik & Monitoring Prioritas"]
+        MOD19["MOD-19: Pengawasan Eksekutif, Dashboard Analitik & Audit"]
+    end
+
+    subgraph KLASTER_INTAKE["Fase 1: Pendaftaran & Intake Permohonan"]
+        MOD03["MOD-03: Registrasi Permohonan OPD & eOffice (Form F.A01)"]
+    end
+
+    subgraph KLASTER_TELAAH["Fase 2: Klarifikasi Teknis & Asesmen Kelayakan"]
+        MOD04["MOD-04: Rapat Klarifikasi Teknis OPD & Target Kesepakatan Guard"]
+        MOD05["MOD-05: Kertas Kerja Asesmen Analis (F.A02 Workbench)"]
+        MOD06["MOD-06: Formulir F.A02 Resmi & Approval Digital Kabid"]
+    end
+
+    subgraph KLASTER_PERENCANAAN["Fase 3: SDI & Perencanaan Kebutuhan"]
+        MOD07["MOD-07: Standardisasi Metadata SDI (Walidata Daerah)"]
+        MOD08["MOD-08: Perencanaan Kebutuhan Sistem & Matriks Risiko (F.A03)"]
+    end
+
+    subgraph KLASTER_KONTRAK["Fase 4: Kerangka Acuan Kerja & Kontrak"]
+        MOD09["MOD-09: Kerangka Acuan Kerja (KAK F.P01) & TTD Digital 2 Pihak"]
+    end
+
+    subgraph KLASTER_DEVELOPMENT["Fase 5: Pengerjaan Proyek & Monitoring Dev"]
+        MOD10["MOD-10: Resource Allocation & Manajemen Squad Dev"]
+        MOD11["MOD-11: Papan Kanban Work Packages Ala OpenProject"]
+        MOD12["MOD-12: Monitoring Progres Fisik, Kurva S & Reporting"]
+        MOD13["MOD-13: Dokumentasi Rancang Bangun (FI.01) & Hosting (FI.02)"]
+    end
+
+    subgraph KLASTER_QA_RILIS["Fase 6 & 7: Pengujian Mutu & Serah Terima Rilis"]
+        MOD14["MOD-14: Quality Gate 5 Pilar Pengujian Mutu (QA Suite F.UO1-U07)"]
+        MOD15["MOD-15: Serah Terima (BAST 3 Bulan), TOT & Go-Live JSS"]
+    end
+
+    subgraph KLASTER_PASCA_RILIS["Siklus Pasca-Rilis & Keberlanjutan"]
+        MOD16["MOD-16: Pemeliharaan (F.P01), CSIRT (F.P02) & Change Request (F.P03)"]
+        MOD17["MOD-17: Monitoring SLA, Telemetri Transaksi & Deteksi Mangkrak (F.E01)"]
+        MOD18["MOD-18: Katalog Portofolio & Replikasi SPBE Antar-Instansi"]
+    end
+
+    %% DEPENDENCY RELATIONS
+    MOD00 --> MOD01
+    MOD00 --> MOD02
+    MOD01 --> MOD02
+    MOD01 --> MOD03
+    MOD01 --> MOD19
+
+    MOD03 --> MOD04
+    MOD04 -->|Gate 1: Kesepakatan 100%| MOD05
+    MOD05 --> MOD06
+    MOD06 -->|Gate 2: Approval Kabid| MOD07
+    MOD07 -->|Gate 3: SDI Clearance| MOD08
+    MOD08 --> MOD09
+    MOD09 -->|Gate 4: Mandatory TTD 2 Pihak| MOD10
+
+    MOD10 --> MOD11
+    MOD11 --> MOD12
+    MOD11 --> MOD13
+    MOD12 --> MOD13
+    MOD13 --> MOD14
+
+    MOD14 -->|Gate 5: QA Suite Pass| MOD15
+
+    MOD15 --> MOD16
+    MOD15 --> MOD17
+    MOD15 --> MOD18
+
+    MOD03 -.-> MOD19
+    MOD06 -.-> MOD19
+    MOD12 -.-> MOD19
+    MOD14 -.-> MOD19
+    MOD15 -.-> MOD19
+    MOD17 -.-> MOD19
 ```
 
 ---
