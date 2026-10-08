@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPSI SPBE Kota Yogyakarta - Master Prototype Portal</title>
+  <meta name="description" content="Pusat Navigasi Prototipe MPSI SPBE: Jelajahi Siklus Hidup Proses Bisnis (Fase 1 - 8) dan Simulasi Workspace Peran Pengguna (11 Persona).">
+  
+  <!-- Apple HIG Fonts & Tokens -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="shared/css/apple-hig.css">
+  <style>
+    .hub-container {
+      max-width: 1320px;
+      margin: 36px auto 70px;
+      padding: 0 24px;
+      width: 100%;
+    }
+
+    .hub-hero {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hub-hero::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 140%;
+      height: 200%;
+      background: radial-gradient(circle, var(--primary-light) 0%, transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .hub-hero h2 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text-main);
+      margin: 12px 0 10px;
+    }
+
+    .hub-hero p {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Section Grid */
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+      margin-bottom: 44px;
+    }
+
+    .hub-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--transition-normal);
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+    }
+
+    .hub-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+    }
+
+    .hub-card.ready {
+      border-left: 4px solid var(--success);
+    }
+
+    .hub-card.ready:hover {
+      border-color: var(--success);
+    }
+
+    .hub-card.wip {
+      opacity: 0.85;
+      border-left: 4px solid var(--warning);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-body h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .card-body p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .card-footer {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="apple-header">
+    <div class="apple-header-inner">
+      <div class="brand-badge-group">
+        <div class="jogja-shield">YGK</div>
+        <div class="brand-info">
+          <h1>MPSI SPBE KOTA YOGYAKARTA</h1>
+          <span>Master Prototype Hub &bull; Keputusan Wali Kota Nomor 108 Tahun 2026</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a href="../Blueprint.md" target="_blank" class="btn-apple btn-apple-ghost">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Buka Dokumen Blueprint
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="hub-container">
+    
+    <!-- Hero Box -->
+    <section class="hub-hero">
+      <div style="display:inline-flex; gap:8px; margin-bottom:8px;">
+        <span class="badge-apple blue">Super-App Tata Kelola TI</span>
+        <span class="badge-apple green">Apple HIG Interactive Prototypes</span>
+      </div>
+      <h2>Pusat Navigasi Prototipe MPSI SPBE</h2>
+      <p>
+        Jelajahi implementasi antarmuka siklus hidup perangkat lunak Pemerintah Kota Yogyakarta melalui 2 perspektif: <strong>Alur Proses Bisnis Terstruktur</strong> atau <strong>Simulasi Peran Pengguna (Role Simulation)</strong>.
+      </p>
+    </section>
+
+    <!-- 1. DIMENSI PROSES BISNIS -->
+    <section>
+      <div class="section-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Dimensi 1: Siklus Hidup Proses Bisnis SPBE (Fase 1 s/d 8)
+      </div>
+      <div class="section-sub">Walkthrough terpandu mulai dari intake permohonan hingga rilis dan audit kepatuhan.</div>
+
+      <div class="grid-cards">
+        
+        <!-- Fase 1 (READY) -->
+        <a href="proses/01-pengajuan-layanan/index.html" class="hub-card ready">
+          <div class="card-top">
+            <div class="card-icon" style="background:#EFF6FF; color:#2563EB;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <span class="badge-apple green">&check; Siap Digunakan</span>
+          </div>
+          <div class="card-body">
+            <h4>01. Pengajuan Layanan (Form F.A01)</h4>
+            <p>Formulir intake digital PIC OPD, unggah 4 berkas ke MinIO, dan integrasi surat dinas eOffice.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--primary);">Buka Formulir F.A01 &rarr;</span>
+            <span class="text-mono" style="color:var(--text-muted);">FASE 1</span>
+          </div>
+        </a>
+
+        <!-- Fase 2 (NEXT) -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#FEF3C7; color:#D97706;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            </div>
+            <span class="badge-apple amber">Tahap Berikutnya</span>
+          </div>
+          <div class="card-body">
+            <h4>02. Asesmen Kelayakan 3 Pilar (F.A02)</h4>
+            <p>Rapat Klarifikasi Teknis, Kertas Kerja Workbench, Joint Clearance (Kominfo, Bag. Organisasi, Bappeda) & Feedback Loop.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--warning);">Siap Dikembangkan</span>
+            <span class="text-mono" style="color:var(--text-muted);">FASE 2</span>
+          </div>
+        </div>
+
+        <!-- Fase 3 -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#F0FDFA; color:#0D9488;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <span class="badge-apple gray">Tahap Perencanaan</span>
+          </div>
+          <div class="card-body">
+            <h4>03. Standardisasi Metadata SDI</h4>
+            <p>Verifikasi Kamus Data, Standar Data Nasional/Daerah, dan clearance Walidata Daerah.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--text-muted);">Seksi Data Statistik</span>
+            <span class="text-mono" style="color:var(--text-muted);">FASE 3</span>
+          </div>
+        </div>
+
+        <!-- Fase 4 -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#EEF2FF; color:#4F46E5;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+            </div>
+            <span class="badge-apple gray">Tahap Perencanaan</span>
+          </div>
+          <div class="card-body">
+            <h4>04. Perencanaan & KAK (F.A03 / F.P01)</h4>
+            <p>Formulir Software Requirements dan penandatanganan KAK digital oleh kedua belah pihak.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--text-muted);">Mandatory Contract</span>
+            <span class="text-mono" style="color:var(--text-muted);">FASE 4</span>
+          </div>
+        </div>
+
+        <!-- Fase 5 -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#FDF2F8; color:#DB2777;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+            </div>
+            <span class="badge-apple gray">Tahap Perencanaan</span>
+          </div>
+          <div class="card-body">
+            <h4>05. Workspace Tangkas (Sprint Dev)</h4>
+            <p>Papan Kanban Work Packages, integrasi commit Git, timesheet log, FI.01 & Hosting FI.02.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--text-muted);">Seksi Perangkat Lunak</span>
+            <span class="text-mono" style="color:var(--text-muted);">FASE 5</span>
+          </div>
+        </div>
+
+        <!-- Fase 6 -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#ECFDF5; color:#059669;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <span class="badge-apple gray">Tahap Perencanaan</span>
+          </div>
+          <div class="card-body">
+            <h4>06. Pengujian Mutu (QA Suite 5 Pilar)</h4>
+            <p>Uji Integrasi, Fungsional, Berita Acara UAT OPD, Pentest CSIRT, dan Stress Test k6.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--text-muted);">Quality Gate Mutlak</span>
+            <span class="text-mono" style="color:var(--text-muted);">FASE 6</span>
+          </div>
+        </div>
+
+        <!-- Fase 7 -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#FEF2F2; color:#DC2626;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+            </div>
+            <span class="badge-apple gray">Tahap Perencanaan</span>
+          </div>
+          <div class="card-body">
+            <h4>07. Serah Terima & Rilis (BAST)</h4>
+            <p>BAST F.SR01 klausul mandatori 3 bulan, TOT Pelatihan F.R01, dan Checklist Rilis F.R04.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--text-muted);">Go-Live Produksi</span>
+            <span class="text-mono" style="color:var(--text-muted);">FASE 7</span>
+          </div>
+        </div>
+
+        <!-- Fase 8 -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#F3E8FF; color:#7E22CE;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <span class="badge-apple gray">Tahap Perencanaan</span>
+          </div>
+          <div class="card-body">
+            <h4>08. Dashboard Auditor Internal</h4>
+            <p>Monitoring kepatuhan sprint dev, verifikasi integritas hash SHA-256, dan Form F.AUD01.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--text-muted);">Inspektorat Kota</span>
+            <span class="text-mono" style="color:var(--text-muted);">FASE 8</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. DIMENSI PERAN PENGGUNA -->
+    <section>
+      <div class="section-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Dimensi 2: Simulasi Ruang Kerja Peran Pengguna (Role Simulation)
+      </div>
+      <div class="section-sub">Masuk dan simulasikan antarmuka khusus sesuai kewenangan akun pengguna (RBAC).</div>
+
+      <div class="grid-cards">
+        
+        <!-- Role 1: OPD (READY) -->
+        <a href="peran/01-opd-pemohon/index.html" class="hub-card ready">
+          <div class="card-top">
+            <div class="card-icon" style="background:#EFF6FF; color:#2563EB;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            </div>
+            <span class="badge-apple green">&check; Siap Digunakan</span>
+          </div>
+          <div class="card-body">
+            <h4>PIC Pemohon OPD</h4>
+            <p>Dashboard tracking status tiket, feedback loop unggah perbaikan berkas, UAT, dan BAST.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--primary);">Buka Dashboard OPD &rarr;</span>
+            <span class="text-mono" style="color:var(--text-muted);">P-01</span>
+          </div>
+        </a>
+
+        <!-- Role 2: Analis Perencanaan -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#FEF3C7; color:#D97706;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <span class="badge-apple amber">Tahap Berikutnya</span>
+          </div>
+          <div class="card-body">
+            <h4>Tim Analis Perencanaan (Diskominfo)</h4>
+            <p>Studio Rapat Klarifikasi, Kertas Kerja F.A02 Workbench, dan Rekomendasi Resmi.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--warning);">Siap Dikembangkan</span>
+            <span class="text-mono" style="color:var(--text-muted);">P-02</span>
+          </div>
+        </div>
+
+        <!-- Role 3: Bagian Organisasi -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#FDF2F8; color:#DB2777;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <span class="badge-apple gray">Tahap Perencanaan</span>
+          </div>
+          <div class="card-body">
+            <h4>Bagian Organisasi Setda</h4>
+            <p>Pilar 1: Validasi Kesesuaian Tupoksi Perwal SOTK & Verifikasi Peta Probis/SOP Layanan.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--text-muted);">Pilar Kelembagaan</span>
+            <span class="text-mono" style="color:var(--text-muted);">P-10</span>
+          </div>
+        </div>
+
+        <!-- Role 4: Bappeda -->
+        <div class="hub-card wip">
+          <div class="card-top">
+            <div class="card-icon" style="background:#F0FDFA; color:#0D9488;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <span class="badge-apple gray">Tahap Perencanaan</span>
+          </div>
+          <div class="card-body">
+            <h4>Bappeda Kota Yogyakarta</h4>
+            <p>Pilar 2: Validasi Keselarasan Sasaran RPJMD/RKPD, IKU Daerah, dan Subkegiatan SIPD.</p>
+          </div>
+          <div class="card-footer">
+            <span style="color:var(--text-muted);">Pilar Perencanaan</span>
+            <span class="text-mono" style="color:var(--text-muted);">P-11</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Apple Footer -->
+  <footer class="apple-footer">
+    <p>&copy; 2026 Pemerintah Kota Yogyakarta &bull; Dinas Komunikasi Informatika dan Persandian</p>
+    <p style="margin-top:4px; font-size:11px;">
+      Standar Teknis & Prosedur Pembangunan/Pengembangan Aplikasi Khusus SPBE &bull; Mode Prototipe Antigravity 2.0
+    </p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="shared/js/mock-db.js"></script>
+  <script src="shared/js/theme-switcher.js"></script>
+</body>
+</html>

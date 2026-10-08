@@ -1,0 +1,435 @@
+/* ==========================================================================
+   STYLE SPESIFIK FASE 1: PENGAJUAN LAYANAN (FORM F.A01)
+   Mewarisi Design Tokens Apple HIG
+   ========================================================================== */
+
+/* Main Container */
+.form-page-wrap {
+  max-width: 1180px;
+  margin: 28px auto 60px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+/* Page Banner */
+.page-hero-banner {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero-banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 260px;
+  height: 100%;
+  background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.hero-text h2 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+  margin: 6px 0 8px;
+}
+
+.hero-text p {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  max-width: 650px;
+  line-height: 1.6;
+}
+
+.hero-meta-box {
+  background: var(--primary-light);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 22px;
+  text-align: right;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-meta-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary);
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.hero-meta-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-top: 2px;
+  display: block;
+}
+
+/* Form Card */
+.form-card-container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.form-body-padded {
+  padding: 36px 40px;
+}
+
+/* Step Content Sections */
+.form-step-section {
+  display: none;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.form-step-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-legend {
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.section-legend h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.section-legend p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* Form Grid */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-grid-full {
+  grid-column: 1 / -1;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.field-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-label .req {
+  color: var(--danger);
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: var(--text-sub);
+}
+
+/* Upload Card Dropzone */
+.upload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.upload-dropzone {
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px 18px;
+  text-align: center;
+  background: var(--bg-app);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.upload-dropzone:hover, .upload-dropzone.dragover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.upload-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.upload-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.upload-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.upload-status-chip {
+  margin-top: 6px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--border-subtle);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.upload-dropzone.has-file {
+  border-style: solid;
+  border-color: var(--success);
+  background: var(--success-light);
+}
+
+.upload-dropzone.has-file .upload-icon {
+  color: var(--success);
+}
+
+.upload-dropzone.has-file .upload-status-chip {
+  background: var(--success);
+  color: #FFFFFF;
+}
+
+/* Live Paper Preview Layout (Form F.A01 KOP Dinas) */
+.paper-preview-container {
+  background: #525659;
+  padding: 30px;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.paper-sheet {
+  background: #FFFFFF;
+  color: #111827;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 56px;
+  border-radius: 4px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+  font-family: "Times New Roman", Times, serif;
+  line-height: 1.5;
+}
+
+.kop-surat {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 3px double #000000;
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.kop-logo {
+  width: 70px;
+  height: 80px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.kop-text {
+  flex-grow: 1;
+}
+
+.kop-text h4 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.kop-text h3 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 2px 0;
+  text-transform: uppercase;
+}
+
+.kop-text p {
+  font-size: 10.5px;
+  margin: 0;
+  font-style: italic;
+}
+
+.judul-formulir {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.judul-formulir h4 {
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 0;
+}
+
+.judul-formulir p {
+  font-size: 11px;
+  margin: 2px 0;
+}
+
+.tabel-isian {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  margin-bottom: 20px;
+}
+
+.tabel-isian th, .tabel-isian td {
+  border: 1px solid #000000;
+  padding: 6px 10px;
+  vertical-align: top;
+}
+
+.tabel-isian th {
+  background-color: #F3F4F6;
+  text-align: left;
+}
+
+.ttd-grid {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 36px;
+  font-size: 11.5px;
+}
+
+.ttd-box {
+  width: 250px;
+  text-align: center;
+}
+
+.ttd-qr {
+  margin: 12px auto;
+  width: 72px;
+  height: 72px;
+  border: 1px solid #D1D5DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #6B7280;
+  background: #F9FAFB;
+}
+
+/* Action Bar Bottom */
+.form-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background: var(--bg-surface-elevated);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.action-buttons-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Success Modal Popup */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-window {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  max-width: 520px;
+  width: 100%;
+  padding: 36px 32px;
+  box-shadow: var(--shadow-float);
+  text-align: center;
+  transform: scale(0.94);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.open .modal-window {
+  transform: scale(1);
+}
+
+.modal-success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: var(--success-light);
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
