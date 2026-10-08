@@ -102,37 +102,50 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
      - **Siklus Evaluasi Ulang / Pengembalian ke OPD (Feedback Loop Re-Verifikasi):** Apabila salah satu atau ketiga pilar menemukan ketidaksesuaian atau dokumen belum lengkap (misal SOP belum terstandarisasi, subkegiatan SIPD belum tertaut, atau eviden teknis kurang), status tiket dialihkan menjadi **`Perbaikan Dokumen / Klarifikasi Diperlukan`** dan **dikembalikan ke antrean OPD Pemohon** disertai daftar rincian catatan revisi dari pilar terkait. OPD mengunggah dokumen perbaikan yang kemudian divalidasi ulang (*re-check*) oleh penelaah hingga status 3 pilar dinyatakan Disetujui/Lolos.
      - Setelah seluruh 3 pilar dinyatakan Lolos (*Clear*), masing-masing penelaah melakukan **Pengisian & Penandatanganan Formulir F.A02 Resmi Terpadu** sesuai hak akses (SoD RBAC), sebelum diajukan ke Approval Digital Kabid Pengembangan Aplikasi Informatika (Gate 2 Clearance).
   3. **Fase 3: Standardisasi Metadata Satu Data Indonesia / SDI (Walidata Daerah):** Permohonan yang telah lolos telaah F.A02 dan disahkan Kabid diteruskan ke Seksi Data Statistik (Walidata Daerah). **Tahap ini WAJIB CLEAR TERLEBIH DAHULU sebelum masuk ke analisis kebutuhan teknis**: memverifikasi Kamus Data, Standar Data, Kode Referensi Data Induk Pemkot, dan Interoperabilitas SPLP hingga diterbitkannya **Rekomendasi Walidata SDI (Clearance Metadata Sah 100%)**. Bila struktur data belum standar / duplikat, tiket dikembalikan ke OPD untuk perbaikan kamus data.
-  4. **Fase 4: Perencanaan Teknis & Penandatanganan KAK Bersama (Form F.A03 & Penandatanganan KAK F.P01 Kedua Belah Pihak):** Setelah Metadata SDI dinyatakan Clear 100%, Tim Bisnis Analis & Arsitek Sistem memproses perencanaan teknis:
-     - Penyusunan Formulir **F.A03** Software Requirements (kebutuhan fungsional per role, non-fungsional SLA/keamanan, matriks mitigasi risiko).
+  4. **Fase 4: Perencanaan Teknis & Penandatanganan KAK Bersama (Form F.A03, BRD F.A04, SRS F.A05, & KAK F.P01):** Setelah Metadata SDI dinyatakan Clear 100%, Tim Bisnis Analis & Arsitek Sistem memproses perencanaan teknis:
+     - Penyusunan Formulir **F.A03** Software Requirements, Dokumen Analisis Kebutuhan Sistem / BRD (**F.A04**), dan Software Requirement Specification / SRS (**F.A05**) yang merinci kebutuhan fungsional per role, non-fungsional (SLA, performa, keamanan), serta matriks risiko.
      - Penyusunan Draf Kerangka Acuan Kerja KAK Teknis (**F.P01**) dan Blueprint Rancang Bangun Sistem.
      - Sesi Pembahasan & Harmonisasi Draf KAK bersama Tim Teknis OPD Pemohon untuk mengunci ruang lingkup pekerjaan.
-     - **Penandatanganan Digital KAK oleh Kedua Belah Pihak (Mandatory Contract Gate):** Dokumen KAK F.P01 wajib ditandatangani secara digital oleh **Pihak I (Kepala Bidang / Diskominfo)** dan **Pihak II (Kepala OPD / PPK Pemohon)**. Penandatanganan kedua belah pihak ini menjadi komitmen sah ruang lingkup dan alokasi waktu.
+     - **Penandatanganan Digital KAK oleh Kedua Belah Pihak (Mandatory Contract Gate):** Dokumen KAK F.P01 wajib ditandatangani secara digital oleh **Pihak I (Kepala Bidang / Diskominfo)** dan **Pihak II (Kepala OPD / PPK Pemohon)** sebagai komitmen sah ruang lingkup dan alokasi waktu.
      - **Quality Guard:** Status tiket HANYA dapat bertransisi menjadi **Ready for Dev** apabila KAK telah ditandatangani oleh kedua belah pihak dan seluruh dokumen perencanaan terkunci permanen di MinIO. Tim pengembang dilarang memulai koding sebelum KAK disahkan kedua pihak (*mencegah scope creep*).
-  5. **Fase 5: Pengembangan Sistem / Development (Workspace Pengembangan Tangkas: Agile Sprint & Work Packages, serta Eksekusi FI.01/FI.02):** Tiket berstatus `Ready for Dev` diterima Ketua Tim Kerja Perangkat Lunak. Proses pengembangan dijalankan secara terstruktur:
+  5. **Fase 5: Rancang Bangun & Pengembangan Sistem (Dokumen DSI F.R01, Workspace Agile Sprint & Work Packages, FI.01 & FI.02):** Tiket berstatus `Ready for Dev` diterima Ketua Tim Kerja Perangkat Lunak:
      - **Alokasi Squad Pengembang:** Penugasan Project Manager (PM), Desainer Sistem Informasi (DSI UI-UX), Backend Dev, Frontend Dev, dan QA.
-     - **Sprint Kickoff & Koordinasi Teknis:** Bedah F.A03, KAK F.P01, penetapan milestone sprint, arsitektur tech stack, dan branching Git.
+     - **Tahap Rancang Bangun DSI (Form F.R01):** Desainer Sistem Informasi menyusun arsitektur sistem, mockup UI/UX, diagram alir data, kamus basis data (ERD), dan spesifikasi API sebelum implementasi koding skala penuh.
      - **Workspace Pengembangan Tangkas (Agile Sprint & Work Packages):** Manajemen kartu kerja kanban (`Backlog` ➔ `To Do` ➔ `In Progress` ➔ `Review` ➔ `Done`), pelacak persentase progres fisik pengembangan secara real-time (0% s/d 100%), dan integrasi commit Git.
-     - **Dokumentasi & Infrastruktur:** Pengisian Form **FI.01** (Dokumentasi Rancang Bangun & Kodefikasi), pengajuan Form **FI.02** (Hosting & Subdomain ke Bidang IT), serta deployment build ke lingkungan Staging Sandbox Pemkot.
+     - **Dokumentasi & Infrastruktur:** Pengisian Form **FI.01** (Dokumen Pengembangan Programmer & Kodefikasi), pengajuan Form **FI.02** (Permohonan Hosting & Subdomain ke Bidang IT), serta deployment build ke lingkungan Staging Sandbox Pemkot.
   6. **Fase 6: Pengujian Mutu Sistem / QA Suite (5 Pilar Kepwal 108/2026):** Setelah progres pengembangan fisik mencapai 100% dan deploy ke staging, tim QA mengeksekusi 5 Pilar Pengujian Mutu (Form **F.UO1 s/d F.U07**):
      - Rencana Uji Sistem (Form **F.UO1**).
-     - Pilar 1: Pengujian Integrasi (Form **F.UO2**).
-     - Pilar 2: Pengujian Fungsional Sistem (Form **F.UO3**).
+     - Pilar 1: Pengujian Integrasi (Form **_F.UO2**).
+     - Pilar 2: Pengujian Fungsional Sistem (Form **_F.UO3**).
      - Pilar 3: Pengujian Penerimaan Pengguna UAT OPD (Form **F.UO4**) & Berita Acara UAT (Form **F.UO5**).
      - Pilar 4: Pengujian Keamanan Pentest CSIRT (Form **F.U06**).
      - Pilar 5: Pengujian Beban & Stress Test k6 (Form **F.U07**).
      - **Quality Gate:** Lulus 100% seluruh pilar (Nol bug High/Critical, UAT disetujui, dan Pentest Clear) sebelum dapat melangkah ke tahap serah terima.
-  7. **Fase 7: Serah Terima & Rilis Layanan Produksi (F.SR01 s/d F.R04):** Setelah seluruh pengujian mutu lulus, dilaksanakan proses serah terima dan go-live:
-     - Penandatanganan Berita Acara Serah Terima BAST (Form **F.SR01**) antara Diskominfo dan OPD dengan klausul mandatori aplikasi wajib aktif bertransaksi minimal 3 bulan di JSS.
+  7. **Fase 7: Serah Terima & Rilis Layanan Produksi (_F.R02 BAST s/d F.R06 Checklist Rilis):** Setelah seluruh pengujian mutu lulus, dilaksanakan proses serah terima dan go-live:
+     - Penandatanganan Berita Acara Serah Terima BAST (Form **_F.R02**) antara Diskominfo dan OPD dengan klausul mandatori aplikasi wajib aktif bertransaksi minimal 3 bulan di JSS.
      - Pelaksanaan pelatihan pengguna dan penandatanganan Berita Acara Training of Trainers TOT (Form **F.R01**).
-     - Penerbitan Surat Keputusan Tim Pengelola Aplikasi OPD (Form **F.R02 / F.R03**).
-     - Pemeriksaan Checklist Kesiapan Rilis Produksi (Form **F.R04**), verifikasi DNS/SSL, dan integrasi SSO JSS.
-     - Aplikasi aktif beroperasi di lingkungan produksi dan didaftarkan ke sistem pemantauan berkala (Monev SLA 3 Bulan Form **F.E01**).
-  8. **Fase 8: Audit Internal & Pengawasan Kepatuhan SPBE (Inspektorat Kota Yogyakarta / Tim Auditor Kepatuhan):**
-     Fase audit dan pengawasan independen yang memantau kepatuhan tata kelola SPBE secara berkelanjutan di seluruh tahapan siklus hidup aplikasi. Tim Auditor Inspektorat difasilitasi dengan **Dashboard Auditor Internal** khusus untuk melakukan:
-     - **Monitoring Kepatuhan Tahap Pengembangan:** Memeriksa keselarasan progres fisik riil vs target KAK F.P01, validitas penugasan squad, jam kerja efektif (*timesheet log*) pengembang, keterkaitan commit hash Git terhadap work packages tiket, serta pencegahan jalan pintas (*bypass development*).
-     - **Rekapitulasi Matriks 10 Artefak Mandatori SPBE:** Memeriksa kelengkapan berkas legalitas dan dokumen teknis per aplikasi di setiap fase (F.A01, Berita Acara Rapat Klarifikasi, F.A02 Resmi Disahkan Kabid, Rekomendasi SDI Walidata, KAK F.P01 TTD 2 Pihak, Dokumentasi Rancang Bangun FI.01/FI.02, Laporan Pentest CSIRT F.U06, Berita Acara UAT F.UO5, BAST F.SR01 klausul 3 bulan).
-     - **Pemeriksaan Integritas Bukti & Tamper-Proof Audit Trail:** Memverifikasi keabsahan checksum SHA-256 berantai (*blockchain-like log chaining*) untuk memastikan tidak terjadi manipulasi riwayat persetujuan atau bypass status tiket.
-     - **Penerbitan Lembar Hasil Audit Kepatuhan SPBE (Form F.AUD01):** Auditor mencatat temuan ketidakpatuhan (*Compliance Findings*), menerbitkan rekomendasi perbaikan resmi, dan memantau status tindak lanjut temuan audit (*Audit Follow-Up Action*).
+     - Penerbitan Surat Keputusan Penetapan Aplikasi Khusus (Form **F.R03**) dan SK Tim Pengelola Aplikasi OPD (Form **F.R04**).
+     - Pemeriksaan Checklist Kesiapan Rilis Produksi (Form **F.R06**), verifikasi DNS/SSL, dan integrasi SSO JSS.
+     - Aplikasi aktif beroperasi di lingkungan produksi dan didaftarkan ke siklus pemeliharaan dan pemantauan berkala.
+  8. **Fase 8: Pemeliharaan Aplikasi & Manajemen Insiden (Form F.P01, F.P02 CSIRT, & F.P03 Change Request):**
+     Siklus operasional pasca-rilis untuk menjamin keandalan, ketersediaan, dan keamanan sistem informasi yang beroperasi di Pemkot Yogyakarta:
+     - **Pencatatan Pemeliharaan Aplikasi (Form F.P01):** Log pencatatan berkala pemeliharaan sistem (patching keamanan OS/framework, backup database rutin, optimalisasi query, dan perbaikan bug minor).
+     - **Manajemen Insiden Keamanan Informasi CSIRT (Form F.P02):** Penanganan tanggap darurat insiden siber (deface, serangan DDoS, kebocoran data, anomali akses) oleh Jogja Kota CSIRT dengan Berita Acara Insiden resmi.
+     - **Manajemen Perubahan / Request for Change (Form F.P03):** Prosedur baku usulan perubahan sistem (*change request*). Perubahan diklasifikasikan menjadi *Minor Change* (dieksekusi langsung tim pemeliharaan) atau *Major Change/Revamp* (dialihkan kembali ke siklus pengajuan awal F.A01).
+  9. **Fase 9: Monitoring & Evaluasi Penggunaan Aplikasi (Monev SLA 3 Bulan Form F.E01 & Deteksi Aplikasi Mangkrak):**
+     Penegakan klausul wajib Kepwal 108/2026 bahwa seluruh aplikasi yang telah diserahterimakan wajib aktif dimanfaatkan secara nyata:
+     - **Evaluasi Penggunaan Aplikasi Pasca-Rilis 3 Bulan (Form F.E01):** Evaluasi berkala yang mengukur rasio pengguna aktif (MAU/DAU), volume transaksi layanan publik/administrasi, uptime server, dan pencapaian target IKU OPD pemohon.
+     - **Deteksi Otomatis Aplikasi Mangkrak (Idle App Detector):** Sistem memantau aktivitas transaksi secara otomatis; jika dalam 3 bulan berturut-turut terdeteksi transaksi nihil (0 transaksi), diterbitkan notifikasi peringatan dan rekomendasi penonaktifan/penggabungan layanan (*decommissioning warning*).
+  10. **Fase 10: Replikasi Aplikasi SPBE (Form _F.RA01 & F.RA02):**
+      Standardisasi proses replikasi aplikasi cerdas dalam rangka efisiensi anggaran dan kolaborasi antardaerah/antarinstansi:
+      - **Replikasi Masuk (Inbound):** OPD Pemkot Yogyakarta mengusulkan adopsi sistem unggulan dari kementerian/pemerintah daerah lain. Dilakukan verifikasi teknis melalui Formulir Assessment Replikasi Aplikasi SPBE (Form **_F.RA01**) dan Formulir Analisis Kelayakan Replikasi (Form **F.RA02**).
+      - **Replikasi Keluar (Outbound):** Fasilitasi hibah atau berbagi pakai aplikasi unggulan Kota Yogyakarta (seperti ekosistem JSS) kepada pemerintah daerah lain sesuai regulasi Satu Data dan SPBE Nasional.
+  11. **Fungsi Pengawasan Lintas Siklus: Audit Internal & Kepatuhan SPBE (Inspektorat Kota Yogyakarta / Form F.AUD01):**
+      Fase audit dan pengawasan independen yang memantau kepatuhan tata kelola SPBE secara berkelanjutan di seluruh tahapan siklus hidup aplikasi (Fase 1 s/d Fase 10). Tim Auditor Inspektorat difasilitasi dengan **Dashboard Auditor Internal** khusus untuk melakukan:
+      - **Monitoring Kepatuhan Tahap Pengembangan:** Memeriksa keselarasan progres fisik riil vs target KAK F.P01, validitas penugasan squad, jam kerja efektif (*timesheet log*) pengembang, keterkaitan commit hash Git terhadap work packages tiket, serta pencegahan jalan pintas (*bypass development*).
+      - **Rekapitulasi Matriks 10 Artefak Mandatori SPBE:** Memeriksa kelengkapan berkas legalitas dan dokumen teknis per aplikasi di setiap fase (F.A01, Berita Acara Rapat Klarifikasi, F.A02 Sah Kabid, Rekomendasi SDI Walidata, KAK F.P01 TTD 2 Pihak, Dokumen Rancang Bangun F.R01/FI.01/FI.02, Laporan Pentest CSIRT F.U06, Berita Acara UAT F.UO5, BAST _F.R02 klausul 3 bulan, F.E01 Monev, dan F.RA01/F.RA02 Replikasi).
+      - **Pemeriksaan Integritas Bukti & Tamper-Proof Audit Trail:** Memverifikasi keabsahan checksum SHA-256 berantai (*blockchain-like log chaining*) untuk memastikan tidak terjadi manipulasi riwayat persetujuan atau bypass status tiket.
+      - **Penerbitan Lembar Hasil Audit Kepatuhan SPBE (Form F.AUD01):** Auditor mencatat temuan ketidakpatuhan (*Compliance Findings*), menerbitkan rekomendasi perbaikan resmi, dan memantau status tindak lanjut temuan audit (*Audit Follow-Up Action*).
 
   **Diagram Alur Kerja Target (To-Be) per Fase:**
 
@@ -387,39 +400,148 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
       OutFase6 -->|"➡️ Diteruskan ke Tahap Serah Terima"| NextFase7["🚀 FASE 7: SERAH TERIMA & RILIS LAYANAN<br/>(BAST F.SR01, TOT, SK Pengelola & Rilis F.R04)"]
   ```
 
-  **7. Fase 7: Serah Terima & Rilis Layanan Produksi (F.SR01 s/d F.R04)**
+  **7. Fase 7: Serah Terima & Rilis Layanan Produksi (_F.R02 s/d F.R06)**
   ```mermaid
   flowchart TD
-      InFase7["🎯 Tiket Masuk: Lulus Quality Gate 5 Pilar<br/>(Hasil Uji Mutu SPBE Sah)"] --> HandoverTeam["👥 Tim Serah Terima & Tim Rilis<br/>(Diskominfo & OPD Pemohon)"]
+      InFase7["🎯 Tiket Masuk: Lulus Quality Gate 5 Pilar<br/>(Hasil Uji Mutu SPBE Sah F.UO1 s/d F.U07)"] --> HandoverTeam["👥 Tim Serah Terima & Tim Rilis<br/>(Diskominfo & OPD Pemohon)"]
       
       HandoverTeam --> HandoverRelease
       
       subgraph HandoverRelease ["🚀 PROSES SERAH TERIMA & RILIS PRODUKSI"]
           direction TB
-          HR1["1. Berita Acara Serah Terima BAST (Form F.SR01)<br/>• TTE Pihak I Diskominfo & Pihak II OPD<br/>• Klausul Mandatori: Aplikasi Wajib Aktif Minimal 3 Bulan di JSS"]
-          HR2["2. Berita Acara Pelatihan Pengguna / TOT (Form F.R01)<br/>• Pelaksanaan pelatihan admin & operator OPD"]
-          HR3["3. Penetapan SK Tim Pengelola Aplikasi OPD (Form F.R02 / F.R03)<br/>• Legalitas admin pengampu dan penanggung jawab data"]
-          HR4["4. Checklist Kesiapan Rilis Produksi (Form F.R04)<br/>• Verifikasi DNS *.jogjakota.go.id, SSL, SSO JSS & Foto MinIO"]
-          HR5["5. Go-Live Produksi & Publikasi ke JSS<br/>• Deploy ke server produksi Data Center Pemkot"]
+          HR1["1. Berita Acara Serah Terima BAST (Form _F.R02)<br/>• TTE Pihak I Diskominfo & Pihak II OPD<br/>• Klausul Mandatori: Aplikasi Wajib Aktif Minimal 3 Bulan di JSS"]
+          HR2["2. Berita Acara Pelatihan Pengguna / TOT (Form F.R01)<br/>• Pelaksanaan pelatihan admin & operator teknis OPD"]
+          HR3["3. Penetapan Legalitas Aplikasi & Pengelola<br/>• SK Penetapan Aplikasi Khusus (Form F.R03)<br/>• SK Tim Pengelola Aplikasi OPD (Form F.R04)"]
+          HR4["4. Checklist Kesiapan Rilis Produksi (Form F.R06)<br/>• Verifikasi DNS *.jogjakota.go.id, SSL, SSO JSS & Dokumen MinIO"]
+          HR5["5. Go-Live Produksi & Publikasi ke JSS<br/>• Deploy ke server produksi Data Center Pemkot Yogyakarta"]
           
           HR1 --> HR2 --> HR3 --> HR4 --> HR5
       end
       
-      HandoverRelease --> OutFase7["🎯 OUTPUT FASE 7: APLIKASI AKTIF / PRODUKSI DI JSS<br/>• BAST F.SR01 Sah Bertanda Tangan Kedua Belah Pihak<br/>• Aplikasi Tayang & Aktif Digunakan di JSS<br/>• Terdaftar pada Siklus Monitoring 3 Bulan (Form F.E01)"]
+      HandoverRelease --> OutFase7["🎯 OUTPUT FASE 7: APLIKASI AKTIF / PRODUKSI DI JSS<br/>• BAST _F.R02 Sah Bertanda Tangan Kedua Belah Pihak<br/>• Aplikasi Tayang & Aktif Digunakan di JSS<br/>• Terdaftar Otomatis ke Siklus Pemeliharaan & Monitoring"]
       
-      OutFase7 --> PostRelease["📈 SIKLUS PASCA-RILIS (OPERASIONAL & MONEV)<br/>• Pemeliharaan & Change Request (F.P01, F.P02, F.P03)<br/>• Monitoring Kepatuhan Transaksi 3 Bulan (F.E01)<br/>• Katalog Replikasi Aplikasi SPBE (F.RA01 & F.RA02)"]
+      OutFase7 -->|"Masuk Siklus Operasional"| NextFase8["🛠️ FASE 8: PEMELIHARAAN & INSIDEN<br/>(Form F.P01, F.P02 CSIRT, & F.P03 RFC)"]
+      OutFase7 -->|"Masuk Evaluasi 3 Bulan"| NextFase9["📊 FASE 9: MONITORING & EVALUASI<br/>(Monev SLA 3 Bulan Pasca-Rilis Form F.E01)"]
   ```
 
-  **8. Fase 8: Audit Internal & Pengawasan Kepatuhan SPBE (Dashboard Auditor)**
+  **8. Fase 8: Pemeliharaan Aplikasi & Manajemen Insiden (Form F.P01, F.P02, & F.P03)**
+  ```mermaid
+  flowchart TD
+      InMaint["🔔 Tiket Pemeliharaan Masuk<br/>(Dari Helpdesk JSS, Laporan OPD, atau CSIRT)"] --> LeadMaint["👤 Tim Pengelola & Pemeliharaan Aplikasi<br/>(Diskominfo & PIC OPD)"]
+      
+      LeadMaint --> TriageMaint
+      
+      subgraph TriageMaint ["🔍 1. TRIAGE & KLASIFIKASI PEMELIHARAAN SISTEM"]
+          direction TB
+          TR1{"Triage Kategori Isu"}
+          TR1 -- "Perawatan Rutin & Bug Minor" --> M1["1. Pemeliharaan Rutin / Bug Fix<br/>• Patching sistem, update library, backup DB<br/>• Penanganan kendala error fungsional minor"]
+          TR1 -- "Insiden Siber & Keamanan" --> M2["2. Insiden Keamanan Informasi (CSIRT)<br/>• Deteksi serangan siber, deface, DDoS, data leak<br/>• Eskalasi tanggap darurat Jogja Kota CSIRT"]
+          TR1 -- "Permintaan Fitur Baru / Modifikasi" --> M3["3. Usulan Perubahan Sistem (Change Request)<br/>• Penambahan modul / perubahan alur proses bisnis<br/>• Analisis dampak beban server & database"]
+      end
+      
+      M1 --> FormFP01["📝 Form F.P01: Formulir Pencatatan Pemeliharaan Aplikasi<br/>• Log kronologis perbaikan & hasil pengujian patch"]
+      M2 --> FormFP02["🛡️ Form F.P02: Laporan Insiden Keamanan Informasi<br/>• Penanganan insiden, forensik, & Berita Acara Penanganan CSIRT"]
+      M3 --> FormFP03["🔄 Form F.P03: Formulir Change Request (RFC)<br/>• Matriks evaluasi dampak & persetujuan perubahan"]
+      
+      FormFP03 --> DecisionRFC{"⚖️ Klasifikasi Tingkat Perubahan (RFC)"}
+      DecisionRFC -- "Perubahan Mayor (Perombakan Alur / Anggaran)" --> ReturnFA01["🔁 Dialihkan ke Siklus Analisis Baru (F.A01)<br/>(Memerlukan KAK Teknis & Penelaahan Ulang)"]
+      DecisionRFC -- "Perubahan Minor (Optimasi / Penyesuaian)" --> ExecPatch["⚙️ Eksekusi Perubahan oleh Tim Pemeliharaan"]
+      
+      FormFP01 --> ExecPatch
+      FormFP02 --> ExecPatch
+      
+      ExecPatch --> VerifMaint["🧪 Verifikasi & Uji Regresi di Lingkungan Staging"]
+      VerifMaint --> ApprMaint{"👔 Persetujuan Rilis Patch<br/>(Ketua Tim Teknis / Kabid)"}
+      ApprMaint -->|"Disetujui"| OutFase8["🎯 OUTPUT FASE 8: PEMELIHARAAN TERVERIFIKASI<br/>• Patch / Update Sukses Diterapkan di Produksi<br/>• Dokumen F.P01/F.P02/F.P03 Lengkap & Terarsip di MinIO<br/>• Log Pemeliharaan Tercatat Permanen di Audit Trail"]
+  ```
+
+  **9. Fase 9: Monitoring & Evaluasi Penggunaan Aplikasi (Monev SLA 3 Bulan Form F.E01)**
+  ```mermaid
+  flowchart TD
+      AppLive["🚀 Aplikasi Beroperasi di Lingkungan Produksi & JSS"] --> CronSchedule["⏱️ Pemicu Otomatis: Siklus 3 Bulan Pasca-Rilis<br/>(Penegakan Klausul Wajib BAST Kepwal 108/2026)"]
+      
+      CronSchedule --> TelemetryEngine
+      
+      subgraph TelemetryEngine ["📊 1. PENGUMPULAN DATA TELEMETRI & LOG TRANSAKSI JSS"]
+          direction TB
+          T1["Penarikan Log Autentikasi Pengguna & Active Users (DAU/MAU)"]
+          T2["Perhitungan Volume Transaksi Layanan Publik / Administrasi"]
+          T3["Pencatatan SLA Ketersediaan Server (Uptime Monitoring &ge; 90%)"]
+          T4["Kalkulasi Error Rate & Waktu Tanggap Rata-Rata (Response Time)"]
+          
+          T1 --> T2 --> T3 --> T4
+      end
+      
+      TelemetryEngine --> EvalReview
+      
+      subgraph EvalReview ["📋 2. EVALUASI BERSAMA DISKOMINFO & OPD PEMOHON (Form F.E01)"]
+          direction TB
+          E1["Pengisian Form F.E01: Formulir Evaluasi Penggunaan Aplikasi"]
+          E2["Penilaian Indikator Capaian Kinerja Layanan vs Target Awal KAK"]
+          E3["Survei Kepuasan Pengguna Akhir (CSAT) Terintegrasi JSS"]
+          
+          E1 --> E2 --> E3
+      end
+      
+      EvalReview --> EvalDecision{"⚖️ Klasifikasi Kemanfaatan Aplikasi"}
+      
+      EvalDecision -- "🟢 Pemanfaatan Tinggi (Transaksi Aktif & SLA Memenuhi)" --> SustainedApp["✅ Layanan Sukses & Berkelanjutan<br/>• Lanjut ke siklus pemeliharaan rutin tahunan<br/>• Direkomendasikan masuk Katalog Replikasi SPBE"]
+      
+      EvalDecision -- "🟡 Pemanfaatan Rendah (Kendala Adopsi Pengguna / SOP)" --> ActionPlan["⚠️ Penerbitan Rencana Tindak Lanjut (Action Plan)<br/>• Rekomendasi sosialisasi, bimbingan teknis, atau simplifikasi UI<br/>• Periode perbaikan 30 hari kalender"]
+      
+      EvalDecision -- "🔴 Transaksi Nihil / Mangkrak (0 Transaksi dalam 3 Bulan)" --> DecomWarning["🚨 Peringatan Otomatis: Aplikasi Mangkrak (Idle App)<br/>• Penerbitan Rekomendasi Decommissioning / Penggabungan Fitur<br/>• Laporan Eskalasi Khusus ke Sekda Kota Yogyakarta"]
+      
+      SustainedApp --> OutFase9["🎯 OUTPUT FASE 9: LAPORAN EVALUASI RESMI F.E01 SAH<br/>• Form F.E01 Ditandatangani Kepala OPD & Diskominfo<br/>• Status Kelayakan Operasional Aplikasi Terbarui<br/>• Masuk dalam Portofolio Aplikasi Aktif Daerah"]
+      ActionPlan --> OutFase9
+      DecomWarning --> OutFase9
+  ```
+
+  **10. Fase 10: Replikasi Aplikasi SPBE (Form _F.RA01 & F.RA02)**
+  ```mermaid
+  flowchart TD
+      InitiationRep{"🌐 INISIASI TIPE REPLIKASI APLIKASI SPBE"}
+      
+      InitiationRep -- "Tipe 1: Replikasi Masuk (Inbound)<br/>Pemkot Mengadopsi Sistem Instansi Luar" --> InboundFlow
+      InitiationRep -- "Tipe 2: Replikasi Keluar (Outbound)<br/>Pemda Lain Mereplikasi Aplikasi Pemkot Yogya" --> OutboundFlow
+      
+      subgraph InboundFlow ["📥 ALUR REPLIKASI MASUK (INBOUND REPLICATION)"]
+          direction TB
+          IN1["OPD Mengajukan Minat Replikasi Aplikasi Luar"]
+          IN2["Penyusunan Form _F.RA01: Assessment Replikasi Aplikasi SPBE<br/>• Pemeriksaan arsitektur teknologi, lisensi, & kode sumber<br/>• Uji kompatibilitas dengan ekosistem JSS & Pusat Data Pemkot"]
+          IN3["Penyusunan Form F.RA02: Analisis Kelayakan Replikasi<br/>• Analisa komparasi: Biaya Kustomisasi vs Bangun Baru<br/>• Analisis efisiensi anggaran & kesiapan SDM pengelola"]
+          IN4{"Uji Kelayakan Replikasi"}
+          IN4 -- "Layak Replikasi" --> IN_Approve["Rekomendasi Replikasi Sah Diskominfo"]
+          IN4 -- "Tidak Layak (Tech Stack Usang / Biaya Mahal)" --> IN_Reject["Ditolak / Dialihkan Bangun Mandiri (F.A01)"]
+          
+          IN1 --> IN2 --> IN3 --> IN4
+      end
+      
+      subgraph OutboundFlow ["📤 ALUR REPLIKASI KELUAR (OUTBOUND REPLICATION)"]
+          direction TB
+          OUT1["Pemerintah Daerah Lain Mengajukan Surat Permohonan Replikasi"]
+          OUT2["Verifikasi Status Aplikasi di Katalog SPBE Kota Yogyakarta"]
+          OUT3["Penetapan Perjanjian Kerja Sama (PKS / MoU) Berbagi Pakai"]
+          OUT4["Penyediaan Paket Source Code, Skema DB, & Panduan Instalasi"]
+          
+          OUT1 --> OUT2 --> OUT3 --> OUT4
+      end
+      
+      IN_Approve --> MoUGrant["🤝 Penandatanganan Komitmen & Berita Acara Replikasi SPBE"]
+      OUT4 --> MoUGrant
+      
+      MoUGrant --> OutFase10["🎯 OUTPUT FASE 10: REPLIKASI SPBE SAH TERTATA<br/>• Form _F.RA01 & F.RA02 Sah Terarsip di MinIO<br/>• Dokumen Kerja Sama Berbagi Pakai Antardaerah Sah<br/>• Pencatatan Efisiensi Anggaran SPBE pada Laporan Tahunan"]
+  ```
+
+  **11. Pengawasan Lintas Siklus: Audit Internal & Kepatuhan SPBE (Dashboard Auditor & Form F.AUD01)**
   ```mermaid
   flowchart TD
       Auditor["🕵️‍♂️ Auditor Internal SPBE<br/>(Inspektorat Kota Yogyakarta / Tim Audit SPBE)"]
       
-      Auditor --> DashAuditor["📊 DASHBOARD AUDITOR INTERNAL SPBE<br/>• Monitoring Tahap Pengembangan & Progres Fisik Riil<br/>• Rekapitulasi Matriks 10 Artefak Mandatori SPBE<br/>• Verifikasi Integritas Audit Trail SHA-256 Chaining"]
+      Auditor --> DashAuditor["📊 DASHBOARD AUDITOR INTERNAL SPBE<br/>• Monitoring Tahap Pengembangan & Progres Fisik Riil<br/>• Rekapitulasi Matriks 10 Artefak Mandatori SPBE (Fase 1 s/d 10)<br/>• Verifikasi Integritas Audit Trail SHA-256 Chaining"]
       
       DashAuditor --> CheckDev["🔍 1. Audit Tahap Development Tangkas (Agile Sprint & Work Packages)<br/>• Validasi KAK F.P01 Sah 2 Pihak Sebelum Dev Dimulai<br/>• Verifikasi Kurva S Realisasi vs Rencana Milestone<br/>• Audit Log Jam Kerja Staf (Timesheet vs Estimasi Jam)<br/>• Pelacakan Commit Hash Git ke Nomor Work Package<br/>• Penegakan Ketiadaan Bypass Development"]
       
-      DashAuditor --> CheckArtifacts["🗂️ 2. Rekapitulasi Matriks 10 Artefak Mandatori<br/>• Fase 1: Form F.A01, eOffice & 4 Lampiran MinIO<br/>• Fase 2: BA Rapat Klarifikasi & Form F.A02 Sah Kabid<br/>• Fase 3: Rekomendasi SDI Walidata Daerah Clear<br/>• Fase 4: Form F.A03 & KAK F.P01 TTD 2 Pihak Sah<br/>• Fase 5: Form Rancang Bangun FI.01 & Hosting FI.02<br/>• Fase 6: 5 Pilar QA (Fungsional, Pentest CSIRT, UAT, k6)<br/>• Fase 7: BAST F.SR01 Klausul 3 Bulan & Rilis F.R04"]
+      DashAuditor --> CheckArtifacts["🗂️ 2. Rekapitulasi Matriks 10 Artefak Mandatori SPBE<br/>• Fase 1: Form F.A01, eOffice & 4 Lampiran MinIO<br/>• Fase 2: BA Rapat Klarifikasi & Form F.A02 Sah Kabid<br/>• Fase 3: Rekomendasi SDI Walidata Daerah Clear<br/>• Fase 4: Form F.A03, BRD/SRS & KAK F.P01 TTD 2 Pihak Sah<br/>• Fase 5: Form Rancang Bangun F.R01/FI.01 & Hosting FI.02<br/>• Fase 6: 5 Pilar QA (Fungsional, Pentest CSIRT, UAT, k6)<br/>• Fase 7: BAST _F.R02 Klausul 3 Bulan & Rilis F.R06<br/>• Fase 8: Log Pemeliharaan F.P01, CSIRT F.P02, & RFC F.P03<br/>• Fase 9: Laporan Monev SLA 3 Bulan Form F.E01<br/>• Fase 10: Berkas Assessment Replikasi _F.RA01 & F.RA02"]
       
       DashAuditor --> CheckAuditTrail["🛡️ 3. Audit Trail Inspector & Hash Integrity<br/>• Verifikasi Hash SHA-256 Berantai per Event Log<br/>• Deteksi Manipulasi Status / Bypass Quality Gates"]
       
@@ -435,7 +557,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
           FA1 --> FA2 --> FA3
       end
       
-      FormAudit --> OutFase8["🎯 OUTPUT FASE 8: LAPORAN HASIL AUDIT KEPATUHAN SPBE<br/>• LHA-SPBE Resmi Ditandatangani Auditor Inspektorat<br/>• Tiket Kepatuhan Dikirim ke Tim Pengembang / Diskominfo<br/>• Audit Trail Kepatuhan Terkunci Permanen"]
+      FormAudit --> OutFase11["🎯 OUTPUT FUNGSI PENGAWASAN: LAPORAN HASIL AUDIT SPBE<br/>• LHA-SPBE Resmi Ditandatangani Auditor Inspektorat<br/>• Tiket Kepatuhan Dikirim ke Tim Terkait / Diskominfo<br/>• Audit Trail Kepatuhan Terkunci Permanen"]
   ```
 
 - **A.1.3. Pemicu Perubahan**:
@@ -641,7 +763,7 @@ Sistem ini memadukan **Formulir Input Digital Interaktif (dengan auto-generate P
      - Melacak konsistensi commit hash Git terhadap tiket work packages untuk mendeteksi koding di luar ruang lingkup KAK.
      - Memverifikasi kepatuhan kelulusan 5 pilar QA Suite (memastikan tidak ada celah keamanan CSIRT atau bug fungsional yang di-bypass secara ilegal).
   2. *Rekapitulasi Matriks 10 Artefak Mandatori SPBE*:
-     - Memeriksa kelengkapan matriks dokumen permohonan dari Fase 1 s/d Fase 7 (F.A01, Berita Acara Rapat Klarifikasi Teknis, F.A02 Sah Kabid, Rekomendasi SDI Walidata, KAK F.P01 TTD 2 Pihak, Dokumentasi FI.01/FI.02, Laporan Pentest F.U06, Berita Acara UAT F.UO5, BAST F.SR01 klausul 3 bulan).
+     - Memeriksa kelengkapan matriks dokumen permohonan dari Fase 1 s/d Fase 10 (F.A01, Berita Acara Rapat Klarifikasi Teknis, F.A02 Sah Kabid, Rekomendasi SDI Walidata, KAK F.P01 TTD 2 Pihak, Dokumentasi FI.01/FI.02, Laporan Pentest F.U06, Berita Acara UAT F.UO5, BAST F.SR01 klausul 3 bulan).
   3. *Verifikasi Integritas Audit Trail SHA-256*:
      - Menjalankan uji keabsahan rantai hash (*hash chain verification*) pada tabel audit log untuk menjamin ketiadaan manipulasi data riwayat telaah atau status tiket.
   4. *Penyusunan Lembar Hasil Audit Kepatuhan (Form F.AUD01)*:
